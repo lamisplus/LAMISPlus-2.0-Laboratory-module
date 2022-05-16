@@ -1,25 +1,23 @@
 package org.lamisplus.modules.Laboratory.domain.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
+@Table(name = "laboratory_labtestgroup")
 public class LabTestGroup {
     @Id
-    @GeneratedValue
-
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private int id;
-    private String group_name;
+    @Column(name = "group_name")
+    private String GroupName;
+
+    @OneToMany(mappedBy = "labTestGroup")
     private List<LabTest> labTests;
 }

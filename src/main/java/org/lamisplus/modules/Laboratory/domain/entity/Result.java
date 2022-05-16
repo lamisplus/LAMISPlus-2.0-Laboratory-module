@@ -1,27 +1,36 @@
 package org.lamisplus.modules.Laboratory.domain.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
+@Table(name = "laboratory_result")
 public class Result {
     @Id
-    @GeneratedValue
-
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private int id;
-    private LocalDate date_assayed;
-    private LocalDate date_result_reported;
-    private String result_reported;
-    private int result_reported_by;
+    @Column(name = "date_assayed")
+    private LocalDate dateAssayed;
+    @Column(name = "time_assayed")
+    private LocalTime timeAssayed;
+    @Column(name = "date_result_reported")
+    private LocalDate dateResultReported;
+    @Column(name = "time_result_reported")
+    private LocalTime timeResultReported;
+    @Column(name = "result_reported")
+    private String resultReported;
+    @Column(name = "result_reported_by")
+    private int resultReportedBy;
+
+    @ManyToOne
+    @JoinColumn(name = "TestId")
+    private Test test;
 }

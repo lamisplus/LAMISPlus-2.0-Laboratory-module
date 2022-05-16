@@ -1,33 +1,47 @@
 package org.lamisplus.modules.Laboratory.domain.entity;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
+@Table(name = "laboratory_test")
 public class Test {
     @Id
-    @GeneratedValue
-
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private int id;
-    private int patient_id;
-    private int lab_test_id;
+    @Column(name = "patient_id")
+    private int patientId;
+    @Column(name = "lab_test_id")
+    private int labTestId;
+    @Column(name = "description")
     private String description;
-    private String lab_number;
-    private int lab_test_group_id;
-    private int order_priority;
-    private String unit_measurement;
-    private int lab_test_order_status;
-    private int viral_load_indication;
+    @Column(name = "lab_number")
+    private String labNumber;
+    @Column(name = "lab_test_group_id")
+    private int labTestGroupId;
+    @Column(name = "order_priority")
+    private int orderPriority;
+    @Column(name = "unit_measurement")
+    private String unitMeasuremnt;
+    @Column(name = "lab_test_order_status")
+    private int labTestOrderStatus;
+    @Column(name = "viral_load_indication")
+    private int viralLoadIndication;
+
+    @JoinColumn(name = "TestId")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Sample> samples;
-    private List<Result> reported_results;
+
+    @JoinColumn(name = "TestId")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Result> results;
 }
