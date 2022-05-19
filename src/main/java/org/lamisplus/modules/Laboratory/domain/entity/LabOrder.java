@@ -25,7 +25,7 @@ public class LabOrder {
     @Column(name = "patient_id")
     private int patientId;
     @Column(name = "userid")
-    private int userId;
+    private String userId;
     @Column(name = "order_date")
     private LocalDate orderDate;
     @Column(name = "order_time")

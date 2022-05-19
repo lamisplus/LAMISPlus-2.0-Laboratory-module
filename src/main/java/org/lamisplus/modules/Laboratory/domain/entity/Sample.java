@@ -33,7 +33,7 @@ public class Sample {
     @Column(name = "comment_sample_collected")
     private String commentSampleCollected;
     @Column(name = "sample_collected_by")
-    private int sampleCollectedBy;
+    private String sampleCollectedBy;
     @Column(name = "date_sample_verified")
     private LocalDate dateSampleVerified;
     @Column(name = "time_sample_verified")
@@ -41,9 +41,7 @@ public class Sample {
     @Column(name = "comment_sample_verified")
     private String commentSampleVerified;
     @Column(name = "sample_verified_by")
-    private int sampleVerifiedBy;
-
-    @ManyToOne
-    @JoinColumn(name = "TestId")
-    private Test test;
+    private String sampleVerifiedBy;
+    @Column(name = "test_id")
+    private int testId;
 }

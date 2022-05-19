@@ -2,6 +2,7 @@ package org.lamisplus.modules.Laboratory.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.lamisplus.modules.Laboratory.domain.dto.*;
 import org.lamisplus.modules.Laboratory.domain.entity.*;
 import org.lamisplus.modules.Laboratory.service.*;
 import org.springframework.web.bind.annotation.*;
@@ -21,18 +22,23 @@ public class LaboratoryController {
 
 
     @PostMapping("/orders")
-    public LabOrder SaveLabOrder(@RequestBody LabOrder labOrder){
+    public LabOrderDTO SaveLabOrder(@RequestBody LabOrderDTO labOrder){
         return labOrderService.Save(labOrder);
     }
 
     @PutMapping("/orders/{id}")
-    public LabOrder UpdateLabOrder(@PathVariable int id, @RequestBody LabOrder labOrder){
+    public LabOrderDTO UpdateLabOrder(@PathVariable int id, @RequestBody LabOrderDTO labOrder){
         return labOrderService.Update(id, labOrder);
     }
 
     @GetMapping("/orders/{patient_id}")
-    public List<LabOrder> GetLabOrdersByPatientId(@PathVariable int patient_id){
+    public List<LabOrderDTO> GetLabOrdersByPatientId(@PathVariable int patient_id){
         return labOrderService.GetAllOrdersByPatientId(patient_id);
+    }
+
+    @GetMapping("/orders")
+    public List<PatientLabOrderDTO> GetAllLabOrders(){
+        return labOrderService.GetAllLabOrders();
     }
 
     @DeleteMapping("/orders/{id}")
@@ -44,12 +50,12 @@ public class LaboratoryController {
 
 
     @PostMapping("/tests")
-    public Test SaveTest(@RequestBody Test test){
+    public TestDTO SaveTest(@RequestBody TestDTO test){
         return testService.Save(test);
     }
 
     @PutMapping("/tests/{id}")
-    public Test UpdateTest(@PathVariable int id, @RequestBody Test test){
+    public TestDTO UpdateTest(@PathVariable int id, @RequestBody TestDTO test){
         return testService.Update(id, test);
     }
 
@@ -58,26 +64,31 @@ public class LaboratoryController {
         return testService.Delete(id);
     }
 
-    @GetMapping("/tests/pending-samples")
-    public List<Test> GetTestPendingSampleCollection(){
-        return testService.GetTestPendingSampleCollection();
+    @GetMapping("/tests/pending-sample-collection")
+    public List<PatientTestDTO> GetTestPendingSampleCollection(){
+        return testService.GetTestsPendingSampleCollection();
+    }
+
+    @GetMapping("/tests/pending-sample-verification")
+    public List<PatientTestDTO> GetTestPendingSampleVerification(){
+        return testService.GetTestsPendingSampleVerification();
     }
 
     @GetMapping("/tests/pending-results")
-    public List<Test> GetTestPendingResults(){
-        return testService.GetTestPendingResults();
+    public List<PatientTestDTO> GetTestPendingResults(){
+        return testService.GetTestsPendingResults();
     }
 
 
 
     @PostMapping("/samples")
-    public Sample SaveSample(@RequestBody Sample sample){
+    public SampleDTO SaveSample(@RequestBody SampleDTO sample){
         return sampleService.Save(sample);
     }
 
     @PutMapping("/samples/{id}")
-    public Sample UpdateSample(@PathVariable int id, @RequestBody Sample labOrder){
-        return sampleService.Update(id, labOrder);
+    public SampleDTO UpdateSample(@PathVariable int id, @RequestBody SampleDTO sampleDTO){
+        return sampleService.Update(id, sampleDTO);
     }
 
     @DeleteMapping("/samples/{id}")
@@ -88,12 +99,12 @@ public class LaboratoryController {
 
 
     @PostMapping("/results")
-    public Result SaveResult(@RequestBody Result result){
+    public ResultDTO SaveResult(@RequestBody ResultDTO result){
         return resultService.Save(result);
     }
 
     @PutMapping("/results/{id}")
-    public Result UpdateResult(@PathVariable int id, @RequestBody Result result){
+    public ResultDTO UpdateResult(@PathVariable int id, @RequestBody ResultDTO result){
         return resultService.Update(id, result);
     }
 
@@ -105,7 +116,7 @@ public class LaboratoryController {
 
 
     @GetMapping("/labtestgroups")
-    public List<LabTestGroup> GetAllLabTestGroups(){
+    public List<LabTestGroupDTO> GetAllLabTestGroups(){
         return labTestGroupService.GetAllLabTestGroups();
     }
 }

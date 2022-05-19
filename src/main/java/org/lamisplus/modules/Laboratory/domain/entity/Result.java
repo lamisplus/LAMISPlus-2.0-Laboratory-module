@@ -28,9 +28,7 @@ public class Result {
     @Column(name = "result_reported")
     private String resultReported;
     @Column(name = "result_reported_by")
-    private int resultReportedBy;
-
-    @ManyToOne
-    @JoinColumn(name = "TestId")
-    private Test test;
+    private String resultReportedBy;
+    @Column(name = "test_id")
+    private int testId;
 }

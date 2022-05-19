@@ -1,12 +1,8 @@
 package org.lamisplus.modules.Laboratory.domain.entity;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -31,17 +27,9 @@ public class Test {
     @Column(name = "order_priority")
     private int orderPriority;
     @Column(name = "unit_measurement")
-    private String unitMeasuremnt;
+    private String unitMeasurement;
     @Column(name = "lab_test_order_status")
     private int labTestOrderStatus;
     @Column(name = "viral_load_indication")
     private int viralLoadIndication;
-
-    @JoinColumn(name = "TestId")
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Sample> samples;
-
-    @JoinColumn(name = "TestId")
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Result> results;
 }

@@ -8,7 +8,7 @@ CREATE TABLE public.laboratory_order
 	visit_id INTEGER,
 	order_date date, 
 	order_time TIME,
-	userid INTEGER,
+	userid character varying(100),
     PRIMARY KEY (id)
 );
 ALTER TABLE IF EXISTS public.laboratory_order OWNER to postgres;
@@ -50,11 +50,11 @@ CREATE TABLE public.laboratory_sample
     date_sample_collected DATE,
 	time_sample_collected TIME,
     comment_sample_collected character varying(500),
-    sample_collected_by INTEGER,
+    sample_collected_by character varying(100),
     date_sample_verified DATE,
 	time_sample_verified TIME,
     comment_sample_verified character varying(500),
-    sample_verified_by INTEGER,
+    sample_verified_by character varying(100),
 	test_id INTEGER,
     PRIMARY KEY (id)
 );
@@ -73,7 +73,7 @@ CREATE TABLE public.laboratory_result
     date_result_reported DATE,
 	time_result_reported TIME,
     result_reported character varying(500),
-    result_reported_by INTEGER,
+    result_reported_by character varying(100),
 	test_id INTEGER,
     PRIMARY KEY (id)
 );
