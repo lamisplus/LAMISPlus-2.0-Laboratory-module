@@ -61,7 +61,7 @@ public class TestService {
             dto.setPatientHospitalNumber("12345XYZ");
             dto.setPatientLastName("Doe");
             dto.setPatientPhoneNumber("+234567890");
-            dto.setTestDTO(labMapper.toTestDto(test));
+            dto.setTest(labMapper.toTestDto(test));
 
             patientTestDTOS.add(dto);
         }

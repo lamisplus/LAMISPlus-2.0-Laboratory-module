@@ -5,6 +5,8 @@ import com.foreach.across.core.AcrossModule;
 import com.foreach.across.core.context.configurer.ComponentScanConfigurer;
 import com.foreach.across.modules.hibernate.jpa.AcrossHibernateJpaModule;
 import com.foreach.across.modules.web.AcrossWebModule;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.Bean;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -13,6 +15,7 @@ import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,9 +25,16 @@ import java.util.List;
                 AcrossHibernateJpaModule.NAME,
                 AcrossWebModule.NAME
         })
+@Slf4j
+@EnableSwagger2
 public class LaboratoryModule extends AcrossModule
 {
     public final static String NAME = "LaboratoryModule";
+
+    /*public static void main(String[] args) {
+
+        SpringApplication.run (LaboratoryModule.class, args);
+    }*/
 
     public LaboratoryModule(){
         super();

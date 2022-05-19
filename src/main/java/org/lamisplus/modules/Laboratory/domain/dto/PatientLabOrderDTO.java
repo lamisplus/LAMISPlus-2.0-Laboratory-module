@@ -17,5 +17,5 @@ public class PatientLabOrderDTO {
     private String patientAddress;
     private String patientPhoneNumber;
     private String patientGender;
-    private LabOrderDTO labOrderDTO;
+    private LabOrderDTO labOrder;
 }

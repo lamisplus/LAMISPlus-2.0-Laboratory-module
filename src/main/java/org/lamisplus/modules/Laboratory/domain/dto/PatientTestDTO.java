@@ -16,5 +16,5 @@ public class PatientTestDTO {
     private String patientAddress;
     private String patientPhoneNumber;
     private String patientGender;
-    private TestDTO testDTO;
+    private TestDTO test;
 }

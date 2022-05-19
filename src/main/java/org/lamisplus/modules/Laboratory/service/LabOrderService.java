@@ -57,7 +57,7 @@ public class LabOrderService {
             dto.setPatientHospitalNumber("12345XYZ");
             dto.setPatientLastName("Doe");
             dto.setPatientPhoneNumber("+234567890");
-            dto.setLabOrderDTO(labMapper.toLabOrderDto(order));
+            dto.setLabOrder(labMapper.toLabOrderDto(order));
 
             patientLabOrderDTOS.add(dto);
         }
