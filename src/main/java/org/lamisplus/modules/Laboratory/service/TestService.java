@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.lamisplus.modules.Laboratory.domain.dto.PatientTestDTO;
 import org.lamisplus.modules.Laboratory.domain.dto.TestDTO;
+import org.lamisplus.modules.Laboratory.domain.entity.Sample;
 import org.lamisplus.modules.Laboratory.domain.entity.Test;
 import org.lamisplus.modules.Laboratory.domain.mapper.LabMapper;
 import org.lamisplus.modules.Laboratory.repository.TestRepository;

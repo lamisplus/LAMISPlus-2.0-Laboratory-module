@@ -31,10 +31,10 @@ public class LaboratoryModule extends AcrossModule
 {
     public final static String NAME = "LaboratoryModule";
 
-    /*public static void main(String[] args) {
-
-        SpringApplication.run (LaboratoryModule.class, args);
-    }*/
+//    public static void main(String[] args) {
+//
+//        SpringApplication.run (LaboratoryModule.class, args);
+//    }
 
     public LaboratoryModule(){
         super();

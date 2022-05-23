@@ -3,7 +3,6 @@ package org.lamisplus.modules.Laboratory.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.lamisplus.modules.Laboratory.domain.dto.*;
-import org.lamisplus.modules.Laboratory.domain.entity.*;
 import org.lamisplus.modules.Laboratory.service.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +31,7 @@ public class LaboratoryController {
     }
 
     @GetMapping("/orders/{patient_id}")
-    public List<LabOrderDTO> GetLabOrdersByPatientId(@PathVariable int patient_id){
+    public List<PatientLabOrderDTO> GetLabOrdersByPatientId(@PathVariable int patient_id){
         return labOrderService.GetAllOrdersByPatientId(patient_id);
     }
 
@@ -81,21 +80,36 @@ public class LaboratoryController {
 
 
 
-    @PostMapping("/samples")
-    public SampleDTO SaveSample(@RequestBody SampleDTO sample){
+    @PostMapping("/sample-collection")
+    public SampleDTO SaveSampleCollection(@RequestBody SampleDTO sample){
         return sampleService.Save(sample);
     }
 
-    @PutMapping("/samples/{id}")
-    public SampleDTO UpdateSample(@PathVariable int id, @RequestBody SampleDTO sampleDTO){
+    @PutMapping("/sample-collection/{id}")
+    public SampleDTO UpdateSampleCollection(@PathVariable int id, @RequestBody SampleDTO sampleDTO){
         return sampleService.Update(id, sampleDTO);
     }
 
-    @DeleteMapping("/samples/{id}")
-    public String DeleteSample(@PathVariable Integer id){
+    @DeleteMapping("/sample-collection/{id}")
+    public String DeleteSampleCollection(@PathVariable Integer id){
         return sampleService.Delete(id);
     }
 
+
+    @PostMapping("/sample-verification")
+    public SampleDTO SaveSampleVerification(@RequestBody SampleVerificationDTO sample){
+        return sampleService.SaveVerification(sample);
+    }
+
+    @PutMapping("/sample-verification/{id}")
+    public SampleDTO UpdateSampleVerification(@PathVariable int id, @RequestBody SampleVerificationDTO sample){
+        return sampleService.SaveVerification(sample);
+    }
+
+    @DeleteMapping("/sample-verification/{id}")
+    public String DeleteSampleVerification(@PathVariable Integer id){
+        return sampleService.DeleteVerification(id);
+    }
 
 
     @PostMapping("/results")

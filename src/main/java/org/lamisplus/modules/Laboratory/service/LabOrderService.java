@@ -3,9 +3,12 @@ package org.lamisplus.modules.Laboratory.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.lamisplus.modules.Laboratory.domain.dto.LabOrderDTO;
-import org.lamisplus.modules.Laboratory.domain.entity.LabOrder;
+import org.lamisplus.modules.Laboratory.domain.dto.TestDTO;
+import org.lamisplus.modules.Laboratory.domain.entity.*;
 import org.lamisplus.modules.Laboratory.domain.mapper.LabMapper;
 import org.lamisplus.modules.Laboratory.repository.LabOrderRepository;
+import org.lamisplus.modules.Laboratory.repository.ResultRepository;
+import org.lamisplus.modules.Laboratory.repository.SampleRepository;
 import org.springframework.stereotype.Service;
 import org.lamisplus.modules.Laboratory.domain.dto.PatientLabOrderDTO;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +22,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LabOrderService {
     private final LabOrderRepository labOrderRepository;
+    private final SampleRepository sampleRepository;
+    private final ResultRepository resultRepository;
 
     private final LabMapper labMapper;
 
@@ -40,14 +45,28 @@ public class LabOrderService {
         return id.toString() + " deleted successfully";
     }
 
-    public List<LabOrderDTO> GetAllOrdersByPatientId(int patient_id){
-        return  labMapper.toLabOrderDtoList(labOrderRepository.findAllByPatientId(patient_id));
+    public List<PatientLabOrderDTO> GetAllLabOrders(){
+        List<LabOrder> orders = labOrderRepository.findAll();
+        return  AppendPatientDetails(orders);
     }
 
-    public List<PatientLabOrderDTO> GetAllLabOrders(){
+    public List<PatientLabOrderDTO> GetAllOrdersByPatientId(int patientId){
+        List<LabOrder> orders = labOrderRepository.findAllByPatientId(patientId);
+        return  AppendPatientDetails(orders);
+    }
+
+    public List<PatientLabOrderDTO> AppendPatientDetails(List<LabOrder> orders){
         List<PatientLabOrderDTO> patientLabOrderDTOS = new ArrayList<>();
-        List<LabOrder> orders = labOrderRepository.findAll();
         for (LabOrder order: orders) {
+            LabOrderDTO labOrderDTO = labMapper.toLabOrderDto(order);
+
+            for(TestDTO testDTO: labOrderDTO.getTests()){
+                List<Sample> samples = sampleRepository.findAllByTestId(testDTO.getId());
+                List<Result> results = resultRepository.findAllByTestId(testDTO.getId());
+                testDTO.setSamples(labMapper.tosSampleDtoList(samples));
+                testDTO.setResults(labMapper.toResultDtoList(results));
+            }
+
             PatientLabOrderDTO dto = new PatientLabOrderDTO();
             dto.setPatientAddress("Sample Address");
             dto.setPatientDob(null);
@@ -57,7 +76,7 @@ public class LabOrderService {
             dto.setPatientHospitalNumber("12345XYZ");
             dto.setPatientLastName("Doe");
             dto.setPatientPhoneNumber("+234567890");
-            dto.setLabOrder(labMapper.toLabOrderDto(order));
+            dto.setLabOrder(labOrderDTO);
 
             patientLabOrderDTOS.add(dto);
         }
