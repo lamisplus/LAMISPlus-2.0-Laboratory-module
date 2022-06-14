@@ -22,10 +22,10 @@ public interface LabMapper {
     SampleDTO tosSampleDto(Sample sample);
     TestDTO toTestDto(Test test);
 
-    List<LabOrderDTO> toLabOrderDtoList(List<LabOrder> drugs);
-    List<LabTestDTO> toLabTestDtoList(List<LabTest> labTest);
-    List<LabTestGroupDTO> toLabTestGroupDtoList(List<LabTestGroup> labTestGroup);
-    List<ResultDTO> toResultDtoList(List<Result> result);
-    List<SampleDTO> tosSampleDtoList(List<Sample> sample);
-    List<TestDTO> toTestDtoList(List<Test> test);
+    List<LabOrderDTO> toLabOrderDtoList(List<LabOrder> labOrders);
+    List<LabTestDTO> toLabTestDtoList(List<LabTest> labTests);
+    List<LabTestGroupDTO> toLabTestGroupDtoList(List<LabTestGroup> labTestGroups);
+    List<ResultDTO> toResultDtoList(List<Result> results);
+    List<SampleDTO> tosSampleDtoList(List<Sample> samples);
+    List<TestDTO> toTestDtoList(List<Test> tests);
 }

@@ -43,9 +43,9 @@ public class LaboratoryModule extends AcrossModule
                 getClass().getPackage().getName() +".service",
                 getClass().getPackage().getName() +".config",
                 getClass().getPackage().getName() +".domain",
-                getClass().getPackage().getName() +".extensions",
-                getClass().getPackage().getName() +".installers",
+                getClass().getPackage().getName() +".domain.mapper",
                 getClass().getPackage().getName() +".utility",
+                getClass().getPackage().getName() +".component",
                 getClass().getPackage().getName() +".repository"));
     }
     @Override
