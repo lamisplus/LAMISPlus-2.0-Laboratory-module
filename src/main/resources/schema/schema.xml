@@ -16,17 +16,6 @@
                  splitStatements="false"
                  stripComments="true"/>
     </changeSet>
-    <changeSet id="20220614100000-0002" author="kennedy">
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">
-                select count(*) from permission where description like '%Lab Order%'
-            </sqlCheck>
-        </preConditions>
-        <sqlFile dbms="postgresql"
-                 path="lab_permission_list.sql"
-                 relativeToChangelogFile="true"
-                 splitStatements="false"
-                 stripComments="true"/>
-    </changeSet>
+
 </databaseChangeLog>
 
