@@ -44,6 +44,10 @@ public class LabOrderService {
         return  labMapper.toLabOrderDtoList(labOrderRepository.findAllByPatientId(patient_id));
     }
 
+    public List<LabOrderDTO> GetAllOrdersByVisitId(int visit_id){
+        return  labMapper.toLabOrderDtoList(labOrderRepository.findAllByVisitId(visit_id));
+    }
+
     public List<PatientLabOrderDTO> GetAllLabOrders(){
         List<PatientLabOrderDTO> patientLabOrderDTOS = new ArrayList<>();
         List<LabOrder> orders = labOrderRepository.findAll();

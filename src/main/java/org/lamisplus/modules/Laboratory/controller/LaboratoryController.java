@@ -31,9 +31,14 @@ public class LaboratoryController {
         return labOrderService.Update(id, labOrder);
     }
 
-    @GetMapping("/orders/{patient_id}")
+    @GetMapping("/orders-by-patient-id/{patient_id}")
     public List<LabOrderDTO> GetLabOrdersByPatientId(@PathVariable int patient_id){
         return labOrderService.GetAllOrdersByPatientId(patient_id);
+    }
+
+    @GetMapping("/orders-by-visit-id/{visit_id}")
+    public List<LabOrderDTO> GetLabOrdersByVisitId(@PathVariable int visit_id){
+        return labOrderService.GetAllOrdersByVisitId(visit_id);
     }
 
     @GetMapping("/orders")
