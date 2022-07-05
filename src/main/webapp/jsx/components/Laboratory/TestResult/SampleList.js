@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom'
 import {FaPlusSquare} from 'react-icons/fa';
 import 'react-widgets/styles.css'
 import { ToastContainer } from "react-toastify";
+import { checkStatus } from '../../../../utils'
 //Date Picker
 
 import { Spinner } from 'reactstrap';
@@ -38,7 +39,7 @@ const useStyles = makeStyles({
   const SampleList = (props) => {
     console.log(props.patientObj.formDataObj)
     const testOrders = [];
-    const sampleCollections = props.patientObj ? props.patientObj.formDataObj : {};
+    const sampleCollections = props.patientObj ? props.patientObj : {};
     const encounterDate = null ;
     const hospitalNumber =  null;
     //const dispatch = useDispatch();
@@ -296,20 +297,21 @@ return (
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {!loading ? fetchTestOrders.map((row) => (
-                                                    row.data!==null?
-                                                    <tr key={row.id} style={{ borderBottomColor: '#fff' }}>
-                                                      <th className={classes.td}>{row.data.description===""?" ":row.data.description}</th>
-                                                      <td className={classes.td}>{sampleTypeList(row.data && row.data.sample_type!==null ? row.data.sample_type : null)}</td>
-                                                      <td className={classes.td}> {encounterDate} </td>
-                                                      <td className={classes.td}>{sampleStatus(row.data.lab_test_order_status)}  </td>
-                                                      <td className={classes.td} >{sampleAction(row,encounterDate)}</td>
-                                                    </tr>
-                                                    :
-                                                    <tr></tr>
-                                                  ))
-                                                  :<p> <Spinner color="primary" /> Loading Please Wait</p>
-                                                } 
+                                                {!loading ? fetchTestOrders.labOrder.tests.map((row) => (
+                                                   //console.log("row", row)
+                                                       row !== null?
+                                                       <tr key={row.id} style={{ borderBottomColor: '#fff' }}>
+                                                         <th className={classes.td}>{row.description}</th>
+                                                         <td className={classes.td}>{}</td>
+                                                         <td className={classes.td}>{fetchTestOrders.labOrder.orderDate}</td>
+                                                         <td className={classes.td}>{checkStatus(row.labTestOrderStatus)}</td>
+                                                         <td className={classes.td}></td>
+                                                       </tr>
+                                                       :
+                                                       <tr></tr>
+                                                     ))
+                                                     :<p> <Spinner color="primary" /> Loading Please Wait</p>
+                                                   }
                                             </tbody>
                                         </Table>
                                         <br />

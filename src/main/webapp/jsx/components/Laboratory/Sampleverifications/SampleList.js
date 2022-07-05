@@ -21,8 +21,7 @@ import Typography from "@material-ui/core/Typography";
 import ModalViewResult from './../TestResult/ViewResult';
 // import ModalSampleTransfer from './../TransferSample/TransferSampleModal';
 import SampleCollection from './SampleVerification'
-
-
+import { checkStatus } from '../../../../utils'
 
 const useStyles = makeStyles({
     root: {
@@ -34,11 +33,10 @@ const useStyles = makeStyles({
     td: { borderBottom :'#fff'}
 })
 
-
   const SampleList = (props) => {
-    console.log(props.patientObj.formDataObj)
+
     const testOrders = [];
-    const sampleCollections = props.patientObj ? props.patientObj.formDataObj : {};
+    const sampleCollections = props.patientObj ? props.patientObj : {};
     const encounterDate = null ;
     const hospitalNumber =  null;
     //const dispatch = useDispatch();
@@ -88,9 +86,11 @@ const useStyles = makeStyles({
             labNumber = e.target.value
     }
 
-    const handleVerifySample = (row) => {  
+    const handleVerifySample = (row) => {
+        console.log('row', row);
         setcollectModal({...collectModal, ...row});
-        setModal(!modal) 
+        console.log('collected', collectModal);
+        setModal(!modal)
       }
 
       const handleRecollectSample = (row) => { 
@@ -122,7 +122,7 @@ const useStyles = makeStyles({
     //This is function to check for the status of each collection to display on the tablist below 
     const sampleStatus = e =>{
         if(e===1){
-            return <p><Badge  color="light">Sample Collected</Badge></p>
+            return <p><Badge  color="info">Sample Collected</Badge></p>
         }else if(e===2){
             return <p><Badge  color="light">Sample Transfered</Badge></p>
         }else if(e===3){
@@ -132,10 +132,9 @@ const useStyles = makeStyles({
         }else if(e===5){
             return <p><Badge  color="light">Result Available</Badge></p>
         }else{
-            return <p><Badge  color="light">Pending Collection</Badge></p>
+            return <p><Badge  color="warning">Pending Collection</Badge></p>
         }
     }
-
 
     function sampleTypeList (test){
         
@@ -152,40 +151,40 @@ const useStyles = makeStyles({
         }
     }
 //This is function to check for the status of each collection to display on the tablist below 
-const sampleAction = (e) =>{
-    if(e.data.lab_test_order_status===1){
+const sampleAction = (row) =>{
+    if(row.labTestOrderStatus===1){
         return (
                 <Menu>
                 <MenuButton style={{ backgroundColor:"#3F51B5", color:"#fff", border:"2px solid #3F51B5", borderRadius:"4px"}}>
                     Action <span aria-hidden>▾</span>
                 </MenuButton>
                     <MenuList style={{hover:"#eee"}}>              
-                    <MenuItem onSelect={() => handleVerifySample(e)}><GoChecklist size="15" style={{color: '#3F51B5'}}/>{" "}Verify Sample</MenuItem>
+                    <MenuItem onSelect={() => handleVerifySample(row)}><GoChecklist size="15" style={{color: '#3F51B5'}}/>{" "}Verify Sample</MenuItem>
                     </MenuList>
                 </Menu>
             )    
         }
-        if(e.data.lab_test_order_status===4){
+        if(row.labTestOrderStatus===4){
             return (
                     <Menu>
                     <MenuButton style={{ backgroundColor:"#3F51B5", color:"#fff", border:"2px solid #3F51B5", borderRadius:"4px"}}>
                         Action <span aria-hidden>▾</span>
                     </MenuButton>
                         <MenuList style={{hover:"#eee"}}>              
-                        <MenuItem onSelect={() => handleRecollectSample(e)}><FaPlusSquare size="15" style={{color: '#3F51B5'}}/>{" "}Re-collect Sample</MenuItem>
+                        <MenuItem onSelect={() => handleRecollectSample(row)}><FaPlusSquare size="15" style={{color: '#3F51B5'}}/>{" "}Re-collect Sample</MenuItem>
                         </MenuList>
                     </Menu>
                 )    
             }
-            if(e.data.lab_test_order_status===5){
+            if(row.labTestOrderStatus===5){
                 return (
                         <Menu>
                         <MenuButton style={{ backgroundColor:"#3F51B5", color:"#fff", border:"2px solid #3F51B5", borderRadius:"4px"}}>
                             Action <span aria-hidden>▾</span>
                         </MenuButton>
                             <MenuList style={{hover:"#eee"}}>              
-                                <MenuItem onSelect={() => viewresult(e)}><FaRegEye size="15" style={{color: '#3F51B5'}}/>{" "}View Result</MenuItem>
-                                <MenuItem onSelect={() => addResult(e)}><FaPlusSquare size="15" style={{color: '#3F51B5'}}/>{" "}Add Result</MenuItem>
+                                <MenuItem onSelect={() => viewresult(row)}><FaRegEye size="15" style={{color: '#3F51B5'}}/>{" "}View Result</MenuItem>
+                                <MenuItem onSelect={() => addResult(row)}><FaPlusSquare size="15" style={{color: '#3F51B5'}}/>{" "}Add Result</MenuItem>
                             </MenuList>
                             
                         </Menu>
@@ -296,20 +295,21 @@ return (
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {!loading ? fetchTestOrders.map((row) => (
-                                                    row.data!==null?
-                                                    <tr key={row.id} style={{ borderBottomColor: '#fff' }}>
-                                                      <th className={classes.td}>{row.data.description===""?" ":row.data.description}</th>
-                                                      <td className={classes.td}>{sampleTypeList(row.data && row.data.sample_type!==null ? row.data.sample_type : null)}</td>
-                                                      <td className={classes.td}> {encounterDate} </td>
-                                                      <td className={classes.td}>{sampleStatus(row.data.lab_test_order_status)}  </td>
-                                                      <td className={classes.td} >{sampleAction(row,encounterDate)}</td>
-                                                    </tr>
-                                                    :
-                                                    <tr></tr>
-                                                  ))
-                                                  :<p> <Spinner color="primary" /> Loading Please Wait</p>
-                                                } 
+                                                {!loading ? fetchTestOrders.labOrder.tests.map((row) => (
+                                                                                               //console.log("row", row)
+                                                   row !== null?
+                                                   <tr key={row.id} style={{ borderBottomColor: '#fff' }}>
+                                                     <th className={classes.td}>{row.description}</th>
+                                                     <td className={classes.td}>{}</td>
+                                                     <td className={classes.td}>{sampleAction(row,fetchTestOrders.labOrder.orderDate)}</td>
+                                                     <td className={classes.td}>{sampleStatus(row.labTestOrderStatus)}</td>
+                                                     <td className={classes.td}></td>
+                                                   </tr>
+                                                   :
+                                                   <tr></tr>
+                                                 ))
+                                                 :<p> <Spinner color="primary" /> Loading Please Wait</p>
+                                               }
                                             </tbody>
                                         </Table>
                                         <br />

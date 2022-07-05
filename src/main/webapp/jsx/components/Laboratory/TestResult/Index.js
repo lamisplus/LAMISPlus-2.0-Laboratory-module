@@ -53,7 +53,7 @@ function PatientCard(props) {
     const { classes } = props;
 
     const patientObj = history.location && history.location.state ? history.location.state : {}
-    //console.log(patientObj)
+    //console.log("yyy", patientObj)
   return (
     <div className={classes.root}>
       <Card >

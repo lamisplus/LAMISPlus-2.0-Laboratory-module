@@ -56,8 +56,13 @@ const styles = theme => ({
 });
 
 function PatientCard(props) {
+
+  console.log("props", props)
+
   const { classes } = props;
+
   const patientObj = props.patientObj ? props.patientObj : {}
+
     const calculate_age = dob => {
     var today = new Date();
     var dateParts = dob.split("-");
@@ -74,33 +79,33 @@ function PatientCard(props) {
             return age_now + " year(s)";
     };
    
-  const CurrentStatus = (currentStatus)=>{
-    if(currentStatus==="4"){
-        return (<Label color="blue" size="mini">Current Status: <b>Admitted</b></Label>);
-    }else if(currentStatus==="5"){
-        return (<Label color="olive" size="mini">Current Status: <b>ICU</b></Label>);
-    }else if(currentStatus==="6"){
-        return (<Label color="teal" size="mini">Current Status: <b>Discharge</b></Label>);
-    }else if(currentStatus==="7"){
-        return (<Label color="red" size="mini">Current Status: <b>Dead</b></Label>);
-    }else {
-        return   (<Label color="green" size="mini">Current Status: <b>Active</b></Label>);
+     const CurrentStatus = (currentStatus)=>{
+        if(currentStatus==="4"){
+            return (<Label color="blue" size="mini">Current Status: <b>Admitted</b></Label>);
+        }else if(currentStatus==="5"){
+            return (<Label color="olive" size="mini">Current Status: <b>ICU</b></Label>);
+        }else if(currentStatus==="6"){
+            return (<Label color="teal" size="mini">Current Status: <b>Discharge</b></Label>);
+        }else if(currentStatus==="7"){
+            return (<Label color="red" size="mini">Current Status: <b>Dead</b></Label>);
+        }else {
+            return   (<Label color="green" size="mini">Current Status: <b>Active</b></Label>);
+        }
+
     }
 
-}
-
-const VaccinationStatus = (patient)=>{
-    //console.log(patient)
-    if(patient.vaccination_status===null){
-        return (<><Label color="yellow" size="mini">Vaccination Status: Not Vaccinated</Label></> )
-    }else if(patient.vaccination_status==="1"){
-        return (<><Label color="teal" size="mini">Vaccination Status: Partially Vaccinated</Label></> )
-    }else if(patient.vaccination_status==="2"){
-        return (<><Label color="green" size="mini">Vaccination Status: Fully Vaccinated</Label></> )
-    }else {
-        return ""
+    const VaccinationStatus = (patient)=>{
+        //console.log(patient)
+        if(patient.vaccination_status===null){
+            return (<><Label color="yellow" size="mini">Vaccination Status: Not Vaccinated</Label></> )
+        }else if(patient.vaccination_status==="1"){
+            return (<><Label color="teal" size="mini">Vaccination Status: Partially Vaccinated</Label></> )
+        }else if(patient.vaccination_status==="2"){
+            return (<><Label color="green" size="mini">Vaccination Status: Fully Vaccinated</Label></> )
+        }else {
+            return ""
+        }
     }
-}
 
   
   return (
@@ -114,39 +119,39 @@ const VaccinationStatus = (patient)=>{
                     <Row className={"mt-1"}>
                     <Col md={12} className={classes.root2}>
                         <b style={{fontSize: "25px"}}>
-                        {patientObj.firstName + " " + patientObj.lastName }
+                        {patientObj.patientFirstName + " " + patientObj.patientLastName }
                         </b>
                         
                     </Col>
                     <Col md={4} className={classes.root2}>
                     <span>
                         {" "}
-                        Patient ID : <b>{patientObj.participant_id }</b>
+                        Patient ID : <b>{patientObj.patientId }</b>
                     </span>
                     </Col>
 
                     <Col md={4} className={classes.root2}>
                     <span>
-                        Date Of Birth : <b>{patientObj.dob }</b>
+                        Date Of Birth : <b>{patientObj.patientDob }</b>
                     </span>
                     </Col>
                     <Col md={4} className={classes.root2}>
                     <span>
                         {" "}
-                        Age : <b>{calculate_age(moment(patientObj.dob).format("DD-MM-YYYY"))}</b>
+                        Age : <b>{calculate_age(moment(patientObj.patientDob).format("DD-MM-YYYY"))}</b>
                     </span>
                     </Col>
                     <Col md={4}>
                     <span>
                         {" "}
                         Gender :{" "}
-                        <b>{patientObj.gender===1?"Male": "Female" }</b>
+                        <b>{patientObj.patientGender=== "Male" ?"Male": "Female" }</b>
                     </span>
                     </Col>
                     <Col md={4} className={classes.root2}>
                     <span>
                         {" "}
-                        Phone Number : <b>{patientObj.phone }</b>
+                        Phone Number : <b>{patientObj.patientPhoneNumber }</b>
                     </span>
                     </Col>
                     <Col md={4} className={classes.root2}>

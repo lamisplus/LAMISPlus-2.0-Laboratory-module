@@ -21,7 +21,7 @@ import Typography from "@material-ui/core/Typography";
 import ModalViewResult from './../TestResult/ViewResult';
 // import ModalSampleTransfer from './../TransferSample/TransferSampleModal';
 import SampleCollection from './CollectSampleModal'
-
+import { checkStatus } from '../../../../utils'
 
 
 const useStyles = makeStyles({
@@ -36,16 +36,18 @@ const useStyles = makeStyles({
 
 
   const SampleList = (props) => {
-    console.log(props.patientObj.formDataObj)
+
+    //console.log("xxx", props.patientObj)
+
     const testOrders = [];
-    const sampleCollections = props.patientObj ? props.patientObj.formDataObj : {};
+    const sampleCollections = props.patientObj ? props.patientObj : {};
     const encounterDate = null ;
     const hospitalNumber =  null;
     //const dispatch = useDispatch();
     const [loading, setLoading] = useState('')
     const [fetchTestOrders, setFetchTestOrders] = useState(sampleCollections)
+
     const classes = useStyles()
-   
     useEffect(() => {
 
     }, []); //componentDidMount 
@@ -91,7 +93,7 @@ const useStyles = makeStyles({
     }
 
     const handleSample = (row,dateEncounter) => { 
-        
+        //console.log('fg', row)
         setlabNumValue(labNumber ==="" ? labNum.lab_number  : labNumber)
         ///return console.log(labNumber ==="" ? labNum.lab_number  : labNumber)
         setcollectModal({...collectModal, ...row, dateEncounter, hospitalNumber});
@@ -105,8 +107,11 @@ const useStyles = makeStyles({
         setcollectModal({...collectModal, ...row});
     }
     const transferSampleConfirmation = (row) => {
-        setModal4(!modal4)
+        console.log('row', row);
+        setModal3(!modal3)
         setcollectModal({...collectModal, ...row});
+
+        console.log('collected', collectModal);
     }
 
     const viewresult = (row) => {  
@@ -126,6 +131,7 @@ const useStyles = makeStyles({
             setFetchTestOrders(testOrders)
         }
     };
+
     //This is function to check for the status of each collection to display on the tablist below 
     const sampleStatus = e =>{
         if(e===1){
@@ -139,10 +145,9 @@ const useStyles = makeStyles({
         }else if(e===5){
             return <p><Badge  color="light">Result Available</Badge></p>
         }else{
-            return <p><Badge  color="light">Pending Collection</Badge></p>
+            return <p><Badge  color="warning">Pending Collection</Badge></p>
         }
     }
-
 
     function sampleTypeList (test){
         
@@ -159,43 +164,41 @@ const useStyles = makeStyles({
         }
     }
 //This is function to check for the status of each collection to display on the tablist below 
-    const sampleAction = (e,dateEncounter) =>{
-            if(e.data.lab_test_order_status ===0 || e.data.lab_test_order_status ===null){
+    const sampleAction = (row,dateEncounter) =>{
+            if(row.labTestOrderStatus ===0 || row.labTestOrderStatus ===null){
                 return (  <Menu>
                             <MenuButton style={{ backgroundColor:"#3F51B5", color:"#fff", border:"2px solid #3F51B5", borderRadius:"4px"}}>
                                 Action <span aria-hidden>▾</span>
                             </MenuButton>
                                 <MenuList style={{hover:"#eee"}}>
-                                <MenuItem onSelect={() => handleSample(e,dateEncounter)}><FaPlusSquare size="15" style={{color: '#000'}}/>{" "}Collect Sample</MenuItem>
+                                <MenuItem onSelect={() => handleSample(row,dateEncounter)}><FaPlusSquare size="15" style={{color: '#000'}}/>{" "}Collect Sample</MenuItem>
                                 </MenuList>
                             </Menu>    
                         )
             }
-            if(e.data.lab_test_order_status ===1){
+            if(row.labTestOrderStatus ===1){
                 return (  <Menu>
                             <MenuButton style={{ backgroundColor:"#3F51B5", color:"#fff", border:"2px solid #3F51B5", borderRadius:"4px"}}>
                                 Action <span aria-hidden>▾</span>
                             </MenuButton>
                                 <MenuList style={{hover:"#eee"}}>
-                                <MenuItem onSelect={() => transferSampleConfirmation(e)}><TiArrowForward size="15" style={{color: '#000'}}/>{" "} Transfer Sample</MenuItem> 
+                                <MenuItem onSelect={() => transferSampleConfirmation(row)}><TiArrowForward size="15" style={{color: '#000'}}/>{" "} Transfer Sample</MenuItem>
                                 </MenuList>
                             </Menu>    
                         )
             }
-            if(e.data.lab_test_order_status===5){
+            if(row.labTestOrderStatus===5){
                 return (  <Menu>
                             <MenuButton style={{ backgroundColor:"#3F51B5", color:"#fff", border:"2px solid #3F51B5", borderRadius:"4px"}}>
                                 Action <span aria-hidden>▾</span>
                             </MenuButton>
                                 <MenuList style={{hover:"#eee"}}>
-                                <MenuItem onSelect={() => viewresult(e,dateEncounter)}><FaPlusSquare size="15" style={{color: '#000'}}/>{" "}View Result</MenuItem>
+                                <MenuItem onSelect={() => viewresult(row,dateEncounter)}><FaPlusSquare size="15" style={{color: '#000'}}/>{" "}View Result</MenuItem>
                                 </MenuList>
                             </Menu>    
                         )
             }
   }
-
-
 
 return (
     <div>
@@ -300,20 +303,21 @@ return (
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {!loading ? fetchTestOrders.map((row) => (
-                                                    row.data!==null?
+                                                {!loading ? fetchTestOrders.labOrder.tests.map((row) => (
+                                                //console.log("row", row)
+                                                    row !== null?
                                                     <tr key={row.id} style={{ borderBottomColor: '#fff' }}>
-                                                      <th className={classes.td}>{row.data.description===""?" ":row.data.description}</th>
-                                                      <td className={classes.td}>{sampleTypeList(row.data && row.data.sample_type!==null ? row.data.sample_type : null)}</td>
-                                                      <td className={classes.td}> {encounterDate} </td>
-                                                      <td className={classes.td}>{sampleStatus(row.data.lab_test_order_status)}  </td>
-                                                      <td className={classes.td} >{sampleAction(row,encounterDate)}</td>
+                                                      <th className={classes.td}>{row.description}</th>
+                                                      <td className={classes.td}>{}</td>
+                                                      <td className={classes.td}>{sampleAction(row, fetchTestOrders.labOrder.orderDate)}</td>
+                                                      <td className={classes.td}>{sampleStatus(row.labTestOrderStatus)}</td>
+                                                      <td className={classes.td}></td>
                                                     </tr>
                                                     :
                                                     <tr></tr>
                                                   ))
                                                   :<p> <Spinner color="primary" /> Loading Please Wait</p>
-                                                } 
+                                                }
                                             </tbody>
                                         </Table>
                                         <br />

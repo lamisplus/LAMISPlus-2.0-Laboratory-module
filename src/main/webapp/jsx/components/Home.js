@@ -16,7 +16,7 @@ const Home = (props) => {
     const [key, setKey] = useState('collection');
     //const urlIndex = getQueryParams("tab", props.location.search); 
     const urlTabs = props.location && props.location.state ? props.location.state : null ;
-    console.log(props)
+
   useEffect ( () => {
     switch(urlTabs){  
       case "collect-sample": return setKey('collection')

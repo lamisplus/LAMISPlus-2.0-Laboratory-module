@@ -53,7 +53,7 @@ function PatientCard(props) {
     const { classes } = props;
 
     const patientObj = history.location && history.location.state ? history.location.state : {}
-    //console.log(patientObj)
+    //console.log("pobj", patientObj)
   return (
     <div className={classes.root}>
       <Card >
@@ -61,7 +61,7 @@ function PatientCard(props) {
 
             <PatientCardDetail patientObj={patientObj}/>
             <br/>
-            <SampleList  patientObj={patientObj}/> 
+            <SampleList  patientObj={patientObj}/>
          </CardContent>
       </Card>
     </div>
