@@ -120,9 +120,9 @@ const ModalVerifySample = (props) => {
          let temp = { ...errors }
          temp.date_sample_verified = otherFields.date_sample_verified ? "" : "Date is required"
          //temp.time_sample_verified = otherFields.time_sample_verified ? "" : "Time  is required."
-         temp.sample_verified_by = otherFields.sample_verified_by ? "" : "This filed is required."
+         //temp.sample_verified_by = otherFields.sample_verified_by ? "" : "This filed is required."
          temp.comment = otherFields.comment ? "" : "Comment is required."
-         temp.verification_status = otherFields.verification_status ? "" : "This filed is required."
+         //temp.verification_status = otherFields.verification_status ? "" : "This filed is required."
          setErrors({
              ...temp
          })
@@ -147,7 +147,7 @@ const ModalVerifySample = (props) => {
                 samplesVerified.testId = lab_test_id;
                 samplesVerified.timeSampleVerified = newTimeSampleVerified;
 
-                console.log("samples verified", otherFields, samplesVerified)
+                //console.log("samples verified", otherFields, samplesVerified)
 
                 await axios.post(`${url}laboratory/verified-samples/${sampleId}`, samplesVerified,
                 { headers: {"Authorization" : `Bearer ${token}`}}).then(resp => {
@@ -236,7 +236,7 @@ const ModalVerifySample = (props) => {
                                                       ) : "" } */}
                                               </FormGroup>
                                               </Col>
-                                            <Col md={6}>
+                                          {/*  <Col md={6}>
                                               <FormGroup>
                                                 <Label for="exampleSelect">Confirm Sample</Label>
                                                 <Input type="select" name="verification_status" id="verification_status"
@@ -270,7 +270,7 @@ const ModalVerifySample = (props) => {
                                                       </Input>
                                                           <FormFeedback>{errors.sample_verified_by}</FormFeedback>
                                                 </FormGroup>
-                                            </Col>
+                                            </Col> */}
                                               <Col md={12}>
                                               <FormGroup>
                                                 <Label for='maritalStatus'>Note</Label>
