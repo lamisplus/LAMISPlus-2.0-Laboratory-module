@@ -59,7 +59,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ModalVerifySample = (props) => {
-
     const history = useHistory();
 
     //console.log('modal', props)
@@ -67,47 +66,38 @@ const ModalVerifySample = (props) => {
     const datasample = props.datasample && props.datasample!==null ? props.datasample : {};
     const order_priority = datasample.id && datasample.orderPriority ? datasample.orderPriority : null;
     const lab_test_group = datasample.id ? datasample.labTestGroupId : null ;
-    const sample_ordered_by = datasample.data ? datasample.data.sample_ordered_by : null ;
+    const sample_ordered_by = datasample.id ? datasample.sample_ordered_by : null ;
     const description = datasample.description ? datasample.description : null ;
     const lab_number = props.labnumber  ? props.labnumber : null;
     const date_sample_collected = datasample.id ? datasample.date_sample_collected : null ;
+    const lab_test_id = datasample.id ? datasample.labTestId : null ;
 
-    const labId = datasample.id
-    const [loading, setLoading] = useState(false)
+    const sampleId = datasample.id;
+
+    const [loading, setLoading] = useState(false);
     const [visible, setVisible] = useState(true);
     const onDismiss = () => setVisible(false);
     const [samples, setSamples] = useState({});
     const [optionsample, setOptionsample] = useState([]);
     const [saveButtonStatus, setSaveButtonStatus] = useState(false);
-      const [otherFields, setotherFields] =
-            useState({  date_sample_verified:"",
+    const [otherFields, setotherFields] = useState({
+                        date_sample_verified:"",
                         sample_verified_by:"",
                         sample_priority:"",
                         time_sample_verified:"",
                         comment:"",
                         verification_status:"",
                         comment_sample_verified:""
-
                     });
     //This is to get SAMPLE TYPE from application Codeset
     const [errors, setErrors] = useState({});
 
     const [samplesVerified, setSamplesVerified] = useState({
-         "commentSampleCollected": "",
           "commentSampleVerified": "",
-          "dateSampleCollected": "",
           "dateSampleVerified": moment(new Date()).format("HH:mm:ss"),
-          "id": 0,
-          "sampleCollectedBy": 0,
-          "sampleCollectionMode": 0,
-          "sampleOrderDate": "",
-          "sampleOrderTime": "",
-          "sampleTypeId": 0,
           "testId": 0,
-          "timeSampleCollected": "",
           "timeSampleVerified": ""
     });
-
 
     useEffect(() => {
         async function getCharacters() {
@@ -147,20 +137,28 @@ const ModalVerifySample = (props) => {
              if (validate()) {
                 setLoading(true);
 
+                const newDatenow = moment(otherFields.date_sample_verified).format(
+                                    "YYYY-MM-DD"
+                                );
+                const newTimeSampleVerified = moment(otherFields.date_sample_verified).format("HH:mm:ss");
 
-               console.log("samples verified", otherFields)
+                samplesVerified.commentSampleVerified = otherFields.comment;
+                samplesVerified.dateSampleVerified = newDatenow;
+                samplesVerified.testId = lab_test_id;
+                samplesVerified.timeSampleVerified = newTimeSampleVerified;
 
-//                await axios.post(`${url}laboratory/samples`, samplesCollected,
-//                { headers: {"Authorization" : `Bearer ${token}`}}).then(resp => {
-//                    //console.log("sample collected", resp);
-//                    setLoading(!true);
-//                     toast.success("Sample collection saved successfully!!", {
-//                        position: toast.POSITION.TOP_RIGHT
-//                    });
-//                });
+                console.log("samples verified", otherFields, samplesVerified)
 
-                // history.push('/');
+                await axios.post(`${url}laboratory/verified-samples/${sampleId}`, samplesVerified,
+                { headers: {"Authorization" : `Bearer ${token}`}}).then(resp => {
+                    console.log("sample verify", resp);
+                    setLoading(!true);
+                     toast.success("Sample verified successfully!!", {
+                        position: toast.POSITION.TOP_RIGHT
+                    });
+                });
 
+                history.push('/');
             }
 
          } catch (e) {
