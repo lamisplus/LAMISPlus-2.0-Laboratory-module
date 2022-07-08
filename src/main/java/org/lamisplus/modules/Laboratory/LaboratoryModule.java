@@ -45,7 +45,9 @@ public class LaboratoryModule extends AcrossModule
                 getClass().getPackage().getName() +".domain.mapper",
                 getClass().getPackage().getName() +".utility",
                 getClass().getPackage().getName() +".component",
-                getClass().getPackage().getName() +".repository"));
+                getClass().getPackage().getName() +".repository",
+                "org.lamisplus.modules.patient.service",
+                "org.lamisplus.modules.base.service"));
     }
     @Override
     public String getName() {

@@ -8,13 +8,11 @@ import org.lamisplus.modules.Laboratory.domain.entity.Test;
 import org.lamisplus.modules.Laboratory.domain.mapper.LabMapper;
 import org.lamisplus.modules.Laboratory.repository.TestRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Transactional
 @Slf4j
 @RequiredArgsConstructor
 public class TestService {

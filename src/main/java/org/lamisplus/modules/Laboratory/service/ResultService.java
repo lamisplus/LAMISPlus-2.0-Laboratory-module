@@ -6,6 +6,7 @@ import org.lamisplus.modules.Laboratory.domain.dto.ResultDTO;
 import org.lamisplus.modules.Laboratory.domain.entity.Result;
 import org.lamisplus.modules.Laboratory.domain.mapper.LabMapper;
 import org.lamisplus.modules.Laboratory.repository.ResultRepository;
+import org.lamisplus.modules.base.security.SecurityUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +20,7 @@ public class ResultService {
 
     public ResultDTO Save(ResultDTO resultDTO){
         Result result = labMapper.toResult(resultDTO);
-        result.setResultReportedBy("Test User");
+        result.setResultReportedBy(SecurityUtils.getCurrentUserLogin().orElse(""));
         return labMapper.toResultDto(repository.save(result));
     }
 

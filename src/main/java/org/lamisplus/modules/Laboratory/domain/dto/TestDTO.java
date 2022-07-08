@@ -2,7 +2,7 @@ package org.lamisplus.modules.Laboratory.domain.dto;
 
 import lombok.Data;
 
-import javax.persistence.Column;
+import java.util.List;
 
 @Data
 public class TestDTO {
@@ -15,5 +15,8 @@ public class TestDTO {
     private int orderPriority;
     //private String unitMeasurement;
     private int labTestOrderStatus;
-    //private int viralLoadIndication;
+    private int viralLoadIndication;
+
+    private List<SampleResponseDTO> samples;
+    private List<ResultDTO> results;
 }

@@ -1,4 +1,3 @@
-
 export const  token = (new URLSearchParams(window.location.search)).get("jwt")
 export const url = '/api/'
 //export const url =  'http://localhost:8282/api/';
