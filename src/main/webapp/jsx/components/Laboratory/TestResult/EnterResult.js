@@ -137,6 +137,7 @@ const ModalSampleResult = (props) => {
                       position: toast.POSITION.TOP_RIGHT
                   });
               });
+              
              history.push('/');
 
       }
