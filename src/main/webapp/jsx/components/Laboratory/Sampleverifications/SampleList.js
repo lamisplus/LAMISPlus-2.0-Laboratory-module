@@ -20,7 +20,7 @@ import Breadcrumbs from "@material-ui/core/Breadcrumbs";
 import Typography from "@material-ui/core/Typography";
 import ModalViewResult from './../TestResult/ViewResult';
 // import ModalSampleTransfer from './../TransferSample/TransferSampleModal';
-import SampleCollection from './SampleVerification'
+import SampleVerification from './SampleVerification'
 import { checkStatus } from '../../../../utils'
 
 const useStyles = makeStyles({
@@ -37,6 +37,7 @@ const useStyles = makeStyles({
 
     const testOrders = [];
     const sampleCollections = props.patientObj ? props.patientObj : {};
+    console.log("row", sampleCollections)
     const encounterDate = null ;
     const hospitalNumber =  null;
     //const dispatch = useDispatch();
@@ -86,10 +87,11 @@ const useStyles = makeStyles({
             labNumber = e.target.value
     }
 
-    const handleVerifySample = (row) => {
-        console.log('row', row);
+    const handleVerifySample = (row, sid) => {
+        //console.log('rowsx', row, sid);
+        row['sampleID'] = sid;
         setcollectModal({...collectModal, ...row});
-        console.log('collected', collectModal);
+
         setModal(!modal)
       }
 
@@ -151,7 +153,8 @@ const useStyles = makeStyles({
         }
     }
 //This is function to check for the status of each collection to display on the tablist below 
-const sampleAction = (row) =>{
+const sampleAction = (row, sid) =>{
+console.log("sid", sid)
     if(row.labTestOrderStatus===1){
         return (
                 <Menu>
@@ -159,7 +162,7 @@ const sampleAction = (row) =>{
                     Action <span aria-hidden>▾</span>
                 </MenuButton>
                     <MenuList style={{hover:"#eee"}}>              
-                    <MenuItem onSelect={() => handleVerifySample(row)}><GoChecklist size="15" style={{color: '#3F51B5'}}/>{" "}Verify Sample</MenuItem>
+                    <MenuItem onSelect={() => handleVerifySample(row, sid)}><GoChecklist size="15" style={{color: '#3F51B5'}}/>{" "}Verify Sample</MenuItem>
                     </MenuList>
                 </Menu>
             )    
@@ -288,20 +291,20 @@ return (
                                             <thead style={{  backgroundColor:'#000000', color:'#ffffff' }}>
                                                 <tr>
                                                     <th>Test</th>
-                                                    <th>Sample Type</th>
-                                                    <th>Date Requested</th>
+                                                    <th>Sample</th>
+                                                    <th>Date Sample Collected</th>
                                                     <th >Status</th>
                                                     <th ></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {!loading ? fetchTestOrders.labOrder.tests.map((row) => (
-                                                                                               //console.log("row", row)
+
                                                    row !== null?
                                                    <tr key={row.id} style={{ borderBottomColor: '#fff' }}>
                                                      <th className={classes.td}>{row.description}</th>
-                                                     <td className={classes.td}>{}</td>
-                                                     <td className={classes.td}>{sampleAction(row,fetchTestOrders.labOrder.orderDate)}</td>
+                                                     <td className={classes.td}>{row.samples.map((s) => (sampleAction(row, s.id)))}</td>
+                                                     <td className={classes.td}>{fetchTestOrders.labOrder.orderDate}</td>
                                                      <td className={classes.td}>{sampleStatus(row.labTestOrderStatus)}</td>
                                                      <td className={classes.td}></td>
                                                    </tr>
@@ -326,7 +329,7 @@ return (
         {modal || modal2  || modal3 || modal4 ? 
       (
         <>
-            <SampleCollection modalstatus={modal} togglestatus={toggleModal} datasample={collectModal} labnumber={labNumber !=="" ? labNumber : labNum['lab_number'] }/>
+            <SampleVerification modalstatus={modal} togglestatus={toggleModal} datasample={collectModal} labnumber={labNumber !=="" ? labNumber : labNum['lab_number'] }/>
             {/* <ModalSampleTransfer modalstatus={modal2} togglestatus={toggleModal2} datasample={collectModal} labnumber={labNumber!=="" ? labNumber : labNum}/> */}
             <ModalViewResult modalstatus={modal3} togglestatus={toggleModal3} datasample={collectModal} />
             {/* <TransferModalConfirmation modalstatus={modal4} togglestatusConfirmation={toggleModal4} datasample={collectModal} actionButton={transferSample} labnumber={labNumber!=="" ? labNumber : labNum}/> */}

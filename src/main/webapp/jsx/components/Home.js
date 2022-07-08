@@ -49,13 +49,13 @@ const Home = (props) => {
                       <CheckInPatients labObj={labObj} />
                     </Tab> */}
                     <Tab eventKey="collection" title="Test Orders">                   
-                      <LabTestOrderSearch labObj={labObj} />
+                      <LabTestOrderSearch />
                     </Tab>
                     <Tab eventKey="verification" title="Sample Verification">                   
-                      <LabTestVerifySampleSearch  labObj={labObj}/>
+                      <LabTestVerifySampleSearch/>
                     </Tab>
                     <Tab eventKey="result" title="Result Reporting">                   
-                      <LabTestResultSearch labObj={labObj}/>
+                      <LabTestResultSearch />
                     </Tab>
                     
                     </Tabs>

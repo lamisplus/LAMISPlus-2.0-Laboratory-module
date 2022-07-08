@@ -108,71 +108,7 @@ const PatientSearch = (props) => {
     
   return (
       <div>
-          {/* <MaterialTable
-           icons={tableIcons}
-              title="Laboratory Test Orders"
-              columns={[
-                  { title: "Patient ID", field: "Id" },
-                  {
-                    title: "Patient Name",
-                    field: "name",
-                  },
-                  { title: "Date Order", field: "date", type: "date" , filtering: false},          
-                  {
-                    title: "Total Sample ",
-                    field: "count",
-                    filtering: false
-                  },
-                  {
-                    title: "Sample Collected ",
-                    field: "samplecount",
-                    filtering: false
-                  },
-                  {
-                    title: "Action",
-                    field: "actions",
-                    filtering: false,
-                  },
-              ]}
-              isLoading={loading}
-              data={collectedSamples.map((row) => ({
-                  Id: row.hospitalNumber,
-                  name: row.firstName +  ' ' + row.lastName,
-                  date: row.dateEncounter,
-                  count: row.formDataObj.length,
-                  samplecount: totalSampleConllected(row.formDataObj),
-                  actions:  <Link to ={{ 
-                                  pathname: "/collect-sample",  
-                                  state: row
-                              }} 
-                                  style={{ cursor: "pointer", color: "blue", fontStyle: "bold"}}
-                            >
-                                <Tooltip title="Collect Sample">
-                                    <IconButton aria-label="Collect Sample" >
-                                        <VisibilityIcon color="primary"/>
-                                    </IconButton>
-                                </Tooltip>
-                            </Link>
 
-              }))}
-              options={{
-                  
-                  pageSizeOptions: [5,10,50,100,150,200],
-                  headerStyle: {
-                  backgroundColor: "#9F9FA5",
-                  color: "#000",
-                  margin: "auto"
-                  },
-                  filtering: true,
-                  searchFieldStyle: {
-                      width : '250%',
-                      margingLeft: '250px',
-                  },
-                  exportButton: true,
-                  searchFieldAlignment: 'left',          
-              }}
-
-          /> */}
           <MaterialTable
            icons={tableIcons}
               title="Laboratory Test Orders"
@@ -220,41 +156,6 @@ const PatientSearch = (props) => {
                             </Link>
 
               }))}
-            // data={query =>
-            //       new Promise((resolve, reject) =>
-            //           axios.get(`${baseUrl}encounters/${LABSERVICECODE}/{dateStart}/{dateEnd}?size=${query.pageSize}&page=${query.page}&search=${query.search}`)
-            //               .then(response => response)
-            //               .then(result => {
-
-            //                   //console.log('in result')
-            //                   //console.log( result.headers);
-            //                   console.log( result.headers['x-total-count']);
-            //                   resolve({
-            //                       data: result.data.map((row) => ({
-            //                         Id: row.hospitalNumber,
-            //                         name: row.firstName +  ' ' + row.lastName,
-            //                         date: row.dateEncounter,
-            //                         count: row.formDataObj.length,
-            //                         samplecount: totalSampleConllected(row.formDataObj),
-            //                           actions:
-            //                           <Link to ={{ 
-            //                                         pathname: "/collect-sample",  
-            //                                         state: row
-            //                                     }} 
-            //                                         style={{ cursor: "pointer", color: "blue", fontStyle: "bold"}}
-            //                                     >
-            //                                         <Tooltip title="Collect Sample">
-            //                                             <IconButton aria-label="Collect Sample" >
-            //                                                 <VisibilityIcon color="primary"/>
-            //                                             </IconButton>
-            //                                         </Tooltip>
-            //                                     </Link>
-            //                       })),
-            //                       page: query.page,
-            //                       totalCount: result.headers['x-total-count'],
-            //                   })
-            //               })
-            //       )}
 
                   options={{
                     headerStyle: {
@@ -279,13 +180,4 @@ const PatientSearch = (props) => {
   );
 }
 
-// const mapStateToProps = state => {
-//     return {
-//         patientsTestOrderList: state.laboratory.list
-//     };
-// };
-// const mapActionToProps = {
-//     fetchAllLabTestOrderToday: fetchAllLabTestOrder
-// };
-  
 export default PatientSearch;

@@ -9,8 +9,6 @@ import PatientCardDetail from './../../Patient/PatientCard';
 import SampleList from './SampleList';
 import { useHistory } from "react-router-dom";
 
-
-
 const styles = theme => ({
   root: {
     width: '100%',
@@ -45,7 +43,6 @@ const styles = theme => ({
     },
   },
 });
-
 
 function PatientCard(props) {
     let history = useHistory();

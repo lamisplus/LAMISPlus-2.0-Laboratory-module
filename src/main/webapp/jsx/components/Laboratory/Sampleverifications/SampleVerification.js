@@ -64,6 +64,7 @@ const ModalVerifySample = (props) => {
     //console.log('modal', props)
     const classes = useStyles()
     const datasample = props.datasample && props.datasample!==null ? props.datasample : {};
+//    console.log('modal', datasample)
     const order_priority = datasample.id && datasample.orderPriority ? datasample.orderPriority : null;
     const lab_test_group = datasample.id ? datasample.labTestGroupId : null ;
     const sample_ordered_by = datasample.id ? datasample.sample_ordered_by : null ;
@@ -149,7 +150,7 @@ const ModalVerifySample = (props) => {
 
                 //console.log("samples verified", otherFields, samplesVerified)
 
-                await axios.post(`${url}laboratory/verified-samples/${sampleId}`, samplesVerified,
+                await axios.post(`${url}laboratory/verified-samples/${datasample.sampleID}`, samplesVerified,
                 { headers: {"Authorization" : `Bearer ${token}`}}).then(resp => {
                     console.log("sample verify", resp);
                     setLoading(!true);

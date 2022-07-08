@@ -57,8 +57,6 @@ const styles = theme => ({
 
 function PatientCard(props) {
 
-  console.log("props", props)
-
   const { classes } = props;
 
   const patientObj = props.patientObj ? props.patientObj : {}

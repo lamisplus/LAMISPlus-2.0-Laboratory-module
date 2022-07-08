@@ -37,10 +37,15 @@ const useStyles = makeStyles({
 
   const SampleList = (props) => {
 
-    //console.log("xxx", props.patientObj)
+
 
     const testOrders = [];
     const sampleCollections = props.patientObj ? props.patientObj : {};
+    const laborderArray = sampleCollections.labOrder.tests;
+
+
+
+    console.log("xxx", sampleCollections)
     const encounterDate = null ;
     const hospitalNumber =  null;
     //const dispatch = useDispatch();

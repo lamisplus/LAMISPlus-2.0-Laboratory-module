@@ -62,7 +62,7 @@ const ModalSample = (props) => {
 
     const history = useHistory();
 
-    //console.log('modal', props)
+
     const classes = useStyles()
     const datasample = props.datasample && props.datasample!==null ? props.datasample : {};
     const order_priority = datasample.id && datasample.orderPriority ? datasample.orderPriority : null;
@@ -83,27 +83,19 @@ const ModalSample = (props) => {
     const [errors, setErrors] = useState({});
     const [samplesCollected, setSamplesCollected] = useState({
          "commentSampleCollected": "",
-          "commentSampleVerified": "",
           "dateSampleCollected": moment(new Date()).format("HH:mm:ss"),
-          "dateSampleVerified": "",
           "id": 0,
           "sampleCollectedBy": 0,
           "sampleCollectionMode": 0,
-          "sampleOrderDate": "",
-          "sampleOrderTime": "",
           "sampleTypeId": 0,
           "testId": 0,
           "timeSampleCollected": "",
-          "timeSampleVerified": ""
     });
     
 
     useEffect(() => {
         async function getCharacters() {
             try {
-//                const response = await axios(
-//                    url + "application-codesets/v2/SAMPLE_TYPE"
-//                );
                 const response = await axios.get(`${url}application-codesets/v2/SAMPLE_TYPE`, { headers: {"Authorization" : `Bearer ${token}`} });
                 const body = response.data;
 
@@ -160,7 +152,7 @@ const ModalSample = (props) => {
                 samplesCollected.dateSampleCollected = newDatenow;
                 samplesCollected.sampleCollectedBy = otherfields["sample_collected_by"];
                 samplesCollected.timeSampleCollected = newTimeSampleCollected;
-                samplesCollected.testId = datasample.labTestId;
+                samplesCollected.testId = labId;
 
 
                 if (samples.sample_type.length > 0) {
@@ -174,11 +166,11 @@ const ModalSample = (props) => {
                     datasample.sample_type = datasample.data.sample_type;
                 }
 
-                //console.log("samples collection", samplesCollected)
+               console.log("samples collection", samplesCollected)
 
-                await axios.post(`${url}laboratory/samples`, samplesCollected,
+                await axios.post(`${url}laboratory/samples/${lab_number}`, samplesCollected,
                 { headers: {"Authorization" : `Bearer ${token}`}}).then(resp => {
-                    //console.log("sample collected", resp);
+                    console.log("sample collected", resp);
                     setLoading(!true);
                      toast.success("Sample collection saved successfully!!", {
                         position: toast.POSITION.TOP_RIGHT
