@@ -2,13 +2,13 @@ import React, {useState} from 'react';
 import { Modal, ModalHeader, ModalBody,Form,FormFeedback,Row,Col,
 FormGroup,Label,Input,Card,CardBody} from 'reactstrap';
 import { connect } from 'react-redux';
-
+import axios from "axios";
 import "react-widgets/styles.css";
 import { DateTimePicker } from 'react-widgets';
 import Moment from 'moment';
 import momentLocalizer from 'react-widgets-moment';
 import moment from "moment";
-import {url} from '../../../../api'
+import {token, url} from '../../../../api'
 // import { useSelector, useDispatch } from 'react-redux';
 // import { createCollectedSample, fetchFormById } from '../../../actions/laboratory'
 import MatButton from '@material-ui/core/Button'
@@ -17,6 +17,8 @@ import SaveIcon from '@material-ui/icons/Save'
 import CancelIcon from '@material-ui/icons/Cancel'
 import { Alert } from 'reactstrap';
 import { Spinner } from 'reactstrap';
+import { toast} from "react-toastify";
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -53,67 +55,90 @@ const useStyles = makeStyles(theme => ({
     } 
 }))
 
-
-
 const ModalSampleResult = (props) => {
+    const history = useHistory();
     const classes = useStyles()
     const datasample = props.datasample ? props.datasample : {};
-    const lab_test_group = datasample.data ? datasample.data.lab_test_group : null ;
-    const description = datasample.data ? datasample.data.description : null ;
-    const unit_measurement = datasample.data ? datasample.data.unit_measurement : null ;
+    const lab_test_group = datasample.id ? datasample.labTestGroupId : null ;
+    const description = datasample.description ? datasample.description : null ;
+    const unit_measurement = datasample.id ? datasample.unit_measurement : null ;
     const labId = datasample.id
+    const lab_number = props.labnumber  ? props.labnumber : null;
+    const lab_test_id = datasample.id ? datasample.id : null ;
+
+    const [visible, setVisible] = useState(true);
+    const onDismiss = () => setVisible(false);
     const [loading, setLoading] = useState(false)
     const [samples, setSamples] = useState({}) 
     const [otherfields, setOtherFields] = 
             useState({
-            sample_priority:"",
             time_result_enetered:"",
             date_result_reported:"",
-            result_reported_by:"",
-            test_result:"",
-            date_asseyed:""
+            resultReported:"",
+            //test_result:"",
+            date_asseyed:"",
+            timeAssayed:"",
+            //result_reported_by: ""
           }); 
     const [errors, setErrors] = useState({});
+
+    const [sampleResult, setSampleResult] = useState({
+          "dateAssayed": "",
+          "dateResultReported": "",
+          "id": 0,
+          "resultReported": "",
+          "testId": 0,
+          "timeAssayed": moment(new Date()).format("HH:mm:ss"),
+          "timeResultReported": moment(new Date()).format("HH:mm:ss"),
+    });
 
   const handleOtherFieldInputChange = e => {
       setOtherFields ({ ...otherfields, [e.target.name]: e.target.value });
   }
 
+
   const validate = () => {
       let temp = { ...errors }
-      temp.time_result_enetered = otherfields.time_result_enetered ? "" : "Date is required"
-      temp.date_result_reported = otherfields.date_result_reported ? "" : "Time  is required."
-      temp.result_reported_by = otherfields.result_reported_by ? "" : "This filed is required." 
+      ///temp.time_result_enetered = otherfields.time_result_enetered ? "" : "Date is required"
+      temp.date_result_reported = otherfields.date_result_reported ? "" : "Date  is required."
+      //temp.result_reported_by = otherfields.result_reported_by ? "" : "This filed is required."
       temp.date_asseyed = otherfields.date_asseyed ? "" : "This filed is required." 
-      temp.test_result = otherfields.test_result ? "" : "This filed is required." 
+      //temp.resultReported = otherfields.resultReported ? "" : "This filed is required."
       setErrors({
           ...temp
       })
         return Object.values(temp).every(x => x == "")
   }
-    const saveSample = e => {
+    const saveSample = async (e) => {
         e.preventDefault()
         if(validate()){
               setLoading(true);
-              const newDateReported = moment(otherfields.date_result_reported).format("DD-MM-YYYY");
-              const newTimeSampleEntered = moment(otherfields.time_result_enetered).format("LT");
-              datasample.data.date_result_reported = newDateReported
-              datasample.data['time_sample_transfered'] = newTimeSampleEntered
-              datasample.data.lab_test_order_status = 5;
-              datasample.data.test_result = otherfields.test_result
-              datasample.data['result_reported_by'] = otherfields['result_reported_by']
-              datasample.data['date_asseyed'] = otherfields['date_asseyed']
-              datasample.data['comment_sample_reported'] = samples.comment
-            
-        const onSuccess = () => {
-            setLoading(false);
-            props.togglestatus()       
-        }
-        const onError = () => {
-            setLoading(false); 
-            props.togglestatus()       
-        }
-            //props.createCollectedSample(datasample, labId,onSuccess,onError)
+
+              const newDateReported = moment(otherfields.date_result_reported).format(
+                                                  "YYYY-MM-DD"
+                                              );
+
+              const newTimeSampleEntered = moment(otherfields.date_result_reported).format("HH:mm:ss");
+
+              sampleResult.dateAssayed = newDateReported;
+              sampleResult.dateResultReported = newDateReported;
+              sampleResult.testId = lab_test_id;
+              sampleResult.timeAssayed = newTimeSampleEntered;
+              sampleResult.timeResultReported = newTimeSampleEntered;
+              sampleResult.resultReported = otherfields.resultReported;
+
+              console.log("samples result", otherfields, sampleResult);
+
+              await axios.post(`${url}laboratory/results`, sampleResult,
+              { headers: {"Authorization" : `Bearer ${token}`}}).then(resp => {
+                  console.log("sample result", resp);
+                  setLoading(!true);
+                   toast.success("Sample verified successfully!!", {
+                      position: toast.POSITION.TOP_RIGHT
+                  });
+              });
+              
+             history.push('/');
 
       }
     }
@@ -121,14 +146,24 @@ const ModalSampleResult = (props) => {
         fontSize: '14px',
         fontWeight: 'bolder'
       };
+
+   function checklanumber(lab_num) {
+          if (lab_num === "" || lab_num===null) {
+              return (
+                  <Alert color="danger" isOpen={visible} toggle={onDismiss}>
+                      Please make sure you enter the sample lab number
+                  </Alert>
+              );
+          }
+      }
       
   return (
-      
       <div >
           <Modal isOpen={props.modalstatus} toggle={props.togglestatus} className={props.className} size="lg">
               <Form onSubmit={saveSample}>
                   <ModalHeader toggle={props.togglestatus}>Result Reporting</ModalHeader>
                       <ModalBody>
+                            {checklanumber(lab_number)}
                           <Card>
                               <CardBody>
                                   <Row style={{ marginTop: '20px'}}>
@@ -139,7 +174,9 @@ const ModalSampleResult = (props) => {
                                                   <span style={{ fontWeight: 'bolder'}}>{' '}  {description}</span>
                                               </p>
                                           </Alert>
+                                            <br />
                                       </Col>
+
                                       <Col xs="6">
                                           Date Assayed
                                             <br/>
@@ -158,85 +195,96 @@ const ModalSampleResult = (props) => {
                                                 }
                                               />            
                                       </Col>
-                                      <Col md="6">
-                                          <Label for=''>Time Reported</Label>
-                                              <DateTimePicker
-                                                  date={false}
-                                                  name="time_result_reported"
-                                                  id="time_result_enetered"
-                                                  onChange={value1 =>
-                                                    setOtherFields({ ...otherfields, time_result_enetered: value1 })
-                                                  }
-                                              />
-                                                  {errors.time_result_enetered !="" ? (
-                                                    <span className={classes.error}>{errors.time_result_enetered}</span>
-                                                  ) : "" }
-                                      </Col> 
-                                      <Col md="6">
-                                        <FormGroup>
-                                            <Label>Result Reported by </Label>
-                                                <Input
-                                                  type="select"
-                                                  name="result_reported_by"
-                                                  id="result_reported_by"
-                                                  vaule={otherfields.result_reported_by}
-                                                  onChange={handleOtherFieldInputChange}
-                                                  {...(errors.result_reported_by && { invalid: true})} 
-                                                >
-                                                    <option value=""></option>
-                                                    <option value="Dorcas"> Dorcas </option>
-                                                    <option value="Jeph"> Jeph </option>
-                                                    <option value="Debora"> Debora </option>
-                                                </Input>
-                                                    <FormFeedback>{errors.result_reported_by}</FormFeedback>
-                                        </FormGroup>
-                                    </Col> 
-                                  </Row>
-                                  <Row>             
-                                      <Col xs="7">
+                                      <Col md={6}>
                                           <FormGroup>
-                                            <br/>
-                                              <Label for="examplePassword"> Result  </Label>
-                                                  <Input
-                                                    type='text'
-                                                    name='test_result'
-                                                    id='test_result'
-                                                    onChange={handleOtherFieldInputChange}
-                                                    value = {otherfields.test_result}
-                                                    style={{marginTop: '0rem' }}                                    
-                                                  >
-                                                  </Input>
+                                            <Label for=''>Time Assayed</Label>
+
+                                             <Input
+                                                type="text"
+                                                name="time_result_assayed"
+                                                id="time_result_assayed"
+                                                onChange={value1 =>
+                                                    setOtherFields({ ...otherfields, timeAssayed: value1 })
+                                                }
+                                                value={sampleResult.timeAssayed}
+                                            />
+
+                                              {/*  {errors.time_sample_verified !="" ? (
+                                                  <span className={classes.error}>{errors.time_sample_verified}</span>
+                                                  ) : "" } */}
                                           </FormGroup>
                                       </Col>
-                                    <Col xs="3">
-                                        <FormGroup>
-                                            <p style={{marginTop: '2rem' }} >{unit_measurement}</p>   
-                                        </FormGroup>                 
-                                    </Col>
-                                    
+                                        <Col md={6}>
+                                            <FormGroup>
+                                              <Label for=''>Time Reported</Label>
+
+                                               <Input
+                                                  type="text"
+                                                  name="time_result_reported"
+                                                  id="time_result_reported"
+                                                  onChange={value1 =>
+                                                      setOtherFields({ ...otherfields, timeResultReported: value1 })
+                                                  }
+                                                  value={sampleResult.timeResultReported}
+                                              />
+
+                                                {/*  {errors.time_sample_verified !="" ? (
+                                                    <span className={classes.error}>{errors.time_sample_verified}</span>
+                                                    ) : "" } */}
+                                            </FormGroup>
+                                        </Col>
+                                  </Row>
+                                  <Row>             
+                                     <Col md={12}>
+                                       <FormGroup>
+                                         <Label for='resultReported'>Result Report</Label>
+                                         <Input
+                                           type='textarea'
+                                           name='resultReported'
+                                           id='resultReported'
+                                           style={{ minHeight: 100, fontSize: 14 }}
+                                           onChange={handleOtherFieldInputChange}
+                                           >
+                                           </Input>
+                                       </FormGroup>
+                                     </Col>
+
                                 </Row>
                                     <br/>
                                     {loading ? <Spinner /> : ""}
                                     <br/>
-                                        <MatButton
-                                            type='submit'
-                                            variant='contained'
-                                            color='primary'
-                                            className={classes.button}
-                                            startIcon={<SaveIcon />}
-                                            disabled={loading}
-                                        >
-                                            Save 
-                                        </MatButton>
-                                        <MatButton
-                                          variant='contained'
-                                          color='default'
-                                          onClick={props.togglestatus}
-                                          className={classes.button}
-                                          startIcon={<CancelIcon />}
-                                        >
-                                            Cancel
-                                        </MatButton>
+                                         {lab_number && lab_number !== null ? (
+                                           <MatButton
+                                               type="submit"
+                                               variant="contained"
+                                               color="primary"
+                                               className={classes.button}
+                                               startIcon={<SaveIcon />}
+                                               disabled={loading}
+                                           >
+                                               Save
+                                           </MatButton>
+                                       ) : (
+                                           <MatButton
+                                               type="submit"
+                                               variant="contained"
+                                               color="primary"
+                                               className={classes.button}
+                                               startIcon={<SaveIcon />}
+                                               disabled="true"
+                                           >
+                                               Save
+                                           </MatButton>
+                                       )}
+                                       <MatButton
+                                           variant="contained"
+                                           color="default"
+                                           onClick={props.togglestatus}
+                                           className={classes.button}
+                                           startIcon={<CancelIcon />}
+                                       >
+                                           Cancel
+                                       </MatButton>
                                 </CardBody>
                             </Card>
                         </ModalBody>

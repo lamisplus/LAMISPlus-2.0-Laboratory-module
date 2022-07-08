@@ -16,7 +16,7 @@ const Home = (props) => {
     const [key, setKey] = useState('collection');
     //const urlIndex = getQueryParams("tab", props.location.search); 
     const urlTabs = props.location && props.location.state ? props.location.state : null ;
-    console.log(props)
+
   useEffect ( () => {
     switch(urlTabs){  
       case "collect-sample": return setKey('collection')
@@ -49,13 +49,13 @@ const Home = (props) => {
                       <CheckInPatients labObj={labObj} />
                     </Tab> */}
                     <Tab eventKey="collection" title="Test Orders">                   
-                      <LabTestOrderSearch labObj={labObj} />
+                      <LabTestOrderSearch />
                     </Tab>
                     <Tab eventKey="verification" title="Sample Verification">                   
-                      <LabTestVerifySampleSearch  labObj={labObj}/>
+                      <LabTestVerifySampleSearch/>
                     </Tab>
                     <Tab eventKey="result" title="Result Reporting">                   
-                      <LabTestResultSearch labObj={labObj}/>
+                      <LabTestResultSearch />
                     </Tab>
                     
                     </Tabs>

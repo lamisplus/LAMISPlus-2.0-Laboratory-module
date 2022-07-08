@@ -15,10 +15,10 @@ import { DateTimePicker } from "react-widgets";
 import Moment from "moment";
 import momentLocalizer from "react-widgets-moment";
 import moment from "moment";
-import { token, url } from "../../../../api";
+import { url } from "../../../../api";
 import { Spinner } from "reactstrap";
-import { toast} from "react-toastify";
-import { useHistory } from 'react-router-dom';
+
+
 
 const useStyles = makeStyles((theme) => ({
     card: {
@@ -58,19 +58,15 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const ModalSample = (props) => {
-
-    const history = useHistory();
-
-
+const ModalTransfer = (props) => {
     const classes = useStyles()
     const datasample = props.datasample && props.datasample!==null ? props.datasample : {};
-    const order_priority = datasample.id && datasample.orderPriority ? datasample.orderPriority : null;
-    const lab_test_group = datasample.id ? datasample.labTestGroupId : null ;
+    const order_priority = datasample.data && datasample.data.order_priority && datasample.data.order_priority.display   ? datasample.data.order_priority.display : null;
+    const lab_test_group = datasample.data ? datasample.data.lab_test_group : null ;
     const sample_ordered_by = datasample.data ? datasample.data.sample_ordered_by : null ;
-    const description = datasample.description ? datasample.description : null ;
+    const description = datasample.data ? datasample.data.description : null ;
     const lab_number = props.labnumber  ? props.labnumber : null;
-   
+
     const labId = datasample.id
     const [loading, setLoading] = useState(false)
     const [visible, setVisible] = useState(true);
@@ -81,24 +77,15 @@ const ModalSample = (props) => {
     const [otherfields, setOtherFields] = useState({sample_collected_by:"",sample_ordered_by:"",sample_priority:"",time_sample_collected:"", comment_sample_collected:""});
     //This is to get SAMPLE TYPE from application Codeset
     const [errors, setErrors] = useState({});
-    const [samplesCollected, setSamplesCollected] = useState({
-         "commentSampleCollected": "",
-          "dateSampleCollected": moment(new Date()).format("HH:mm:ss"),
-          "id": 0,
-          "sampleCollectedBy": 0,
-          "sampleCollectionMode": 0,
-          "sampleTypeId": 0,
-          "testId": 0,
-          "timeSampleCollected": "",
-    });
-    
+
 
     useEffect(() => {
         async function getCharacters() {
             try {
-                const response = await axios.get(`${url}application-codesets/v2/SAMPLE_TYPE`, { headers: {"Authorization" : `Bearer ${token}`} });
+                const response = await axios(
+                    url + "application-codesets/codesetGroup?codesetGroup=SAMPLE_TYPE"
+                );
                 const body = response.data;
-
                 setOptionsample(
                     body.map(({ display, id }) => ({ title: display, value: id }))
                 );
@@ -121,9 +108,9 @@ const ModalSample = (props) => {
         temp.date_sample_collected = samples.date_sample_collected
             ? ""
             : "Date is required";
-//        temp.time_sample_collected = otherfields.time_sample_collected
-//            ? ""
-//            : "Time  is required.";
+        temp.time_sample_collected = otherfields.time_sample_collected
+            ? ""
+            : "Time  is required.";
         temp.sample_type = samples.sample_type ? "" : "Sample Type.";
         temp.sample_collected_by = otherfields.sample_collected_by
             ? ""
@@ -134,72 +121,52 @@ const ModalSample = (props) => {
         });
         return Object.values(temp).every((x) => x == "");
     };
-
-    const saveSample = async (e) => {
+    const saveSample = (e) => {
         e.preventDefault();
+        if (validate()) {
+            setLoading(true);
+            const newDatenow = moment(samples.date_sample_collected).format(
+                "DD-MM-YYYY"
+            );
+            const newTimeSampleCollected = moment(otherfields.time_sample_collected).format("LT");
+            datasample.data.lab_test_order_status = 1;
+            datasample.data.date_sample_collected = newDatenow;
+            datasample.data.comment = samples.comment;
 
-         try {
-
-             if (validate()) {
-                setLoading(true);
-                const newDatenow = moment(samples.date_sample_collected).format(
-                    "YYYY-MM-DD"
-                );
-
-                const newTimeSampleCollected = moment(samples.date_sample_collected).format("HH:mm:ss");
-
-                samplesCollected.commentSampleCollected = samples.comment;
-                samplesCollected.dateSampleCollected = newDatenow;
-                samplesCollected.sampleCollectedBy = otherfields["sample_collected_by"];
-                samplesCollected.timeSampleCollected = newTimeSampleCollected;
-                samplesCollected.testId = labId;
-
-
-                if (samples.sample_type.length > 0) {
-                    const arr = [];
-                    samples.sample_type.forEach(function (value, index, array) {
-                        arr.push(value["value"]);
-                    });
-                    const sampletostring = arr.toString();
-                    samplesCollected.sampleTypeId = sampletostring;
-                } else {
-                    datasample.sample_type = datasample.data.sample_type;
-                }
-
-               console.log("samples collection", samplesCollected)
-
-                await axios.post(`${url}laboratory/samples/${lab_number}`, samplesCollected,
-                { headers: {"Authorization" : `Bearer ${token}`}}).then(resp => {
-                    console.log("sample collected", resp);
-                    setLoading(!true);
-                     toast.success("Sample collection saved successfully!!", {
-                        position: toast.POSITION.TOP_RIGHT
-                    });
+            /* processing the sample type to a string   */
+            if (samples.sample_type.length > 0) {
+                const arr = [];
+                samples.sample_type.forEach(function (value, index, array) {
+                    arr.push(value["title"]);
                 });
-
-                /* end of the process */
-//                const onSuccess = () => {
-//                    setLoading(false);
-//                    props.togglestatus();
-//                };
-//                const onError = () => {
-//                    setLoading(false);
-//                    props.togglestatus();
-//                };
-
-                 history.push('/');
-
+                const sampletostring = arr.toString();
+                datasample.data.sample_type = sampletostring;
+            } else {
+                datasample.data.sample_type = datasample.data.sample_type;
             }
-
-         } catch (e) {
-
-            toast.error("An error occurred during sample collection", {
-                 position: toast.POSITION.TOP_RIGHT
-             });
-         }
+            /* end of the process */
+            const onSuccess = () => {
+                setLoading(false);
+                props.togglestatus();
+            };
+            const onError = () => {
+                setLoading(false);
+                props.togglestatus();
+            };
+            datasample["lab_number"] = lab_number;
+            datasample.data["sample_collected_by"] =otherfields["sample_collected_by"];
+            datasample.data["sample_ordered_by"] = otherfields["sample_ordered_by"];
+            datasample.data["sample_priority"] = "Normal";
+            datasample.data["lab_number"] = lab_number;
+            datasample.data["time_sample_collected"] = newTimeSampleCollected;
+            datasample.data["comment_sample_collected"] = samples["comment"];
+            datasample.data["date_sample_ordered"] = datasample.dateEncounter;
+            //return console.log(datasample)
+            //props.createCollectedSample(datasample, labId, onSuccess, onError);
+        }
     };
 
-    function checklanumber(lab_num) {       
+    function checklanumber(lab_num) {
         if (lab_num === "" || lab_num===null) {
             return (
                 <Alert color="danger" isOpen={visible} toggle={onDismiss}>
@@ -208,7 +175,6 @@ const ModalSample = (props) => {
             );
         }
     }
-
     return (
         <div >
             <Card >
@@ -224,10 +190,10 @@ const ModalSample = (props) => {
                                             <Col md={12} >
                                                 <Alert color="dark" style={{backgroundColor:'#9F9FA5', color:"#000" , fontWeight: 'bolder', fontSize:'14px'}}>
                                                     <p style={{marginTop: '.7rem' }}>Lab Test Group : <span style={{ fontWeight: 'bolder'}}>{lab_test_group }</span>
-                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Lab Test : &nbsp;&nbsp;
+                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Lab Test Ordered : &nbsp;&nbsp;
                                                         <span style={{ fontWeight: 'bolder'}}>{description}</span>
                                                         &nbsp;&nbsp;&nbsp; Lab Number : &nbsp;&nbsp;
-                                                        <span style={{ fontWeight: 'bolder'}}>{labId === ""?" ---":labId}</span>
+                                                        <span style={{ fontWeight: 'bolder'}}>{lab_number===""?" ---":lab_number}</span>
                                                         <br/>
                                                         Order by : &nbsp;&nbsp;
                                                         <span style={{ fontWeight: 'bolder'}}>{ sample_ordered_by}</span>
@@ -239,7 +205,7 @@ const ModalSample = (props) => {
                                             </Col>
                                             <Col md={6}>
                                                 <FormGroup>
-                                                    <Label for='date collected'>Date Collected</Label>
+                                                    <Label for='maritalStatus'>Date Collected</Label>
                                                     <DateTimePicker
                                                         time={false}
                                                         name="date_sample_collected"
@@ -257,27 +223,27 @@ const ModalSample = (props) => {
                                             </Col>
                                             <Col md={6}>
                                                 <FormGroup>
-                                                    <Label for='time collected'>Time Collected</Label>
+                                                    <Label for='maritalStatus'>Time Collected</Label>
 
-                                                    <Input
-                                                        type="text"
+                                                    <DateTimePicker
+                                                        date={false}
                                                         name="time_sample_collected"
                                                         id="time_sample_collected"
+
                                                         onChange={value1 =>
                                                             setOtherFields({ ...otherfields, time_sample_collected: value1 })
                                                         }
-                                                        value={samplesCollected.dateSampleCollected}
+                                                        required
                                                     />
-
-                                                   {/* {errors.time_sample_collected !="" ? (
+                                                    {errors.time_sample_collected !="" ? (
                                                         <span className={classes.error}>{errors.time_sample_collected}</span>
-                                                    ) : "" } */}
+                                                    ) : "" }
                                                 </FormGroup>
                                             </Col>
-               
+
                                             <Col md={6}>
                                                 <FormGroup>
-                                                    <Label for="sample type">Sample Type</Label>
+                                                    <Label for="maritalStatus">Sample Type</Label>
                                                     <Autocomplete
                                                         multiple="true"
                                                         id="sample_type"
@@ -318,7 +284,7 @@ const ModalSample = (props) => {
                                             </Col>
                                             <Col md={6}>
                                                 <FormGroup>
-                                                    <Label for="collected">Collected by </Label>
+                                                    <Label for="occupation">Collected by </Label>
 
                                                     <Input
                                                         type="select"
@@ -331,23 +297,22 @@ const ModalSample = (props) => {
                                                         })}
                                                     >
                                                         <option value=""> </option>
-                                                        <option value="1"> Dorcas </option>
-                                                        <option value="2"> Jeph </option>
-                                                        <option value="3"> Debora </option>
+                                                        <option value="Dorcas"> Dorcas </option>
+                                                        <option value="Jeph"> Jeph </option>
+                                                        <option value="Debora"> Debora </option>
                                                     </Input>
                                                     <FormFeedback>
                                                         {errors.sample_collected_by}
                                                     </FormFeedback>
                                                 </FormGroup>
                                             </Col>
-                                            <Col md={12}>
+                                            <Col md={7}>
                                                 <FormGroup>
-                                                    <Label for="Note">Note</Label>
+                                                    <Label for="maritalStatus">Note</Label>
                                                     <Input
                                                         type="textarea"
                                                         name="comment"
                                                         id="comment"
-                                                        style={{ minHeight: 100, fontSize: 14 }}
                                                         onChange={handleInputChangeSample}
                                                         value={samples.comment}
                                                         {...(errors.comment && { invalid: true })}
@@ -411,4 +376,4 @@ const ModalSample = (props) => {
     );
 };
 
-export default ModalSample;
+export default ModalTransfer;

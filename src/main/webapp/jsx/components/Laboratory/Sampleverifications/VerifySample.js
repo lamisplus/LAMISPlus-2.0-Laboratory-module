@@ -7,13 +7,13 @@ import SaveIcon from '@material-ui/icons/Save'
 import CancelIcon from '@material-ui/icons/Cancel'
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "react-widgets/dist/css/react-widgets.css";
+//import "react-widgets/dist/css/react-widgets.css";
 import { DateTimePicker } from 'react-widgets';
 import Moment from 'moment';
 import momentLocalizer from 'react-widgets-moment';
 import moment from "moment";
 
-import { sampleVerification, fetchFormById } from '../../../actions/laboratory';
+//import { sampleVerification, fetchFormById } from '../../../actions/laboratory';
 import { Alert } from 'reactstrap';
 import { Spinner } from 'reactstrap';
 
@@ -60,7 +60,7 @@ Moment.locale('en');
 momentLocalizer();
 
 
-const ModalSample = (props) => {
+const ModalVerifySample = (props) => {
   const classes = useStyles()
   const dataSample = props.datasample ? props.datasample : {};
   const lab_test_group = dataSample.data ? dataSample.data.lab_test_group : null ;
@@ -81,6 +81,8 @@ const ModalSample = (props) => {
                     });
 
   const [errors, setErrors] = useState({});
+
+
 
     const handleOtherFieldInputChange = e => {
       setotherFields ({ ...otherFields, [e.target.name]: e.target.value });
@@ -110,14 +112,14 @@ const ModalSample = (props) => {
           dataSample.data.comment = otherFields['comment']
           dataSample.data['sample_verified_by'] = otherFields.sample_verified_by
           dataSample.data['comment_sample_verified']= otherFields.comment
-          
+
           const onSuccess = () => {
             setLoading(false);
-            props.togglestatus()       
+            props.togglestatus()
           }
           const onError = () => {
-            setLoading(false); 
-            props.togglestatus()       
+            setLoading(false);
+            props.togglestatus()
           }
           props.sampleVerification(dataSample, labId,onSuccess,onError)
         }
@@ -265,4 +267,5 @@ const ModalSample = (props) => {
   );
 }
 
-export default connect(null, { sampleVerification, fetchFormById })(ModalSample);
+//export default connect(null, { sampleVerification, fetchFormById })(ModalSample);
+export default ModalVerifySample;
