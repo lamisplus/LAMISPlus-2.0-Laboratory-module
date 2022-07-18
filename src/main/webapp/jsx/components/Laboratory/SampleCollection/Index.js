@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {useEffect, useCallback, useState} from 'react';
+import {token, url } from "../../../../api";
+import axios from "axios";
 import { withStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom'
 import ButtonMui from "@material-ui/core/Button";
@@ -8,8 +10,7 @@ import CardContent from '@mui/material/CardContent';
 import PatientCardDetail from './../../Patient/PatientCard';
 import SampleList from './SampleList';
 import { useHistory } from "react-router-dom";
-
-
+import { toast } from 'react-toastify';
 
 const styles = theme => ({
   root: {
@@ -49,19 +50,41 @@ const styles = theme => ({
 
 function PatientCard(props) {
     let history = useHistory();
-    //const [key, setKey] = useState('home');
+    const [labObj, setLabObj] = useState({});
     const { classes } = props;
 
     const patientObj = history.location && history.location.state ? history.location.state : {}
-    //console.log("pobj", patientObj)
+    //console.log("pobj", patientObj.orderId)
+
+    const loadData = useCallback(async () => {
+        try {
+            const response = await axios.get(`${url}laboratory/orders/${patientObj.orderId}`, { headers: {"Authorization" : `Bearer ${token}`} });
+            console.log("lab test obj", response);
+            setLabObj(response.data);
+        } catch (e) {
+            toast.error("An error occurred while fetching lab", {
+                position: toast.POSITION.TOP_RIGHT
+            });
+        }
+    }, []);
+
+     useEffect(() => {
+         loadData();
+     }, [loadData]);
+
   return (
     <div className={classes.root}>
       <Card >
         <CardContent>
-
-            <PatientCardDetail patientObj={patientObj}/>
+        {
+            Object.entries(labObj).length !== 0 ?
+            <>
+            <PatientCardDetail patientObj={labObj}/>
             <br/>
-            <SampleList  patientObj={patientObj}/>
+            <SampleList  patientObj={labObj}/>
+            </>
+            : "Error Page!!!"
+        }
          </CardContent>
       </Card>
     </div>

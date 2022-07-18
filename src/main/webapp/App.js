@@ -14,6 +14,7 @@ import Home from './jsx/components/Home'
 import SampleCollection from './jsx/components/Laboratory/SampleCollection/Index';
 import Sampleverifications from './jsx/components/Laboratory/Sampleverifications/Index'
 import TestResult from './jsx/components/Laboratory/TestResult/Index';
+import PreviousResult from './jsx/components/Laboratory/TestResult/PreviousResult';
 import PatientTestOrderHistory from './jsx/components/Laboratory/LabTestOrder/PatientTestOrderHistory'
 
 export default function App() {
@@ -37,6 +38,9 @@ export default function App() {
           <Route path="/result-reporting">
             <TestResult />
           </Route>
+          <Route path="/previous-result">
+              <PreviousResult />
+            </Route>
           <Route path="/">
             <Home />
           </Route>

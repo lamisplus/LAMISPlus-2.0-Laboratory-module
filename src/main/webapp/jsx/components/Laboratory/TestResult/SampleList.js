@@ -1,7 +1,7 @@
 import React from 'react'
 import {Card, CardBody,CardHeader,Col,Row,Alert,Table, Form,FormGroup,Label,Input} from 'reactstrap'
-import { useState , useEffect} from 'react'
-import { TiArrowBack } from 'react-icons/ti'
+import { useState, useCallback, useEffect} from 'react'
+import { TiArrowBack, TiDocumentText } from 'react-icons/ti'
 import MatButton from '@material-ui/core/Button'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link } from 'react-router-dom'
@@ -9,7 +9,6 @@ import {FaPlusSquare} from 'react-icons/fa';
 import 'react-widgets/styles.css'
 import { ToastContainer } from "react-toastify";
 import { checkStatus } from '../../../../utils'
-//Date Picker
 
 import { Spinner } from 'reactstrap';
 import { Badge } from 'reactstrap';
@@ -22,7 +21,7 @@ import Typography from "@material-ui/core/Typography";
 import ModalViewResult from './../TestResult/ViewResult';
 // import ModalSampleTransfer from './../TransferSample/TransferSampleModal';
 import ModalEnterResult from './EnterResult'
-
+import ModalPreviousResult from './PreviousResult'
 
 
 const useStyles = makeStyles({
@@ -35,9 +34,8 @@ const useStyles = makeStyles({
     td: { borderBottom :'#fff'}
 })
 
-
   const SampleList = (props) => {
-    //console.log(props.patientObj)
+    //console.log("sr",props.patientObj)
     const testOrders = [];
     const sampleCollections = props.patientObj ? props.patientObj : {};
     const encounterDate = null ;
@@ -73,16 +71,17 @@ const useStyles = makeStyles({
         const [collectModal, setcollectModal] = useState([])//to collect array of datas into the modal and pass it as props
         const [labNum, setlabNum] = useState({lab_number:""})
 
-
         let  labNumber = "" //check if that key exist in the array
-            testOrders.forEach(function(value, index, array) {
-                if(value['data']!==null && value['data'].hasOwnProperty("lab_number")){
-                   // setlabNum({lab_number:value['data'].lab_number})
-                    if(value['data'].lab_number !== null){
-                        labNumber = value['data'].lab_number
-                    }
-                }               
-            });
+
+        let lab = localStorage.getItem('labnumber');
+
+        console.log("TR",lab);
+
+        if (lab !== null) {
+            labNumber = lab;
+        }
+
+
     const handleLabNumber = e => {
         e.preventDefault();   
             setlabNum({ ...labNum, [e.target.name]: e.target.value })
@@ -152,23 +151,22 @@ const useStyles = makeStyles({
         }
     }
 
-//This is function to check for the status of each collection to display on the tablist below 
-const sampleAction = (row) =>{
-    if(row.labTestOrderStatus===3){
+
+const sampleAction = (id, row) =>{
+    if(id===3){
         return (
                 <Menu>
                 <MenuButton style={{ backgroundColor:"#3F51B5", color:"#fff", border:"2px solid #3F51B5", borderRadius:"4px"}}>
                     Action <span aria-hidden>▾</span>
                 </MenuButton>
                     <MenuList style={{hover:"#eee"}}>
-                        { /*<MenuItem onSelect={() => viewresult(row)}><FaRegEye size="15" style={{color: '#3F51B5'}}/>{" "}View Result</MenuItem> */}
+                        <MenuItem onSelect={() => viewresult(row)}><FaRegEye size="15" style={{color: '#3F51B5'}}/>{" "}View Result</MenuItem>
                         <MenuItem onSelect={() => addResult(row)}><FaPlusSquare size="15" style={{color: '#3F51B5'}}/>{" "} Add Result</MenuItem>
                     </MenuList>
 
                 </Menu>
-            )    
+            )
         }
-
     }
 
 return (
@@ -207,22 +205,41 @@ return (
                                 type='submit'
                                 variant='contained'
                                 color='primary'
-                                //className={classes.button}                        
                                 className=" float-right mr-1"
                             >
                                 <TiArrowBack/>{" "} Back
                             </MatButton>
-                      
                         </Link>
+
                   </CardHeader>
                 <CardBody>
-                    <Alert color="primary">
-                        Please make sure you enter Lab number before collecting sample 
-                    </Alert>
+                    { /* <Alert color="primary">
+                                            Please make sure you enter Lab number before collecting sample
+                                        </Alert>*/}
                 <br />
                     <Row>
                        
                             <Card body>
+                            <Row >
+                                <Col md="3" className='float-right mr-1'>
+                            <Link
+                                to ={{
+                                  pathname: "/previous-result",
+                                  //state: 'collect-sample'
+                                }}
+                            >
+                                     <MatButton
+                                        type='submit'
+                                        variant='contained'
+                                        color='secondary'
+                                        className=" float-right mr-1"
+                                    >
+                                        <TiDocumentText/>{" "} Previous Results
+                                    </MatButton>
+                            </Link>
+                                </Col>
+                            </Row>
+                            <br />
                                 <Row >
                                     <Col md="3">
                                         <FormGroup>
@@ -259,6 +276,7 @@ return (
                                         />
                                         </FormGroup>                            
                                     </Col>
+
                                 </Row>
                                 
                                     <Form >
@@ -270,30 +288,34 @@ return (
                                                     <th>Sample Type</th>
                                                     <th>Date Verified</th>
                                                     <th >Status</th>
+                                                    <th>Action</th>
                                                     <th ></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                            {!loading ? fetchTestOrders.labOrder.tests.map((row) => (
-                                                  row !== null?
-                                                  <tr key={row.id} style={{ borderBottomColor: '#fff' }}>
-                                                    <th className={classes.td}>{row.description}</th>
-                                                    <td className={classes.td}>{row.samples.map((s) => (sampleAction(row, s.id)))}</td>
-                                                    <td className={classes.td}>{fetchTestOrders.labOrder.orderDate}</td>
-                                                    <td className={classes.td}>{sampleStatus(row.labTestOrderStatus)}</td>
-                                                    <td className={classes.td}></td>
-                                                  </tr>
-                                                  :
-                                                  <tr></tr>
-                                                ))
-                                                :<p> <Spinner color="primary" /> Loading Please Wait</p>
-                                              }
+                                             {!loading ? fetchTestOrders.labOrder.tests.map((row) => (
+                                                    row.samples.map((sample) => (
+                                                         sample.dateSampleCollected !== null ?
+                                                           <tr key={row.id} style={{ borderBottomColor: '#fff' }}>
+                                                             <td className={classes.td}>{row.labTestName}</td>
+                                                            <td className={classes.td}>{sample.sampleTypeName}</td>
+                                                             <td className={classes.td}>{fetchTestOrders.labOrder.orderDate + '@' + fetchTestOrders.labOrder.orderTime}</td>
+                                                             <td className={classes.td}>{sampleStatus(3)}</td>
+                                                             <td className={classes.td}>{sampleAction(3, sample)}</td>
+                                                             <td className={classes.td}></td>
+                                                           </tr>
+                                                           :
+                                                           <tr></tr>
+                                                    ))
+                                                 ))
+                                                 :<p> <Spinner color="primary" /> Loading Please Wait</p>
+                                               }
                                             </tbody>
                                         </Table>
                                         <br />
                                   
                                     </Form>
-                                
+
                               </Card>
                         
                   </Row>
@@ -305,7 +327,7 @@ return (
       (
         <>
             <ModalEnterResult modalstatus={modal} togglestatus={toggleModal} datasample={collectModal} labnumber={labNumber !=="" ? labNumber : labNum['lab_number'] }/>
-            {/*<ModalViewResult modalstatus={modal4} togglestatus={toggleModal4} datasample={collectModal} />*/}
+            <ModalViewResult modalstatus={modal3} togglestatus={toggleModal3} datasample={collectModal} />
             {/* <TransferModalConfirmation modalstatus={modal4} togglestatusConfirmation={toggleModal4} datasample={collectModal} actionButton={transferSample} labnumber={labNumber!=="" ? labNumber : labNum}/> */}
        </>
       ) 

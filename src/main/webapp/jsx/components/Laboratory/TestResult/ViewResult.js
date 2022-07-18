@@ -1,14 +1,16 @@
-import React, { useState }   from 'react';
+import React, { useState, useCallback, useEffect }   from 'react';
 import {
     Modal, ModalHeader, ModalBody, Row, Col, FormGroup, Label, Card, CardBody, Alert
 } from 'reactstrap';
 import MatButton from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import CancelIcon from '@material-ui/icons/Cancel';
-//import PrintIcon from '@material-ui/icons/Print';
+import { Badge } from 'reactstrap';
 import ReactHtmlParser from 'react-html-parser'
 import Divider from '@material-ui/core/Divider';
-
+import axios from "axios";
+import { toast } from 'react-toastify';
+import {token, url} from '../../../../api'
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -45,23 +47,40 @@ const useStyles = makeStyles(theme => ({
     } 
 }))
 
-
-
 const ModalViewResult = (props) => {
+
+    const [collectResult, setCollectResult] = useState([])
+
     const classes = useStyles()
     const datasample = props.datasample ? props.datasample : {};
-    const lab_test_group = datasample.data ? datasample.data.lab_test_group : null ;
-    const description = datasample.data ? datasample.data.description : null ;
-    const unit_measurement = datasample.data ? datasample.data.unit_measurement : null ;
-    const date_result_reported = datasample.data ? datasample.data.date_result_reported : null ;
-    const test_result = datasample.data ? datasample.data.comment_sample_reported : null ;
-    const result_detail = datasample.data && datasample.data.reported_result ?  datasample.data.reported_result : null
+    //console.log('result', datasample)
+    const lab_test_group = datasample.id ? datasample.labTestGroupId : null ;
+    const description = datasample.description ? datasample.description : null ;
+    const unit_measurement = datasample.id ? datasample.unit_measurement : null ;
+    const date_result_reported = datasample.id ? datasample.date_result_reported : null ;
+    const test_result = datasample.id ? datasample.comment_sample_reported : null ;
+    const result_detail = datasample.id && datasample.reported_result ?  datasample.reported_result : null
+    const lab_test_id = datasample.id ? datasample.testId : 0 ;
 
+
+    const getResults = useCallback(async () => {
+        try {
+            const response = await axios.get(`${url}laboratory/results/${lab_test_id}`, { headers: {"Authorization" : `Bearer ${token}`}});
+            //console.log("results ccxc", response.data);
+            setCollectResult(response.data);
+        } catch (e) {
+            toast.error("An error occurred while fetching sample results", {
+                position: toast.POSITION.TOP_RIGHT
+            });
+        }
+    }, []);
+
+    useEffect(() => {
+        getResults();
+    }, [getResults]);
 
   return (      
-      <div >
-          {/* <ModalViewResult ref={componentRef} /> */}
-          
+      <div>
               <Modal isOpen={props.modalstatus} toggle={props.togglestatus} className={props.className} size="lg">
                   <ModalHeader toggle={props.togglestatus}>Lab Test Order Detail</ModalHeader>
                       <ModalBody>
@@ -88,33 +107,35 @@ const ModalViewResult = (props) => {
                                         <h4>Results: </h4>
                                         <hr/>
                                     {
-                                        !result_detail ? "" :
-                                        result_detail.map(x => {
-                                            return (
+                                        !collectResult ? "" :
+
                                                 <Row >
-                                        <Col xs="6">
-                                        <span style={{ fontWeight: 'bold'}}>Date Assayed </span>: {x.date_result_reported}
+                                        <Col xs="4">
+                                        <span style={{ fontWeight: 'bold'}}>Date Assayed </span>: {collectResult.dateAssayed + " " + collectResult.timeAssayed }
                                         <br/>
                                     </Col>
                                     <br/>
-                                    <Col xs="6">
-                                        <span style={{ fontWeight: 'bold'}}>Date Reported </span>: {x.date_result_reported}
+                                    <Col xs="4">
+                                        <span style={{ fontWeight: 'bold'}}>Date Reported </span>: {collectResult.dateResultReported + " " + collectResult.timeResultReported}
                                         <br/>    
                                     </Col>
                                    
-                                    <Col xs="6">
-                                        <span style={{ fontWeight: 'bold'}}> Result </span>: {ReactHtmlParser(x.result_reported)}
+                                    <Col xs="4">
+                                        {/*<span style={{ fontWeight: 'bold'}}> Result </span>:*/}
+                                        <Badge  color="success"> {ReactHtmlParser("Sample Verified")}</Badge>
                                     </Col>
-                                                    <Col xs="6">
+                                                   {/* <Col xs="6">
                                                         <span style={{ fontWeight: 'bold'}}> Unit Measurement </span>: {unit_measurement}
-                                                    </Col>
+                                                    </Col> */}
+
                                     <Col xs="12">
-                                        <span style={{ fontWeight: 'bold'}}> Notes </span>: {ReactHtmlParser(x.comment_sample_reported && x.comment_sample_reported!==undefined ? x.comment_sample_reported : "")}
+                                    <br />
+                                        <span style={{ fontWeight: 'bold'}}> Notes </span>: {ReactHtmlParser(collectResult.resultReported)}
                                         <Divider  />
                                     </Col>  
-                                    </Row>)
+                                    </Row>
                                    
-                                        })
+
                                         
                                     }
                                 </Col>

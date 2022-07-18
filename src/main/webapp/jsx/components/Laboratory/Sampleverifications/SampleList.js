@@ -37,7 +37,7 @@ const useStyles = makeStyles({
 
     const testOrders = [];
     const sampleCollections = props.patientObj ? props.patientObj : {};
-    console.log("row", sampleCollections)
+   // console.log("row", sampleCollections)
     const encounterDate = null ;
     const hospitalNumber =  null;
     //const dispatch = useDispatch();
@@ -72,8 +72,17 @@ const useStyles = makeStyles({
         const [labNum, setlabNum] = useState({lab_number:""})
 
 
-        let  labNumber = "" //check if that key exist in the array
-            testOrders.forEach(function(value, index, array) {
+        let  labNumber = ""
+
+        let lab = localStorage.getItem('labnumber');
+
+        console.log("sv",lab);
+
+        if (lab !== null) {
+            labNumber = lab;
+        }
+
+    testOrders.forEach(function(value, index, array) {
                 if(value['data']!==null && value['data'].hasOwnProperty("lab_number")){
                    // setlabNum({lab_number:value['data'].lab_number})
                     if(value['data'].lab_number !== null){
@@ -87,15 +96,15 @@ const useStyles = makeStyles({
             labNumber = e.target.value
     }
 
-    const handleVerifySample = (row, sid) => {
+    const handleVerifySample = (row) => {
         //console.log('rowsx', row, sid);
-        row['sampleID'] = sid;
+        //row['sampleID'] = sid;
         setcollectModal({...collectModal, ...row});
 
         setModal(!modal)
       }
 
-      const handleRecollectSample = (row) => { 
+    const handleRecollectSample = (row) => {
         setcollectModal({...collectModal, ...row});
         setModal2(!modal2) 
     }
@@ -153,47 +162,47 @@ const useStyles = makeStyles({
         }
     }
 //This is function to check for the status of each collection to display on the tablist below 
-const sampleAction = (row, sid) =>{
-console.log("sid", sid)
-    if(row.labTestOrderStatus===1){
-        return (
-                <Menu>
-                <MenuButton style={{ backgroundColor:"#3F51B5", color:"#fff", border:"2px solid #3F51B5", borderRadius:"4px"}}>
-                    Action <span aria-hidden>▾</span>
-                </MenuButton>
-                    <MenuList style={{hover:"#eee"}}>              
-                    <MenuItem onSelect={() => handleVerifySample(row, sid)}><GoChecklist size="15" style={{color: '#3F51B5'}}/>{" "}Verify Sample</MenuItem>
-                    </MenuList>
-                </Menu>
-            )    
-        }
-        if(row.labTestOrderStatus===4){
+    const sampleAction = (id, row) =>{
+    console.log("sid", row)
+        if(id ===1){
             return (
                     <Menu>
                     <MenuButton style={{ backgroundColor:"#3F51B5", color:"#fff", border:"2px solid #3F51B5", borderRadius:"4px"}}>
                         Action <span aria-hidden>▾</span>
                     </MenuButton>
-                        <MenuList style={{hover:"#eee"}}>              
-                        <MenuItem onSelect={() => handleRecollectSample(row)}><FaPlusSquare size="15" style={{color: '#3F51B5'}}/>{" "}Re-collect Sample</MenuItem>
+                        <MenuList style={{hover:"#eee"}}>
+                        <MenuItem onSelect={() => handleVerifySample(row)}><GoChecklist size="15" style={{color: '#3F51B5'}}/>{" "}Verify Sample</MenuItem>
                         </MenuList>
                     </Menu>
-                )    
+                )
             }
-            if(row.labTestOrderStatus===5){
+            if(row.labTestOrderStatus===4){
                 return (
                         <Menu>
                         <MenuButton style={{ backgroundColor:"#3F51B5", color:"#fff", border:"2px solid #3F51B5", borderRadius:"4px"}}>
                             Action <span aria-hidden>▾</span>
                         </MenuButton>
-                            <MenuList style={{hover:"#eee"}}>              
-                                <MenuItem onSelect={() => viewresult(row)}><FaRegEye size="15" style={{color: '#3F51B5'}}/>{" "}View Result</MenuItem>
-                                <MenuItem onSelect={() => addResult(row)}><FaPlusSquare size="15" style={{color: '#3F51B5'}}/>{" "}Add Result</MenuItem>
+                            <MenuList style={{hover:"#eee"}}>
+                            <MenuItem onSelect={() => handleRecollectSample(row)}><FaPlusSquare size="15" style={{color: '#3F51B5'}}/>{" "}Re-collect Sample</MenuItem>
                             </MenuList>
-                            
                         </Menu>
-                    )    
+                    )
                 }
-        }
+                if(row.labTestOrderStatus===5){
+                    return (
+                            <Menu>
+                            <MenuButton style={{ backgroundColor:"#3F51B5", color:"#fff", border:"2px solid #3F51B5", borderRadius:"4px"}}>
+                                Action <span aria-hidden>▾</span>
+                            </MenuButton>
+                                <MenuList style={{hover:"#eee"}}>
+                                    <MenuItem onSelect={() => viewresult(row)}><FaRegEye size="15" style={{color: '#3F51B5'}}/>{" "}View Result</MenuItem>
+                                    <MenuItem onSelect={() => addResult(row)}><FaPlusSquare size="15" style={{color: '#3F51B5'}}/>{" "}Add Result</MenuItem>
+                                </MenuList>
+
+                            </Menu>
+                        )
+                    }
+            }
 
 return (
     <div>
@@ -240,9 +249,9 @@ return (
                         </Link>
                   </CardHeader>
                 <CardBody>
-                    <Alert color="primary">
-                        Please make sure you enter Lab number before collecting sample 
-                    </Alert>
+                    { /* <Alert color="primary">
+                        Please make sure you enter Lab number before collecting sample
+                    </Alert>*/}
                 <br />
                     <Row>
                        
@@ -269,8 +278,8 @@ return (
                                               </Input>
                                         </FormGroup>
                                     </Col>
-                                    <Col md="3" className='float-right mr-1'>
-                                        {/* {labNum['lab_number']==="" ? */}
+                                   <Col md="3" className='float-right mr-1'>
+
                                         <FormGroup>
                                             <Label for="occupation">Lab Number </Label>
                                         <Input
@@ -281,8 +290,9 @@ return (
                                             onChange={handleLabNumber}
                                             disabled={labNumber && labNum.lab_number ? 'true' : ''}
                                         />
-                                        </FormGroup>                            
+                                        </FormGroup>
                                     </Col>
+
                                 </Row>
                                 
                                     <Form >
@@ -291,25 +301,28 @@ return (
                                             <thead style={{  backgroundColor:'#000000', color:'#ffffff' }}>
                                                 <tr>
                                                     <th>Test</th>
-                                                    <th>Sample</th>
-                                                    <th>Date Sample Collected</th>
+                                                    <th>Sample Type</th>
+                                                    <th>Date Collected</th>
                                                     <th >Status</th>
+                                                    <th>Action</th>
                                                     <th ></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {!loading ? fetchTestOrders.labOrder.tests.map((row) => (
-
-                                                   row !== null?
-                                                   <tr key={row.id} style={{ borderBottomColor: '#fff' }}>
-                                                     <th className={classes.td}>{row.description}</th>
-                                                     <td className={classes.td}>{row.samples.map((s) => (sampleAction(row, s.id)))}</td>
-                                                     <td className={classes.td}>{fetchTestOrders.labOrder.orderDate}</td>
-                                                     <td className={classes.td}>{sampleStatus(row.labTestOrderStatus)}</td>
-                                                     <td className={classes.td}></td>
-                                                   </tr>
-                                                   :
-                                                   <tr></tr>
+                                                    row.samples.map((sample) => (
+                                                         sample.dateSampleCollected !== null ?
+                                                           <tr key={row.id} style={{ borderBottomColor: '#fff' }}>
+                                                             <td className={classes.td}>{row.labTestName}</td>
+                                                            <td className={classes.td}>{sample.sampleTypeName}</td>
+                                                             <td className={classes.td}>{fetchTestOrders.labOrder.orderDate + '@' + fetchTestOrders.labOrder.orderTime}</td>
+                                                             <td className={classes.td}>{sampleStatus(1)}</td>
+                                                             <td className={classes.td}>{sampleAction(1, sample)}</td>
+                                                             <td className={classes.td}></td>
+                                                           </tr>
+                                                           :
+                                                           <tr></tr>
+                                                    ))
                                                  ))
                                                  :<p> <Spinner color="primary" /> Loading Please Wait</p>
                                                }
