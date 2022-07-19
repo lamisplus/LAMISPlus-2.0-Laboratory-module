@@ -18,12 +18,12 @@ public class LaboratoryOrdersController {
 
 
     @PostMapping("/orders")
-    public LabOrderDTO SaveLabOrder(@RequestBody LabOrderDTO labOrder){
+    public LabOrderResponseDTO SaveLabOrder(@RequestBody LabOrderDTO labOrder){
         return labOrderService.Save(labOrder);
     }
 
     @PutMapping("/orders/{id}")
-    public LabOrderDTO UpdateLabOrder(@PathVariable int id, @RequestBody LabOrderDTO labOrder){
+    public LabOrderResponseDTO UpdateLabOrder(@PathVariable int id, @RequestBody LabOrderDTO labOrder){
         return labOrderService.Update(id, labOrder);
     }
 
@@ -37,26 +37,31 @@ public class LaboratoryOrdersController {
         return labOrderService.GetAllLabOrders();
     }
 
-    @GetMapping("/orders-by-patient-id/{patient_id}")
-    public List<LabOrderDTO> GetLabOrdersByPatientId(@PathVariable int patient_id){
+    @GetMapping("/orders/{id}")
+    public PatientLabOrderDTO GetAllLabOrders(@PathVariable int id){
+        return labOrderService.GetOrderById(id);
+    }
+
+    @GetMapping("/orders/patients/{patient_id}")
+    public List<PatientLabOrderDTO> GetLabOrdersByPatientId(@PathVariable int patient_id){
         return labOrderService.GetAllOrdersByPatientId(patient_id);
     }
 
-    @GetMapping("/orders-by-visit-id/{visit_id}")
-    public List<LabOrderDTO> GetLabOrdersByVisitId(@PathVariable int visit_id){
+    @GetMapping("/orders/visits/{visit_id}")
+    public List<PatientLabOrderDTO> GetLabOrdersByVisitId(@PathVariable int visit_id){
         return labOrderService.GetAllOrdersByVisitId(visit_id);
     }
 
     @GetMapping("/orders/pending-sample-collection")
-    public List<PatientLabOrderDTO> GetOrdersPendingSampleCollection(){
+    public List<PendingOrderDTO> GetOrdersPendingSampleCollection(){
         return labOrderService.GetOrdersPendingSampleCollection();
     }
     @GetMapping("/orders/pending-sample-verification")
-    public List<PatientLabOrderDTO> GetOrdersPendingSampleVerification(){
+    public List<PendingOrderDTO> GetOrdersPendingSampleVerification(){
         return labOrderService.GetOrdersPendingSampleVerification();
     }
     @GetMapping("/orders/pending-results")
-    public List<PatientLabOrderDTO> GetOrdersPendingResults(){
+    public List<PendingOrderDTO> GetOrdersPendingResults(){
         return labOrderService.GetOrdersPendingResults();
     }
 

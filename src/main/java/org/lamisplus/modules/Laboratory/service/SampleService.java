@@ -12,6 +12,8 @@ import org.lamisplus.modules.base.security.SecurityUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.lamisplus.modules.Laboratory.utility.LabOrderStatus.SAMPLE_COLLECTED;
+
 @Service
 @Transactional
 @Slf4j
@@ -24,19 +26,20 @@ public class SampleService {
     public SampleDTO Save(String labNumber, SampleDTO sampleDTO){
         Sample sample = labMapper.tosSample(sampleDTO);
         sample.setSampleCollectedBy(SecurityUtils.getCurrentUserLogin().orElse(""));
-        SaveLabNumber(sample.getTestId(), labNumber);
+        SaveLabNumber(sample.getTestId(), labNumber, SAMPLE_COLLECTED);
         return labMapper.tosSampleDto(repository.save(sample));
     }
 
-    public void SaveLabNumber(int testId, String labNumber){
+    public void SaveLabNumber(int testId, String labNumber, int orderStatus){
         Test test = testRepository.findById(testId).orElse(null);
         test.setLabNumber(labNumber);
+        test.setLabTestOrderStatus(orderStatus);
         testRepository.save(test);
     }
 
     public SampleDTO Update(int orderId, String labNumber, SampleDTO sampleDTO){
         Sample updated_sample = labMapper.tosSample(sampleDTO);
-        SaveLabNumber(updated_sample.getTestId(), labNumber);
+        SaveLabNumber(updated_sample.getTestId(), labNumber, SAMPLE_COLLECTED);
         return labMapper.tosSampleDto(repository.save(updated_sample));
     }
 

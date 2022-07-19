@@ -2,9 +2,12 @@ package org.lamisplus.modules.Laboratory.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.lamisplus.modules.Laboratory.domain.dto.HistoricalResultResponseDTO;
 import org.lamisplus.modules.Laboratory.domain.dto.ResultDTO;
 import org.lamisplus.modules.Laboratory.service.ResultService;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -26,5 +29,20 @@ public class LaboratoryResultsController {
     @DeleteMapping("/results/{id}")
     public String DeleteResult(@PathVariable Integer id){
         return resultService.Delete(id);
+    }
+
+    @GetMapping("/results/{id}")
+    public ResultDTO GetResultById(@PathVariable int id){
+        return resultService.GetResultsById(id);
+    }
+
+    @GetMapping("/results/{test_id}")
+    public ResultDTO GetResultByTestId(@PathVariable int test_id){
+        return resultService.GetResultsByTestId(test_id);
+    }
+
+    @GetMapping("/results/patients/{id}")
+    public List<HistoricalResultResponseDTO> GetHistoricalResultsByPatientId(@PathVariable int id){
+        return resultService.GetHistoricalResultsByPatientId(id);
     }
 }

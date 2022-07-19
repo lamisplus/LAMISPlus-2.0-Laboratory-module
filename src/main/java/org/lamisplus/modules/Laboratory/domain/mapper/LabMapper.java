@@ -24,6 +24,10 @@ public interface LabMapper {
     TestDTO toTestDto(Test test);
     VerifiedSampleDTO toVerifiedSampleDto(Sample sample);
     SampleResponseDTO toSampleResponseDto(Sample sample);
+    TestResponseDTO toTestResponseDto(Test test);
+    LabOrderResponseDTO toLabOrderResponseDto(LabOrder labOrder);
+    PendingOrderDTO toPendingOrderDto(PendingOrder pendingOrder);
+    HistoricalResultResponseDTO toHistoricalResultResponseDto(HistoricalResult historicalResult);
 
     List<LabOrderDTO> toLabOrderDtoList(List<LabOrder> labOrders);
     List<LabTestDTO> toLabTestDtoList(List<LabTest> labTests);
@@ -33,4 +37,8 @@ public interface LabMapper {
     List<TestDTO> toTestDtoList(List<Test> tests);
     List<VerifiedSampleDTO> toVerifiedSampleDtoList(List<Sample> samples);
     List<SampleResponseDTO> toSampleResponseDtoList(List<Sample> samples);
+    List<TestResponseDTO> toTestResponseDtoList(List<Test> tests);
+    List<LabOrderResponseDTO> toLabOrderResponseDtoList(List<LabOrder> labOrders);
+    List<PendingOrderDTO> toPendingOrderDtoList(List<PendingOrder> pendingOrders);
+    List<HistoricalResultResponseDTO> toHistoricalResultResponseDtoList(List<HistoricalResult> historicalResults);
 }

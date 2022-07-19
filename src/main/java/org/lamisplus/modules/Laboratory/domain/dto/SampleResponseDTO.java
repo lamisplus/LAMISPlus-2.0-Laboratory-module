@@ -10,10 +10,11 @@ import java.time.LocalTime;
 public class SampleResponseDTO {
     private int id;
     private int sampleTypeId;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDate sampleOrderDate;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
-    private LocalTime sampleOrderTime;
+    private String sampleTypeName;
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    //private LocalDate sampleOrderDate;
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
+    //private LocalTime sampleOrderTime;
     private int sampleCollectionMode;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dateSampleCollected;
@@ -27,5 +28,6 @@ public class SampleResponseDTO {
     public LocalTime timeSampleVerified;
     public String commentSampleVerified;
     private String sampleVerifiedBy;
+    private String sampleAccepted;
     public int testId;
 }

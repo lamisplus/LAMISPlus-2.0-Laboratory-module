@@ -5,15 +5,17 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Data
-public class VerifiedSampleDTO {
+public class LabOrderResponseDTO {
+    private int id;
+    private int visitId;
+    private int patientId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    public LocalDate dateSampleVerified;
+    private LocalDate orderDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
-    public LocalTime timeSampleVerified;
-    public String commentSampleVerified;
-    private String sampleVerifiedBy;
-    private String sampleAccepted;
-}
+    private LocalTime orderTime;
 
+    private List<TestResponseDTO> tests;
+}
