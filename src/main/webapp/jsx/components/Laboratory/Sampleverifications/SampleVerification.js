@@ -64,14 +64,14 @@ const ModalVerifySample = (props) => {
     //console.log('modal', props)
     const classes = useStyles()
     const datasample = props.datasample && props.datasample!==null ? props.datasample : {};
-//    console.log('modal', datasample)
+    //console.log('modal', datasample)
     const order_priority = datasample.id && datasample.orderPriority ? datasample.orderPriority : null;
     const lab_test_group = datasample.id ? datasample.labTestGroupId : null ;
     const sample_ordered_by = datasample.id ? datasample.sample_ordered_by : null ;
     const description = datasample.description ? datasample.description : null ;
     const lab_number = props.labnumber  ? props.labnumber : null;
     const date_sample_collected = datasample.id ? datasample.date_sample_collected : null ;
-    const lab_test_id = datasample.id ? datasample.labTestId : null ;
+    const lab_test_id = datasample.id;
 
     const sampleId = datasample.id;
 
@@ -90,12 +90,14 @@ const ModalVerifySample = (props) => {
                         verification_status:"",
                         comment_sample_verified:""
                     });
-    //This is to get SAMPLE TYPE from application Codeset
+
     const [errors, setErrors] = useState({});
 
     const [samplesVerified, setSamplesVerified] = useState({
           "commentSampleVerified": "",
           "dateSampleVerified": moment(new Date()).format("HH:mm:ss"),
+          "sampleAccepted": "string",
+          "sampleVerifiedBy": "string",
           "testId": 0,
           "timeSampleVerified": ""
     });
@@ -145,12 +147,12 @@ const ModalVerifySample = (props) => {
 
                 samplesVerified.commentSampleVerified = otherFields.comment;
                 samplesVerified.dateSampleVerified = newDatenow;
+                samplesVerified.sampleAccepted = otherFields.verification_status;
+                samplesVerified.sampleVerifiedBy = otherFields.sample_verified_by;
                 samplesVerified.testId = lab_test_id;
                 samplesVerified.timeSampleVerified = newTimeSampleVerified;
 
-                //console.log("samples verified", otherFields, samplesVerified)
-
-                await axios.post(`${url}laboratory/verified-samples/${datasample.sampleID}`, samplesVerified,
+                await axios.post(`${url}laboratory/verified-samples/${lab_test_id}`, samplesVerified,
                 { headers: {"Authorization" : `Bearer ${token}`}}).then(resp => {
                     console.log("sample verify", resp);
                     setLoading(!true);
@@ -186,7 +188,7 @@ const ModalVerifySample = (props) => {
                 <CardBody>
                     <Modal isOpen={props.modalstatus} toggle={props.togglestatus} className={props.className} size="lg">
                         <Form onSubmit={saveSample}>
-                            <ModalHeader toggle={props.togglestatus}>Collect Sample </ModalHeader>
+                            <ModalHeader toggle={props.togglestatus}>Verify Sample </ModalHeader>
                             <ModalBody>
                                 {checklanumber(lab_number)}
                                 <Card >
@@ -237,16 +239,16 @@ const ModalVerifySample = (props) => {
                                                       ) : "" } */}
                                               </FormGroup>
                                               </Col>
-                                          {/*  <Col md={6}>
+                                          <Col md={6}>
                                               <FormGroup>
                                                 <Label for="exampleSelect">Confirm Sample</Label>
                                                 <Input type="select" name="verification_status" id="verification_status"
                                                   value={otherFields.verification_status}
                                                   {...(errors.verification_status && { invalid: true})}
                                                 onChange={handleOtherFieldInputChange}>
-                                                  <option value=""></option>
-                                                  <option value="3">Sample Valid </option>
-                                                  <option value="4">Sample Rejected</option>
+                                                  <option>Select</option>
+                                                  <option value="Valid">Sample Valid </option>
+                                                  <option value="Rejected">Sample Rejected</option>
 
                                                 </Input>
                                                 <FormFeedback>{errors.verification_status}</FormFeedback>
@@ -254,7 +256,7 @@ const ModalVerifySample = (props) => {
                                               </Col>
                                               <Col md={6}>
                                                 <FormGroup>
-                                                    <Label for="occupation">Verify by </Label>
+                                                    <Label for="sample_verified_by">Verify by </Label>
 
                                                         <Input
                                                           type="select"
@@ -265,13 +267,13 @@ const ModalVerifySample = (props) => {
                                                           {...(errors.sample_verified_by && { invalid: true})}
                                                         >
                                                           <option value=""> </option>
-                                                          <option value="1"> Dorcas </option>
-                                                          <option value="2"> Jeph </option>
-                                                          <option value="3"> Debora </option>
+                                                          <option value="Dorcas"> Dorcas </option>
+                                                          <option value="Mike"> Mike </option>
+                                                          <option value="Admin"> Admin </option>
                                                       </Input>
                                                           <FormFeedback>{errors.sample_verified_by}</FormFeedback>
                                                 </FormGroup>
-                                            </Col> */}
+                                            </Col>
                                               <Col md={12}>
                                               <FormGroup>
                                                 <Label for='maritalStatus'>Note</Label>

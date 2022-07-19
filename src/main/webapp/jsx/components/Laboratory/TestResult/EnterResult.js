@@ -107,8 +107,9 @@ const ModalSampleResult = (props) => {
       setErrors({
           ...temp
       })
-        return Object.values(temp).every(x => x == "")
+      return Object.values(temp).every(x => x == "")
   }
+
     const saveSample = async (e) => {
         e.preventDefault()
         if(validate()){
@@ -117,7 +118,6 @@ const ModalSampleResult = (props) => {
               const newDateReported = moment(otherfields.date_result_reported).format(
                                                   "YYYY-MM-DD"
                                               );
-
               const newTimeSampleEntered = moment(otherfields.date_result_reported).format("HH:mm:ss");
 
               sampleResult.dateAssayed = newDateReported;
@@ -137,8 +137,10 @@ const ModalSampleResult = (props) => {
                       position: toast.POSITION.TOP_RIGHT
                   });
               });
-              
-             history.push('/');
+
+             localStorage.removeItem('labnumber');
+
+             //history.push('/');
 
       }
     }

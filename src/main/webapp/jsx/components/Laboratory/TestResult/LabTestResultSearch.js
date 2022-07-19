@@ -55,7 +55,7 @@ const PatientSearch = (props) => {
     const loadLabTestData = useCallback(async () => {
         try {
             const response = await axios.get(`${url}laboratory/orders/pending-results`, { headers: {"Authorization" : `Bearer ${token}`} });
-            console.log("sample results", response);
+            //console.log("sample results", response);
             setCollectedSamples(response.data);
         } catch (e) {
             toast.error("An error occurred while fetching lab", {
@@ -75,18 +75,23 @@ const PatientSearch = (props) => {
          loadLabTestData();
     }, [loadLabTestData]);
 
+    const totalSamples = (test) => {
+                let  maxVal = 0;
+                for(var i=0; i<test.length; i++){
+                   maxVal = test[i].samples.length
+                }
+            return maxVal;
+        }
 
-//    props.labObj.forEach(function(value, index, array) {
-//        const dataSamples = value.formDataObj
-//        if(value.formDataObj.data!==null) {
-//        for(var i=0; i<dataSamples.length; i++){
-//            for (var key in dataSamples[i]) {
-//              if (dataSamples[i][key]!==null && dataSamples[i][key].lab_test_order_status >= 3 )
-//                collectedSamples.push(value)
-//            }
-//          }
-//        }
-//    });
+    function totalSampleVerified (test){
+         let  maxVal = 0;
+            for(var i=0; i<test.length; i++){
+                for(var j=0; j<test[i].length; j++){
+                    console.log("e",test[i][j])
+                 }
+            }
+         return maxVal;
+    }
 
     function totalResultCollected (test){
       const  maxVal = []      
@@ -112,14 +117,24 @@ const PatientSearch = (props) => {
                     title: "Patient Name",
                     field: "name",
                   },
-                  { title: "Date Order", field: "date", type: "date" , filtering: false},          
+                  { title: "Date Order", field: "date", type: "date" , filtering: false},
                   {
-                    title: "Total Sample ",
-                    field: "count",
+                      title: "Lab Tests Orders",
+                      field: "count",
+                      filtering: false
+                    },
+                  {
+                    title: "Sample Collected",
+                    field: "samples",
                     filtering: false
                   },
+                   {
+                      title: "Sample Verified",
+                      field: "sampleverified",
+                      filtering: false
+                    },
                   {
-                    title: "Sample Collected ",
+                    title: "Sample Results",
                     field: "samplecount",
                     filtering: false
                   },
@@ -134,10 +149,12 @@ const PatientSearch = (props) => {
 
               Id: row.patientId,
               name: row.patientFirstName +  ' ' + row.patientLastName,
-              date: row.labOrder.orderDate,
-              count: row.labOrder.tests.length,
-              samplecount: 0,
-              actions: <Link to ={{ 
+              date: row.orderDate + '@' + row.orderTime,
+              count: row.testOrders,
+              samples: row.collectedSamples,
+              sampleverified: row.verifiedSamples,
+              samplecount: row.reportedResults,
+              actions: row.verifiedSamples > 0 ? <Link to ={{
                             pathname: "/result-reporting",  
                             state: row
                           }} 
@@ -148,7 +165,7 @@ const PatientSearch = (props) => {
                                 <NoteAddIcon color="primary"/>
                               </IconButton>
                               </Tooltip>
-                            </Link>
+                            </Link> : ""
 
                 }))}
             // data={query =>

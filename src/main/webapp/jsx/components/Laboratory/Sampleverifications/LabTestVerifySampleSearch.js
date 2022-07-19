@@ -76,28 +76,25 @@ const PatientSearch = (props) => {
              loadLabTestData();
         }, [loadLabTestData]);
 
-//    props.labObj.forEach(function(value, index, array) {
-//        const dataSamples = value.formDataObj
-//        for(var i=0; i<dataSamples.length; i++){
-//            for (var key in dataSamples[i]) {
-//
-//            if (dataSamples[i][key]!==null && (dataSamples[i][key].lab_test_order_status >= 1  ))
-//            //collectedSamples.push(value)
-//        }
-//          }
-//    });
+    const totalSamples = (test) => {
+            let  maxVal = 0;
+            for(var i=0; i<test.length; i++){
+               maxVal = test[i].samples.length
+            }
+        return maxVal;
+    }
 
     function totalSampleVerified (test){
-        const  maxVal = []
-        for(var i=0; i<test.length; i++){
-          for (var key in test[i]) {
-            if (test[i][key]!==null && test[i][key].lab_test_order_status >2 )
-              maxVal.push(test[i][key])
-          }
-          
-        }
-            return maxVal.length;
-      }
+         let  maxVal = 0;
+            for(var i=0; i<test.length; i++){
+            console.log("data", test[i].samples)
+                for (var data in test[i].samples) {
+                    console.log("data", data)
+                }
+
+            }
+         return maxVal;
+    }
     
   return (
       <div>
@@ -111,17 +108,27 @@ const PatientSearch = (props) => {
                     title: "Patient Name",
                     field: "name",
                   },
-                  { title: "Date Order", field: "date", type: "date" , filtering: false},          
+                  { title: "Date Order", field: "date", type: "date" , filtering: false},
                   {
-                    title: "Total Sample ",
-                    field: "count",
+                      title: "Lab Tests Orders",
+                      field: "count",
+                      filtering: false
+                    },
+                  {
+                    title: "Sample Collected",
+                    field: "samples",
                     filtering: false
                   },
                   {
-                    title: "Sample Collected ",
+                    title: "Sample Verified",
                     field: "samplecount",
                     filtering: false
                   },
+                   {
+                   title: "Sample Results",
+                   field: "sampleresults",
+                   filtering: false
+                 },
                   {
                     title: "Action",
                     field: "actions",
@@ -132,10 +139,12 @@ const PatientSearch = (props) => {
                 data={collectedSamples.map((row) => ({
                 Id: row.patientId,
                 name: row.patientFirstName +  ' ' + row.patientLastName,
-                date: row.labOrder.orderDate,
-                count: row.labOrder.tests.length,
-                samplecount: 0,
-                actions: <Link to ={{ 
+                date: row.orderDate + '@' + row.orderTime,
+                count: row.testOrders,
+                samples: row.collectedSamples,
+                samplecount: row.verifiedSamples,
+                sampleresults: row.reportedResults,
+                actions: row.collectedSamples > 0 ? <Link to ={{
                                         pathname: "/samples-verification",  
                                         state: row
                                     }}  
@@ -148,7 +157,7 @@ const PatientSearch = (props) => {
                                         </IconButton>
                                     </Tooltip>
                         </Link>
-
+                        : " "
                 })
             )}
             // data={query =>

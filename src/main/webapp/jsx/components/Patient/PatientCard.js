@@ -149,13 +149,13 @@ function PatientCard(props) {
                     <Col md={4} className={classes.root2}>
                     <span>
                         {" "}
-                        Phone Number : <b>{patientObj.patientPhoneNumber }</b>
+                        E-mail : <b>{patientObj.patientPhoneNumber }</b>
                     </span>
                     </Col>
                     <Col md={4} className={classes.root2}>
                     <span>
                         {" "}
-                        Address : <b>{patientObj.address } </b>
+                        Hospital No: <b>{patientObj.patientHospitalNumber } </b>
                     </span>
                     </Col>
 

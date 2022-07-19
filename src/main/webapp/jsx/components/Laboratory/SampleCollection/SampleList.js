@@ -23,7 +23,6 @@ import ModalViewResult from './../TestResult/ViewResult';
 import SampleCollection from './CollectSampleModal'
 import { checkStatus } from '../../../../utils'
 
-
 const useStyles = makeStyles({
     root: {
         width: '100%'
@@ -34,18 +33,13 @@ const useStyles = makeStyles({
     td: { borderBottom :'#fff'}
 })
 
-
   const SampleList = (props) => {
-
-
 
     const testOrders = [];
     const sampleCollections = props.patientObj ? props.patientObj : {};
     const laborderArray = sampleCollections.labOrder.tests;
 
-
-
-    console.log("xxx", sampleCollections)
+    //console.log("xxx", sampleCollections)
     const encounterDate = null ;
     const hospitalNumber =  null;
     //const dispatch = useDispatch();
@@ -80,7 +74,6 @@ const useStyles = makeStyles({
         const [labNum, setlabNum] = useState({lab_number:""})
         const [labNumValue, setlabNumValue] = useState("")
 
-
         let  labNumber = "" //check if that key exist in the array
             testOrders.forEach(function(value, index, array) {
                 if(value['data']!==null && value['data'].hasOwnProperty("lab_number")){
@@ -90,11 +83,13 @@ const useStyles = makeStyles({
                     }
                 }               
             });
+
     const handleLabNumber = e => {
         e.preventDefault();   
             setlabNum({ ...labNum, [e.target.name]: e.target.value })
             labNumber = e.target.value
 
+            localStorage.setItem('labnumber', labNumber);
     }
 
     const handleSample = (row,dateEncounter) => { 
@@ -103,8 +98,7 @@ const useStyles = makeStyles({
         ///return console.log(labNumber ==="" ? labNum.lab_number  : labNumber)
         setcollectModal({...collectModal, ...row, dateEncounter, hospitalNumber});
         setModal(!modal) 
-        console.log(labNumber ==="" ? labNum.lab_number  : labNumber)
-       
+       // console.log(labNumber ==="" ? labNum.lab_number  : labNumber)
     }
 
     const transferSample = (row) => {
@@ -112,11 +106,11 @@ const useStyles = makeStyles({
         setcollectModal({...collectModal, ...row});
     }
     const transferSampleConfirmation = (row) => {
-        console.log('row', row);
+        //console.log('row', row);
         setModal3(!modal3)
         setcollectModal({...collectModal, ...row});
 
-        console.log('collected', collectModal);
+        //console.log('collected', collectModal);
     }
 
     const viewresult = (row) => {  
@@ -130,7 +124,7 @@ const useStyles = makeStyles({
         { 
             //const testOrders = fetchTestOrders.length >0 ? fetchTestOrders:{}
             const getNewTestOrder = testOrders.find(x => x.data!==null && x.data.lab_test_group === getValue)
-           setFetchTestOrders([getNewTestOrder])
+            setFetchTestOrders([getNewTestOrder])
            // testOrders =[...getNewTestOrder] 
         }else{
             setFetchTestOrders(testOrders)
@@ -300,29 +294,30 @@ return (
                                         <Table  striped responsive>
                                             <thead style={{  backgroundColor:'#000000', color:'#ffffff' }}>
                                                 <tr>
-                                                    <th>Test</th>
-                                                    <th>Sample Type</th>
+                                                    <th>Sample Group</th>
+                                                    <th>Sample Test</th>
                                                     <th>Date Requested</th>
-                                                    <th >Status</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
                                                     <th ></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {!loading ? fetchTestOrders.labOrder.tests.map((row) => (
-                                                //console.log("row", row)
-                                                    row !== null?
-                                                    <tr key={row.id} style={{ borderBottomColor: '#fff' }}>
-                                                      <th className={classes.td}>{row.description}</th>
-                                                      <td className={classes.td}>{}</td>
-                                                      <td className={classes.td}>{sampleAction(row, fetchTestOrders.labOrder.orderDate)}</td>
-                                                      <td className={classes.td}>{sampleStatus(row.labTestOrderStatus)}</td>
-                                                      <td className={classes.td}></td>
-                                                    </tr>
-                                                    :
-                                                    <tr></tr>
-                                                  ))
-                                                  :<p> <Spinner color="primary" /> Loading Please Wait</p>
-                                                }
+                                                  row !== null ?
+                                                   <tr key={row.id} style={{ borderBottomColor: '#fff' }}>
+                                                    <th className={classes.td}>{row.labTestGroupName}</th>
+                                                     <td className={classes.td}>{row.labTestName}</td>
+                                                     <td className={classes.td}>{fetchTestOrders.labOrder.orderDate+ '@' + fetchTestOrders.labOrder.orderTime}</td>
+                                                     <td className={classes.td}>{sampleStatus(0)}</td>
+                                                     <td className={classes.td}>{sampleAction(row, fetchTestOrders.labOrder.orderDate)}</td>
+                                                     <td className={classes.td}></td>
+                                                   </tr>
+                                                   :
+                                                   <tr></tr>
+                                                 ))
+                                                 :<p> <Spinner color="primary" /> Loading Please Wait</p>
+                                               }
                                             </tbody>
                                         </Table>
                                         <br />

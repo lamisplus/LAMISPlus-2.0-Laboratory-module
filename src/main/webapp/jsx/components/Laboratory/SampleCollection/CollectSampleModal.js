@@ -166,11 +166,11 @@ const ModalSample = (props) => {
                     datasample.sample_type = datasample.data.sample_type;
                 }
 
-               console.log("samples collection", samplesCollected)
+               //console.log("samples collection", samplesCollected)
 
                 await axios.post(`${url}laboratory/samples/${lab_number}`, samplesCollected,
                 { headers: {"Authorization" : `Bearer ${token}`}}).then(resp => {
-                    console.log("sample collected", resp);
+                    //console.log("sample collected", resp);
                     setLoading(!true);
                      toast.success("Sample collection saved successfully!!", {
                         position: toast.POSITION.TOP_RIGHT
