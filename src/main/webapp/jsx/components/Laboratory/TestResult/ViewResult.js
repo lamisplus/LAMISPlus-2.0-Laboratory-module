@@ -53,25 +53,25 @@ const ModalViewResult = (props) => {
 
     const classes = useStyles()
     const datasample = props.datasample ? props.datasample : {};
-    //console.log('result', datasample)
-    const lab_test_group = datasample.id ? datasample.labTestGroupId : null ;
-    const description = datasample.description ? datasample.description : null ;
-    const unit_measurement = datasample.id ? datasample.unit_measurement : null ;
+    const sample_type = datasample.sampleTypeName;
+    const lab_number = datasample.labNumber;
+    const date_sample_verified = datasample.dateSampleVerified;
+    const time_sample_verified = datasample.timeSampleVerified;
     const date_result_reported = datasample.id ? datasample.date_result_reported : null ;
     const test_result = datasample.id ? datasample.comment_sample_reported : null ;
     const result_detail = datasample.id && datasample.reported_result ?  datasample.reported_result : null
-    const lab_test_id = datasample.id ? datasample.testId : 0 ;
+    const lab_test_id = datasample.id ? datasample.id : 0 ;
 
 
     const getResults = useCallback(async () => {
         try {
             const response = await axios.get(`${url}laboratory/results/${lab_test_id}`, { headers: {"Authorization" : `Bearer ${token}`}});
-            //console.log("results ccxc", response.data);
+            console.log("results ccxc", response.data);
             setCollectResult(response.data);
         } catch (e) {
-            toast.error("An error occurred while fetching sample results", {
-                position: toast.POSITION.TOP_RIGHT
-            });
+           // toast.error("An error occurred while fetching sample results", {
+             //   position: toast.POSITION.TOP_RIGHT
+            //});
         }
     }, []);
 
@@ -88,20 +88,15 @@ const ModalViewResult = (props) => {
                             <CardBody>
                                 <Row style={{ marginTop: '20px'}}>
                                     <Col xs="12">
-                                    <Alert color="dark" style={{backgroundColor:'#9F9FA5', color:"#000" , fontWeight: 'bolder', }}>
-                                        <Row >
-                                    <Col xs="6">
-                                        <span style={{ fontWeight: 'bold'}}>Lab Test Group</span> : {lab_test_group}
-                                        <br/>
-                                    </Col>
-                                    <br/>
-                                    <Col xs="6">
-                                        <span style={{ fontWeight: 'bold'}}>Lab Test Ordered</span> : {description}
-                                        <br/>
-                                                      
-                                    </Col>
-                                        </Row>
-                                    </Alert>
+                                    <Alert color="success" style={{color:"#000" , fontWeight: 'bolder', }}>
+                                     <p style={{marginTop: '.7rem' }}>Lab number: <span style={{ fontWeight: 'bolder'}}>{lab_number}</span>
+                                         &nbsp;&nbsp;&nbsp;&nbsp;Sample type:
+                                         <span style={{ fontWeight: 'bolder'}}>{" "}{sample_type}</span>
+                                                 &nbsp;&nbsp;&nbsp;&nbsp; Date sample verified :
+                                         <span style={{ fontWeight: 'bolder'}}>{" "}{date_sample_verified + "@" + time_sample_verified}</span>
+                                     </p>
+
+                                   </Alert>
                                     </Col>
                                     <Col xs="12">
                                         <h4>Results: </h4>
@@ -122,7 +117,7 @@ const ModalViewResult = (props) => {
                                    
                                     <Col xs="4">
                                         {/*<span style={{ fontWeight: 'bold'}}> Result </span>:*/}
-                                        <Badge  color="success"> {ReactHtmlParser("Sample Verified")}</Badge>
+                                        <Badge  color="info"> {ReactHtmlParser("Result Available")}</Badge>
                                     </Col>
                                                    {/* <Col xs="6">
                                                         <span style={{ fontWeight: 'bold'}}> Unit Measurement </span>: {unit_measurement}
@@ -134,9 +129,6 @@ const ModalViewResult = (props) => {
                                         <Divider  />
                                     </Col>  
                                     </Row>
-                                   
-
-                                        
                                     }
                                 </Col>
                     

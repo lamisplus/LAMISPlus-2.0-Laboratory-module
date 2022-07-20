@@ -59,12 +59,16 @@ const ModalSampleResult = (props) => {
     const history = useHistory();
     const classes = useStyles()
     const datasample = props.datasample ? props.datasample : {};
-    const lab_test_group = datasample.id ? datasample.labTestGroupId : null ;
-    const description = datasample.description ? datasample.description : null ;
-    const unit_measurement = datasample.id ? datasample.unit_measurement : null ;
+    const sample_type = datasample.sampleTypeName;
+
+    const lab_number = datasample.labNumber;
+    const date_sample_collected = datasample.dateSampleCollected;
+    const time_sample_collected = datasample.timeSampleCollected;
+    const lab_test_id = datasample.id;
+
+    const unit_measurement = datasample.id ? datasample.unitMeasurement : null ;
     const labId = datasample.id
-    const lab_number = props.labnumber  ? props.labnumber : null;
-    const lab_test_id = datasample.id ? datasample.id : null ;
+
 
     const [visible, setVisible] = useState(true);
     const onDismiss = () => setVisible(false);
@@ -95,7 +99,6 @@ const ModalSampleResult = (props) => {
   const handleOtherFieldInputChange = e => {
       setOtherFields ({ ...otherfields, [e.target.name]: e.target.value });
   }
-
 
   const validate = () => {
       let temp = { ...errors }
@@ -136,11 +139,13 @@ const ModalSampleResult = (props) => {
                    toast.success("Sample verified successfully!!", {
                       position: toast.POSITION.TOP_RIGHT
                   });
+
+                  //localStorage.removeItem('labnumber');
+
+                  //history.push('/result-reporting');
               });
 
-             localStorage.removeItem('labnumber');
 
-             //history.push('/');
 
       }
     }
@@ -165,17 +170,20 @@ const ModalSampleResult = (props) => {
               <Form onSubmit={saveSample}>
                   <ModalHeader toggle={props.togglestatus}>Result Reporting</ModalHeader>
                       <ModalBody>
-                            {checklanumber(lab_number)}
+                            {/*{checklanumber(lab_number)}*/}
                           <Card>
                               <CardBody>
                                   <Row style={{ marginTop: '20px'}}>
                                       <Col md="12" >
-                                          <Alert color="dark" style={{backgroundColor:'#9F9FA5', color:"#000" , fontWeight: 'bolder'}}>
-                                              <p style={{marginTop: '.7rem' }}>Lab Test Group : <span style={{ fontWeight: 'bolder'}}> {' '} {lab_test_group}</span> 
-                                                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Lab Test Ordered : 
-                                                  <span style={{ fontWeight: 'bolder'}}>{' '}  {description}</span>
-                                              </p>
-                                          </Alert>
+                                          <Alert color="primary" style={{color:"#000" , fontWeight: 'bolder', }}>
+                                          <p style={{marginTop: '.7rem' }}>Lab number: <span style={{ fontWeight: 'bolder'}}>{lab_number}</span>
+                                              &nbsp;&nbsp;&nbsp;&nbsp;Sample type:
+                                              <span style={{ fontWeight: 'bolder'}}>{" "}{sample_type}</span>
+                                                      &nbsp;&nbsp;&nbsp;&nbsp; Date sample collected :
+                                              <span style={{ fontWeight: 'bolder'}}>{" "}{date_sample_collected + "@" + time_sample_collected}</span>
+                                          </p>
+
+                                        </Alert>
                                             <br />
                                       </Col>
 

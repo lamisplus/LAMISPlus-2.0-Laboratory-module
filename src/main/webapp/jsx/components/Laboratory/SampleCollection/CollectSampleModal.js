@@ -65,11 +65,11 @@ const ModalSample = (props) => {
 
     const classes = useStyles()
     const datasample = props.datasample && props.datasample!==null ? props.datasample : {};
-    const order_priority = datasample.id && datasample.orderPriority ? datasample.orderPriority : null;
-    const lab_test_group = datasample.id ? datasample.labTestGroupId : null ;
+    const order_priority = datasample.id && datasample.orderPriority ? datasample.orderPriorityName : null;
+    const lab_test_group = datasample.id ? datasample.labTestGroupName : null ;
     const sample_ordered_by = datasample.data ? datasample.data.sample_ordered_by : null ;
-    const description = datasample.description ? datasample.description : null ;
-    const lab_number = props.labnumber  ? props.labnumber : null;
+    const description = datasample.labTestName ? datasample.labTestName : null ;
+    const lab_number = props.labnumber;
    
     const labId = datasample.id
     const [loading, setLoading] = useState(false)
@@ -79,6 +79,7 @@ const ModalSample = (props) => {
     const [optionsample, setOptionsample] = useState([]);
     const [saveButtonStatus, setSaveButtonStatus] = useState(false);
     const [otherfields, setOtherFields] = useState({sample_collected_by:"",sample_ordered_by:"",sample_priority:"",time_sample_collected:"", comment_sample_collected:""});
+
     //This is to get SAMPLE TYPE from application Codeset
     const [errors, setErrors] = useState({});
     const [samplesCollected, setSamplesCollected] = useState({
@@ -91,7 +92,6 @@ const ModalSample = (props) => {
           "testId": 0,
           "timeSampleCollected": "",
     });
-    
 
     useEffect(() => {
         async function getCharacters() {
@@ -222,15 +222,11 @@ const ModalSample = (props) => {
                                     <CardBody>
                                         <Row >
                                             <Col md={12} >
-                                                <Alert color="dark" style={{backgroundColor:'#9F9FA5', color:"#000" , fontWeight: 'bolder', fontSize:'14px'}}>
+                                                <Alert color="primary" style={{color:"#000" , fontWeight: 'bolder', fontSize:'14px'}}>
                                                     <p style={{marginTop: '.7rem' }}>Lab Test Group : <span style={{ fontWeight: 'bolder'}}>{lab_test_group }</span>
                                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Lab Test : &nbsp;&nbsp;
                                                         <span style={{ fontWeight: 'bolder'}}>{description}</span>
-                                                        &nbsp;&nbsp;&nbsp; Lab Number : &nbsp;&nbsp;
-                                                        <span style={{ fontWeight: 'bolder'}}>{labId === ""?" ---":labId}</span>
-                                                        <br/>
-                                                        Order by : &nbsp;&nbsp;
-                                                        <span style={{ fontWeight: 'bolder'}}>{ sample_ordered_by}</span>
+                                                        &nbsp;&nbsp;&nbsp;
                                                         &nbsp;&nbsp;&nbsp; Priority : &nbsp;&nbsp;
                                                         <span style={{ fontWeight: 'bolder'}}>{order_priority}</span>
                                                     </p>

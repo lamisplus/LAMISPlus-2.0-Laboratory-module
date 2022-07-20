@@ -63,8 +63,9 @@ momentLocalizer();
 const ModalVerifySample = (props) => {
   const classes = useStyles()
   const dataSample = props.datasample ? props.datasample : {};
-  const lab_test_group = dataSample.data ? dataSample.data.lab_test_group : null ;
-  const description = dataSample.data ? dataSample.data.description : null ;
+  console.log("xc", dataSample)
+  const lab_test_group = dataSample.id ? dataSample.labTestGroupName : null ;
+  const description = dataSample.id ? dataSample.labTestName : null ;
   const date_sample_collected = dataSample.data ? dataSample.data.date_sample_collected : null ;
   const labId = dataSample.id
   const [loading, setLoading] = useState(false)
@@ -81,8 +82,6 @@ const ModalVerifySample = (props) => {
                     });
 
   const [errors, setErrors] = useState({});
-
-
 
     const handleOtherFieldInputChange = e => {
       setotherFields ({ ...otherFields, [e.target.name]: e.target.value });
@@ -138,13 +137,13 @@ const ModalVerifySample = (props) => {
         <Col md={12} >
 
         <Alert color="dark" style={{backgroundColor:'#9F9FA5', color:"#000" , fontWeight: 'bolder', }}>
-          <p style={{marginTop: '.7rem' }}>Test Group : <span style={{ fontWeight: 'bolder'}}>{lab_test_group}</span> 
-              &nbsp;&nbsp;&nbsp;&nbsp;Test Ordered : 
+          <p style={{marginTop: '.7rem' }}>Lab number: <span style={{ fontWeight: 'bolder'}}>{lab_test_group}</span>
+              &nbsp;&nbsp;&nbsp;&nbsp;Sample type:
               <span style={{ fontWeight: 'bolder'}}>{" "}{description}</span>
-                      &nbsp;&nbsp;&nbsp;&nbsp; Date Ordered :        
+                      &nbsp;&nbsp;&nbsp;&nbsp; Date sample collected :
               <span style={{ fontWeight: 'bolder'}}>{" "}{date_sample_collected}</span>
           </p>
-          
+
         </Alert>
       </Col>
       <Col md={6}>

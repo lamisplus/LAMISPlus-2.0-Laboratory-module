@@ -54,12 +54,12 @@ function PatientCard(props) {
     const { classes } = props;
 
     const patientObj = history.location && history.location.state ? history.location.state : {}
-    console.log("pobj", patientObj.orderId)
+    //console.log("pobj", patientObj.orderId)
 
     const loadData = useCallback(async () => {
         try {
             const response = await axios.get(`${url}laboratory/orders/${patientObj.orderId}`, { headers: {"Authorization" : `Bearer ${token}`} });
-            console.log("lab test obj", response);
+            console.log("verify test obj", response);
             setLabObj(response.data);
         } catch (e) {
             toast.error("An error occurred while fetching lab", {
