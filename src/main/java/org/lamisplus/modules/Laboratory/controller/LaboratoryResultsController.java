@@ -36,9 +36,9 @@ public class LaboratoryResultsController {
         return resultService.GetResultsById(id);
     }
 
-    @GetMapping("/results/{test_id}")
-    public ResultDTO GetResultByTestId(@PathVariable int test_id){
-        return resultService.GetResultsByTestId(test_id);
+    @GetMapping("/results/tests/{id}")
+    public ResultDTO GetResultByTestId(@PathVariable int id){
+        return resultService.GetResultsByTestId(id);
     }
 
     @GetMapping("/results/patients/{id}")

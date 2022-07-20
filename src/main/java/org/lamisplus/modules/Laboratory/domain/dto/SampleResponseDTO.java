@@ -16,6 +16,7 @@ public class SampleResponseDTO {
     //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     //private LocalTime sampleOrderTime;
     private int sampleCollectionMode;
+    private String labNumber;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dateSampleCollected;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")

@@ -46,6 +46,6 @@ public interface PendingOrderRepository extends JpaRepository<PendingOrder, Inte
             "left join laboratory_sample c on b.id=c.test_id\n" +
             "left join laboratory_result d on b.id=d.test_id\n" +
             "group by a.patient_id, a.id\n" +
-            ") a", nativeQuery = true)
+            ") a where a.verified_samples >= 1", nativeQuery = true)
     List<PendingOrder> findAllPendingResults();
 }

@@ -55,6 +55,7 @@ CREATE TABLE public.laboratory_sample
 	time_sample_verified TIME,
     comment_sample_verified character varying(500),
     sample_verified_by character varying(100),
+    sample_accepted Character varying(10),
 	test_id INTEGER,
     PRIMARY KEY (id)
 );

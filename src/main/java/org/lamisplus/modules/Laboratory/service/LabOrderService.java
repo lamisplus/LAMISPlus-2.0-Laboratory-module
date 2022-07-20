@@ -122,6 +122,12 @@ public class LabOrderService {
         List<TestResponseDTO> testDTOList = UpdateTestResponses(labOrderDTO.getTests());
         for (TestResponseDTO testDTO: testDTOList) {
             List<SampleResponseDTO> sampleDTOList = labMapper.toSampleResponseDtoList(sampleRepository.findAllByTestId(testDTO.getId()));
+
+            for (SampleResponseDTO sampleResponseDTO : sampleDTOList) {
+                sampleResponseDTO.setSampleTypeName(GetNameById(sampleResponseDTO.getSampleTypeId(), APPLICATION_CODE_SET));
+                sampleResponseDTO.setLabNumber(testDTO.getLabNumber());
+            }
+
             List<ResultDTO> resultDTOList = labMapper.toResultDtoList(resultRepository.findAllByTestId(testDTO.getId()));
             testDTO.setSamples(sampleDTOList);
             testDTO.setResults(resultDTOList);
@@ -162,13 +168,8 @@ public class LabOrderService {
             testResponseDTO.setOrderPriorityName(GetNameById(testResponseDTO.getOrderPriority(), APPLICATION_CODE_SET));
             testResponseDTO.setLabTestOrderStatusName(GetNameById(testResponseDTO.getLabTestOrderStatus(), LAB_ORDER_STATUS));
             testResponseDTO.setViralLoadIndicationName(GetNameById(testResponseDTO.getViralLoadIndication(), APPLICATION_CODE_SET));
-
-            if(testResponseDTO.getSamples()!=null) {
-                for (SampleResponseDTO sampleResponseDTO : testResponseDTO.getSamples()) {
-                    sampleResponseDTO.setSampleTypeName(GetNameById(sampleResponseDTO.getSampleTypeId(), APPLICATION_CODE_SET));
-                }
-            }
         }
+
         return testResponseDTOList;
     }
 

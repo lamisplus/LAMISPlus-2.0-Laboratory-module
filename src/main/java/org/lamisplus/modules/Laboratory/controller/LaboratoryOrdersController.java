@@ -38,7 +38,7 @@ public class LaboratoryOrdersController {
     }
 
     @GetMapping("/orders/{id}")
-    public PatientLabOrderDTO GetAllLabOrders(@PathVariable int id){
+    public PatientLabOrderDTO GetOrderById(@PathVariable int id){
         return labOrderService.GetOrderById(id);
     }
 

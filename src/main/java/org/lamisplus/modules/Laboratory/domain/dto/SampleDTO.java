@@ -17,6 +17,7 @@ public class SampleDTO {
     private int sampleCollectionMode;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dateSampleCollected;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     private LocalTime timeSampleCollected;
     private String commentSampleCollected;

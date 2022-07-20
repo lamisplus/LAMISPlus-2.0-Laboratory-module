@@ -12,6 +12,7 @@ public class TestResponseDTO {
     private int id;
     private int labTestId;
     private String labTestName;
+    private String labNumber;
     private String unitMeasurement;
     private int labTestGroupId;
     private String labTestGroupName;
