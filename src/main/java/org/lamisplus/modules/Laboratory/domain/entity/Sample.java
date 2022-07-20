@@ -1,11 +1,11 @@
 package org.lamisplus.modules.Laboratory.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
@@ -42,6 +42,8 @@ public class Sample {
     private String commentSampleVerified;
     @Column(name = "sample_verified_by")
     private String sampleVerifiedBy;
+    @Column(name = "sample_accepted")
+    private String sampleAccepted;
     @Column(name = "test_id")
     private int testId;
 }

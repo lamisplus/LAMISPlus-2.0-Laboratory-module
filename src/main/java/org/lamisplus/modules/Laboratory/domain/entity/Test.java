@@ -32,4 +32,5 @@ public class Test {
     private int labTestOrderStatus;
     @Column(name = "viral_load_indication")
     private int viralLoadIndication;
+
 }

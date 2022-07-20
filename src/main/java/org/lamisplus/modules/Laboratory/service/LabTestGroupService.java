@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -26,5 +27,9 @@ public class LabTestGroupService {
     public  LabTestGroupDTO SaveLabTestGroup(LabTestGroupDTO labTestGroupDTO){
         LabTestGroup labTestGroup = labMapper.toLabTestGroup(labTestGroupDTO);
         return labMapper.toLabTestGroupDto(labTestGroupRepository.save(labTestGroup));
+    }
+
+    public  String FindLabTestGroupNameById(Integer id){
+        return Objects.requireNonNull(labTestGroupRepository.findById(id).orElse(null)).getGroupName();
     }
 }

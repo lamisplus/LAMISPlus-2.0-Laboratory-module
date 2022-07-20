@@ -7,9 +7,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-
 @Data
-public class LabOrderDTO {
+public class LabOrderResponseDTO {
     private int id;
     private int visitId;
     private int patientId;
@@ -18,5 +17,5 @@ public class LabOrderDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     private LocalTime orderTime;
 
-    private List<TestDTO> tests;
+    private List<TestResponseDTO> tests;
 }
