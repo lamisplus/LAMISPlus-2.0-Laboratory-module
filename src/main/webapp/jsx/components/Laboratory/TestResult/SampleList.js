@@ -286,6 +286,11 @@ return (
                                                   field: "sampleverified",
                                                   filtering: false
                                                 },
+                                                 {
+                                                  title: "Result",
+                                                  field: "results",
+                                                  filtering: false
+                                                },
 
                                           ]}
                                           //isLoading={loading}
@@ -294,11 +299,11 @@ return (
                                           Id: row.patientId,
                                           name: row.patientFirstName +  ' ' + row.patientLastName,
                                           date: row.orderDate + '@' + row.orderTime,
-                                          samplecount: row.reportedResults,
+                                          samplecount: row.sampleTypeName,
                                           count: row.DateSampleCollected === null ? "----" : row.DateSampleCollected + '@'+ row.TimeSampleCollected,
                                           samples: row.dateSampleVerified === null ? "----": row.dateSampleVerified + '@' + row.timeSampleVerified,
                                           sampleverified: row.dateResultReported === null ? "----" : row.dateResultReported + '@' + row.timeResultReported,
-
+                                          results:  row.dateResultReported !== null ? "Available" : "Not Available"
                                           }))}
                                         />
                                         :
