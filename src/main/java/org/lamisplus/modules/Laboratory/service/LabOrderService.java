@@ -118,7 +118,7 @@ public class LabOrderService {
         return getPendingOrderDTOS(pendingOrderList);
     }
 
-    private LabOrderResponseDTO AppendAdditionalTestDetails(LabOrderResponseDTO labOrderDTO){
+    public LabOrderResponseDTO AppendAdditionalTestDetails(LabOrderResponseDTO labOrderDTO){
         List<TestResponseDTO> testDTOList = UpdateTestResponses(labOrderDTO.getTests());
         for (TestResponseDTO testDTO: testDTOList) {
             List<SampleResponseDTO> sampleDTOList = labMapper.toSampleResponseDtoList(sampleRepository.findAllByTestId(testDTO.getId()));
@@ -216,5 +216,53 @@ public class LabOrderService {
         catch (Exception exception){
             return "";
         }
+    }
+
+    public List<HistoricalResultResponseDTO> GetHistoricalResultsByPatientId(Integer patientId){
+        List<LabOrderResponseDTO> orders =  labMapper.toLabOrderResponseDtoList(labOrderRepository.findAllByPatientId(patientId));
+        List<HistoricalResultResponseDTO> historicalResults = new ArrayList<>();
+
+        for(LabOrderResponseDTO order: orders){
+            LabOrderResponseDTO updated_order = AppendAdditionalTestDetails(order);
+
+            for(TestResponseDTO test: updated_order.getTests()){
+                HistoricalResultResponseDTO result = new HistoricalResultResponseDTO();
+
+                result.setId(test.getId());
+                result.setOrderId(updated_order.getId());
+                result.setPatientId(patientId);
+                result.setOrderDate(updated_order.getOrderDate());
+                result.setOrderTime(updated_order.getOrderTime());
+                result.setLabTestName(test.getLabTestName());
+                result.setGroupName(test.getLabTestGroupName());
+
+
+                if((long) test.getSamples().size() > 0) {
+                    result.setDateSampleCollected(test.getSamples().get(0).getDateSampleCollected());
+                    result.setTimeSampleCollected(test.getSamples().get(0).getTimeSampleCollected());
+                    result.setDateSampleVerified(test.getSamples().get(0).getDateSampleVerified());
+                    result.setTimeSampleVerified(test.getSamples().get(0).getTimeSampleVerified());
+                    result.setSampleTypeName(test.getSamples().get(0).getSampleTypeName());
+                }
+                if((long) test.getResults().size() > 0) {
+                    result.setResultReported(test.getResults().get(0).getResultReported());
+                    result.setDateResultReported(test.getResults().get(0).getDateResultReported());
+                    result.setTimeResultReported(test.getResults().get(0).getTimeResultReported());
+                }
+
+                PersonResponseDto personResponseDTO = personService.getPersonById((long) updated_order.getPatientId());
+                result.setPatientAddress(jsonNodeTransformer.getNodeValue(personResponseDTO.getAddress(), "address", "city", true));
+                result.setPatientDob(personResponseDTO.getDateOfBirth());
+                result.setPatientGender(jsonNodeTransformer.getNodeValue(personResponseDTO.getGender(), null, "display", false));
+                result.setPatientFirstName(personResponseDTO.getFirstName());
+                result.setPatientHospitalNumber(jsonNodeTransformer.getNodeValue(personResponseDTO.getIdentifier(), "identifier", "value", true));
+                result.setPatientLastName(personResponseDTO.getSurname());
+                result.setPatientPhoneNumber(jsonNodeTransformer.getNodeValue(personResponseDTO.getContactPoint(),"contactPoint", "value", true));
+
+                historicalResults.add(result);
+            }
+        }
+
+        return historicalResults;
     }
 }
