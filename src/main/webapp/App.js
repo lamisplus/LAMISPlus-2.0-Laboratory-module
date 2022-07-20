@@ -25,7 +25,7 @@ export default function App() {
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
         <Switch>
-         
+
           <Route path="/test-order">
             <PatientTestOrderHistory />
           </Route>
@@ -38,14 +38,14 @@ export default function App() {
           <Route path="/result-reporting">
             <TestResult />
           </Route>
-          <Route path="/previous-result">
+          <Route exact path="/previous-result">
               <PreviousResult />
             </Route>
           <Route path="/">
             <Home />
           </Route>
-        
-          
+
+
         </Switch>
       </div>
  

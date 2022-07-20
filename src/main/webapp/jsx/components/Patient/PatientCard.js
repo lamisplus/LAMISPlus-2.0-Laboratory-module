@@ -113,7 +113,7 @@ function PatientCard(props) {
                 
                 <Row>
                     
-                    <Col md={11}>
+                    <Col md={12}>
                     <Row className={"mt-1"}>
                     <Col md={12} className={classes.root2}>
                         <b style={{fontSize: "25px"}}>
@@ -167,9 +167,9 @@ function PatientCard(props) {
                     </Row>
                     </Col>
                 </Row>
-            
                 </ExpansionPanelSummary>
-                <ExpansionPanelDetails className={classes.details}>
+
+                {/* <ExpansionPanelDetails className={classes.details}>
                 <div className={classes.column} >
                     <Button
                             color='red'
@@ -215,7 +215,8 @@ function PatientCard(props) {
                     </Typography>
                 </div>
                 </ExpansionPanelDetails>
-                <Divider />
+                <Divider />*/}
+
                 <ExpansionPanelActions expandIcon={<ExpandMoreIcon />}>
                 
                 </ExpansionPanelActions>

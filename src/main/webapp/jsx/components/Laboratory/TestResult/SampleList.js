@@ -9,7 +9,7 @@ import {FaPlusSquare} from 'react-icons/fa';
 import 'react-widgets/styles.css'
 import { ToastContainer } from "react-toastify";
 import { checkStatus } from '../../../../utils'
-
+import MaterialTable from 'material-table';
 import { Spinner } from 'reactstrap';
 import { Badge } from 'reactstrap';
 import {Menu,MenuList,MenuButton,MenuItem,} from "@reach/menu-button";
@@ -21,7 +21,10 @@ import Typography from "@material-ui/core/Typography";
 import ModalViewResult from './../TestResult/ViewResult';
 // import ModalSampleTransfer from './../TransferSample/TransferSampleModal';
 import ModalEnterResult from './EnterResult'
-import ModalPreviousResult from './PreviousResult'
+import axios from "axios";
+import {token, url} from '../../../../api'
+import { toast} from "react-toastify";
+
 
 
 const useStyles = makeStyles({
@@ -36,6 +39,7 @@ const useStyles = makeStyles({
 
   const SampleList = (props) => {
     //console.log("sr",props.patientObj)
+
     const testOrders = [];
     const sampleCollections = props.patientObj ? props.patientObj : {};
     const encounterDate = null ;
@@ -43,15 +47,31 @@ const useStyles = makeStyles({
     //const dispatch = useDispatch();
     const [loading, setLoading] = useState('')
     const [fetchTestOrders, setFetchTestOrders] = useState(sampleCollections)
+
+    const [flipTable, setFlipTable] = useState(false)
+    const [previousRecords, setPreviousRecords] = useState([]);
+
     const classes = useStyles()
+
+     const previousData = useCallback(async () => {
+        try {
+            const response = await axios.get(`${url}laboratory/results/patients/${props.patientObj.patientId}`, { headers: {"Authorization" : `Bearer ${token}`} });
+            console.log("prev results", response);
+            setPreviousRecords(response.data);
+        } catch (e) {
+            toast.error("An error occurred while fetching previous results", {
+                position: toast.POSITION.TOP_RIGHT
+            });
+        }
+    }, []);
    
     useEffect(() => {
-
-    }, []); //componentDidMount 
+        previousData()
+    }, [previousData]);
 
         //Get list of test type
         const labTestType = [];
-            if(testOrders !== null || testOrders ===""){
+        if(testOrders !== null || testOrders ===""){
                 testOrders.forEach(function(value, index, array) {
                     if(value['data']!==null)
                         labTestType.push(value['data'].lab_test_group);
@@ -80,7 +100,6 @@ const useStyles = makeStyles({
         if (lab !== null) {
             labNumber = lab;
         }
-
 
     const handleLabNumber = e => {
         e.preventDefault();   
@@ -119,7 +138,7 @@ const useStyles = makeStyles({
             setFetchTestOrders(testOrders)
         }
     };
-    //This is function to check for the status of each collection to display on the tablist below 
+    //This is function to check for the status of each collection to display on the tablist below
     const sampleStatus = e =>{
         if(e===1){
             return <p><Badge  color="light">Sample Collected</Badge></p>
@@ -151,8 +170,7 @@ const useStyles = makeStyles({
         }
     }
 
-
-const sampleAction = (id, row) =>{
+    const sampleAction = (id, row) =>{
     if(id===3){
         return (
                 <Menu>
@@ -167,6 +185,10 @@ const sampleAction = (id, row) =>{
                 </Menu>
             )
         }
+    }
+
+    const handleTableChange = () => {
+        setFlipTable(!flipTable)
     }
 
 return (
@@ -189,7 +211,7 @@ return (
         <Row>
             <Col>
                 <div >
-                   
+
                 </div>
                 <br/>
                 <Card className="mb-12">
@@ -213,111 +235,155 @@ return (
 
                   </CardHeader>
                 <CardBody>
-                    { /* <Alert color="primary">
-                                            Please make sure you enter Lab number before collecting sample
-                                        </Alert>*/}
-                <br />
                     <Row>
-                       
-                            <Card body>
+
+                       <Card body>
                             <Row >
                                 <Col md="3" className='float-right mr-1'>
-                            <Link
-                                to ={{
-                                  pathname: "/previous-result",
-                                  //state: 'collect-sample'
-                                }}
-                            >
                                      <MatButton
                                         type='submit'
                                         variant='contained'
-                                        color='secondary'
+                                        color={flipTable === true ? "primary": "secondary"}
                                         className=" float-right mr-1"
+                                        onClick={() => handleTableChange()}
                                     >
-                                        <TiDocumentText/>{" "} Previous Results
+                                        <TiDocumentText/>{" "} { flipTable === true ? "View Recent Results": "Historical Sample Results"}
                                     </MatButton>
-                            </Link>
                                 </Col>
                             </Row>
                             <br />
-                                <Row >
-                                    <Col md="3">
-                                        <FormGroup>
-                                            <Label for="occupation">Lab Test Group </Label>
 
-                                                <Input
-                                                  type="select"
-                                                  name="testgroup"
-                                                  id="testgroup"
-                                                  onChange={getGroup}
-                                                >
-                                                   <option value="All"> All </option>
-                                                    {
-                                                      uniqueValues.map(x => 
-                                                        <option key={x} value={x}>
-                                                          {x}
-                                                        </option>
-                                                    )}
-                                                    
-                                              </Input>
-                                        </FormGroup>
-                                    </Col>
-                                    <Col md="3" className='float-right mr-1'>
-                                        {/* {labNum['lab_number']==="" ? */}
-                                        <FormGroup>
-                                            <Label for="occupation">Lab Number </Label>
-                                        <Input
-                                            type='text'
-                                            name='lab_number'
-                                            id='lab_number'
-                                            value={labNumber!=="" ? labNumber : labNum.lab_number}
-                                            onChange={handleLabNumber}
-                                            disabled={labNumber && labNum.lab_number ? 'true' : ''}
+
+                                    {
+                                        flipTable === true ?
+                                        <MaterialTable
+
+                                          title="Historical patient sample results"
+                                          columns={[
+                                              { title: "Patient ID", field: "Id" },
+                                              {
+                                                title: "Patient Name",
+                                                field: "name",
+                                              },
+                                              { title: "Date Order", field: "date", type: "date" , filtering: false},
+                                              {
+                                                  title: "Sample type",
+                                                  field: "samplecount",
+                                                  filtering: false
+                                                },
+                                              {
+                                                  title: "Date sample collected",
+                                                  field: "count",
+                                                  filtering: false
+                                                },
+                                              {
+                                                title: "Date Sample verified",
+                                                field: "samples",
+                                                filtering: false
+                                              },
+                                               {
+                                                  title: "Date sample result reported",
+                                                  field: "sampleverified",
+                                                  filtering: false
+                                                },
+
+                                          ]}
+                                          //isLoading={loading}
+                                          data={ previousRecords.map((row) => ({
+
+                                          Id: row.patientId,
+                                          name: row.patientFirstName +  ' ' + row.patientLastName,
+                                          date: row.orderDate + '@' + row.orderTime,
+                                          samplecount: row.reportedResults,
+                                          count: row.DateSampleCollected === null ? "----" : row.DateSampleCollected + '@'+ row.TimeSampleCollected,
+                                          samples: row.dateSampleVerified === null ? "----": row.dateSampleVerified + '@' + row.timeSampleVerified,
+                                          sampleverified: row.dateResultReported === null ? "----" : row.dateResultReported + '@' + row.timeResultReported,
+
+                                          }))}
                                         />
-                                        </FormGroup>                            
-                                    </Col>
+                                        :
+                                        <>
+                                        <Row >
+                                            <Col md="3">
+                                                <FormGroup>
+                                                    <Label for="occupation">Lab Test Group </Label>
 
-                                </Row>
-                                
-                                    <Form >
-                                    <br/>
-                                        <Table  striped responsive>
-                                            <thead style={{  backgroundColor:'#000000', color:'#ffffff' }}>
-                                                <tr>
-                                                    <th>Test</th>
-                                                    <th>Sample Type</th>
-                                                    <th>Date Verified</th>
-                                                    <th >Status</th>
-                                                    <th>Action</th>
-                                                    <th ></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                             {!loading ? fetchTestOrders.labOrder.tests.map((row) => (
-                                                    row.samples.map((sample) => (
-                                                         sample.dateSampleCollected !== null ?
-                                                           <tr key={row.id} style={{ borderBottomColor: '#fff' }}>
-                                                             <td className={classes.td}>{row.labTestName}</td>
-                                                            <td className={classes.td}>{sample.sampleTypeName}</td>
-                                                             <td className={classes.td}>{fetchTestOrders.labOrder.orderDate + '@' + fetchTestOrders.labOrder.orderTime}</td>
-                                                             <td className={classes.td}>{sampleStatus(3)}</td>
-                                                             <td className={classes.td}>{sampleAction(3, sample)}</td>
-                                                             <td className={classes.td}></td>
-                                                           </tr>
-                                                           :
-                                                           <tr></tr>
-                                                    ))
-                                                 ))
-                                                 :<p> <Spinner color="primary" /> Loading Please Wait</p>
-                                               }
-                                            </tbody>
-                                        </Table>
-                                        <br />
-                                  
-                                    </Form>
+                                                        <Input
+                                                          type="select"
+                                                          name="testgroup"
+                                                          id="testgroup"
+                                                          onChange={getGroup}
+                                                        >
+                                                           <option value="All"> All </option>
+                                                            {
+                                                              uniqueValues.map(x =>
+                                                                <option key={x} value={x}>
+                                                                  {x}
+                                                                </option>
+                                                            )}
+
+                                                      </Input>
+                                                </FormGroup>
+                                            </Col>
+                                            {/*<Col md="3" className='float-right mr-1'>
+
+                                                <FormGroup>
+                                                    <Label for="occupation">Lab Number </Label>
+                                                <Input
+                                                    type='text'
+                                                    name='lab_number'
+                                                    id='lab_number'
+                                                    value={labNumber!=="" ? labNumber : labNum.lab_number}
+                                                    onChange={handleLabNumber}
+                                                    disabled={labNumber && labNum.lab_number ? 'true' : ''}
+                                                />
+                                                </FormGroup>
+                                            </Col>*/}
+
+                                        </Row>
+                                         <Form >
+                                            <br/>
+                                            <Table  striped responsive>
+                                                <thead style={{  backgroundColor:'#000000', color:'#ffffff' }}>
+                                                    <tr>
+                                                        <th>Test Group</th>
+                                                        <th>Test Type</th>
+                                                         <th>Sample Type</th>
+                                                        <th>Date Verified</th>
+                                                        <th >Status</th>
+                                                        <th>Action</th>
+                                                        <th ></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                 {!loading ? fetchTestOrders.labOrder.tests.map((row) => (
+                                                        row.samples.map((sample) => (
+                                                             sample.dateSampleCollected !== null && row.labTestOrderStatus !== 1 ?
+                                                               <tr key={row.id} style={{ borderBottomColor: '#fff' }}>
+                                                                 <th className={classes.td}>{row.labTestGroupName}</th>
+                                                                <td className={classes.td}>{row.labTestName}</td>
+                                                                 <td className={classes.td}><Badge  color="primary">{sample.sampleTypeName}</Badge></td>
+                                                                 <td className={classes.td}>{sample.dateSampleVerified + '@' + sample.timeSampleVerified}</td>
+                                                                 <td className={classes.td}>{sampleStatus(3)}</td>
+                                                                 <td className={classes.td}>{sampleAction(3, sample)}</td>
+                                                                 <td className={classes.td}></td>
+                                                               </tr>
+                                                               :
+                                                               <tr></tr>
+                                                        ))
+                                                     ))
+                                                     :<p> <Spinner color="primary" /> Loading Please Wait</p>
+                                                   }
+                                                </tbody>
+                                            </Table>
+                                            <br />
+
+                                        </Form>
+                                      </>
+                                    }
 
                               </Card>
-                        
+
                   </Row>
                 </CardBody>
               </Card>

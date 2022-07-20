@@ -89,7 +89,7 @@ const useStyles = makeStyles({
             setlabNum({ ...labNum, [e.target.name]: e.target.value })
             labNumber = e.target.value
 
-            localStorage.setItem('labnumber', labNumber);
+            //localStorage.setItem('labnumber', labNumber);
     }
 
     const handleSample = (row,dateEncounter) => { 
@@ -294,8 +294,8 @@ return (
                                         <Table  striped responsive>
                                             <thead style={{  backgroundColor:'#000000', color:'#ffffff' }}>
                                                 <tr>
-                                                    <th>Sample Group</th>
-                                                    <th>Sample Test</th>
+                                                    <th>Test Group</th>
+                                                    <th>Test Type</th>
                                                     <th>Date Requested</th>
                                                     <th>Status</th>
                                                     <th>Action</th>
@@ -304,7 +304,7 @@ return (
                                             </thead>
                                             <tbody>
                                                 {!loading ? fetchTestOrders.labOrder.tests.map((row) => (
-                                                  row !== null ?
+                                                  row !== null && row.labTestOrderStatus === 0 ?
                                                    <tr key={row.id} style={{ borderBottomColor: '#fff' }}>
                                                     <th className={classes.td}>{row.labTestGroupName}</th>
                                                      <td className={classes.td}>{row.labTestName}</td>

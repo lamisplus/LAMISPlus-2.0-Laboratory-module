@@ -65,12 +65,11 @@ const ModalVerifySample = (props) => {
     const classes = useStyles()
     const datasample = props.datasample && props.datasample!==null ? props.datasample : {};
     //console.log('modal', datasample)
-    const order_priority = datasample.id && datasample.orderPriority ? datasample.orderPriority : null;
-    const lab_test_group = datasample.id ? datasample.labTestGroupId : null ;
-    const sample_ordered_by = datasample.id ? datasample.sample_ordered_by : null ;
-    const description = datasample.description ? datasample.description : null ;
-    const lab_number = props.labnumber  ? props.labnumber : null;
-    const date_sample_collected = datasample.id ? datasample.date_sample_collected : null ;
+
+    const sample_type = datasample.sampleTypeName;
+    const lab_number = datasample.labNumber;
+    const date_sample_collected = datasample.dateSampleCollected;
+    const time_sample_collected = datasample.timeSampleCollected;
     const lab_test_id = datasample.id;
 
     const sampleId = datasample.id;
@@ -190,18 +189,19 @@ const ModalVerifySample = (props) => {
                         <Form onSubmit={saveSample}>
                             <ModalHeader toggle={props.togglestatus}>Verify Sample </ModalHeader>
                             <ModalBody>
-                                {checklanumber(lab_number)}
+                                {/**{checklanumber(lab_number)}*/}
                                 <Card >
                                     <CardBody>
                                         <Row >
                                             <Col md={12} >
-                                               <Alert color="dark" style={{backgroundColor:'#9F9FA5', color:"#000" , fontWeight: 'bolder', }}>
-                                                <p style={{marginTop: '.7rem' }}>Test Group : <span style={{ fontWeight: 'bolder'}}>{lab_test_group}</span>
-                                                    &nbsp;&nbsp;&nbsp;&nbsp;Test Ordered :
-                                                    <span style={{ fontWeight: 'bolder'}}>{" "}{description}</span>
-                                                            &nbsp;&nbsp;&nbsp;&nbsp; Date Ordered :
-                                                    <span style={{ fontWeight: 'bolder'}}>{" "}{date_sample_collected}</span>
+                                               <Alert color="primary" style={{color:"#000" , fontWeight: 'bolder', }}>
+                                                <p style={{marginTop: '.7rem' }}>Lab number: <span style={{ fontWeight: 'bolder'}}>{lab_number}</span>
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;Sample type:
+                                                    <span style={{ fontWeight: 'bolder'}}>{" "}{sample_type}</span>
+                                                            &nbsp;&nbsp;&nbsp;&nbsp; Date sample collected :
+                                                    <span style={{ fontWeight: 'bolder'}}>{" "}{date_sample_collected + "@" + time_sample_collected}</span>
                                                 </p>
+
                                               </Alert>
                                         </Col>
                                             <Col md={6}>

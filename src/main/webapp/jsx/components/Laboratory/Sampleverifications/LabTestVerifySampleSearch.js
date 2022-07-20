@@ -56,7 +56,7 @@ const PatientSearch = (props) => {
     const loadLabTestData = useCallback(async () => {
             try {
                 const response = await axios.get(`${url}laboratory/orders/pending-sample-verification`, { headers: {"Authorization" : `Bearer ${token}`} });
-                console.log("verify test", response);
+                //console.log("verify test", response);
                 setCollectedSamples(response.data);
             } catch (e) {
                 toast.error("An error occurred while fetching lab", {

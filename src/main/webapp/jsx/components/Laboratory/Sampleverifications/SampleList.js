@@ -71,29 +71,18 @@ const useStyles = makeStyles({
         const [collectModal, setcollectModal] = useState([])//to collect array of datas into the modal and pass it as props
         const [labNum, setlabNum] = useState({lab_number:""})
 
-
-        let  labNumber = ""
-
-        let lab = localStorage.getItem('labnumber');
-
-        console.log("sv",lab);
-
-        if (lab !== null) {
-            labNumber = lab;
-        }
-
-    testOrders.forEach(function(value, index, array) {
-                if(value['data']!==null && value['data'].hasOwnProperty("lab_number")){
-                   // setlabNum({lab_number:value['data'].lab_number})
-                    if(value['data'].lab_number !== null){
-                        labNumber = value['data'].lab_number
-                    }
-                }               
-            });
+//    testOrders.forEach(function(value, index, array) {
+//                if(value['data']!==null && value['data'].hasOwnProperty("lab_number")){
+//                   // setlabNum({lab_number:value['data'].lab_number})
+//                    if(value['data'].lab_number !== null){
+//                        labNumber = value['data'].lab_number
+//                    }
+//                }
+//            });
     const handleLabNumber = e => {
         e.preventDefault();   
             setlabNum({ ...labNum, [e.target.name]: e.target.value })
-            labNumber = e.target.value
+            //labNumber = e.target.value
     }
 
     const handleVerifySample = (row) => {
@@ -163,7 +152,6 @@ const useStyles = makeStyles({
     }
 //This is function to check for the status of each collection to display on the tablist below 
     const sampleAction = (id, row) =>{
-    console.log("sid", row)
         if(id ===1){
             return (
                     <Menu>
@@ -278,6 +266,7 @@ return (
                                               </Input>
                                         </FormGroup>
                                     </Col>
+                                    {/*
                                    <Col md="3" className='float-right mr-1'>
 
                                         <FormGroup>
@@ -291,7 +280,7 @@ return (
                                             disabled={labNumber && labNum.lab_number ? 'true' : ''}
                                         />
                                         </FormGroup>
-                                    </Col>
+                                    </Col> */}
 
                                 </Row>
                                 
@@ -300,7 +289,8 @@ return (
                                         <Table  striped responsive>
                                             <thead style={{  backgroundColor:'#000000', color:'#ffffff' }}>
                                                 <tr>
-                                                    <th>Test</th>
+                                                    <th>Test Group</th>
+                                                    <th>Test Type</th>
                                                     <th>Sample Type</th>
                                                     <th>Date Collected</th>
                                                     <th >Status</th>
@@ -311,11 +301,12 @@ return (
                                             <tbody>
                                                 {!loading ? fetchTestOrders.labOrder.tests.map((row) => (
                                                     row.samples.map((sample) => (
-                                                         sample.dateSampleCollected !== null ?
+                                                         sample.dateSampleCollected !== null && row.labTestOrderStatus === 1 ?
                                                            <tr key={row.id} style={{ borderBottomColor: '#fff' }}>
+                                                             <th className={classes.td}>{row.labTestGroupName}</th>
                                                              <td className={classes.td}>{row.labTestName}</td>
-                                                            <td className={classes.td}>{sample.sampleTypeName}</td>
-                                                             <td className={classes.td}>{fetchTestOrders.labOrder.orderDate + '@' + fetchTestOrders.labOrder.orderTime}</td>
+                                                             <td className={classes.td}><Badge  color="primary">{sample.sampleTypeName}</Badge></td>
+                                                             <td className={classes.td}>{sample.dateSampleCollected + '@' + sample.timeSampleCollected}</td>
                                                              <td className={classes.td}>{sampleStatus(1)}</td>
                                                              <td className={classes.td}>{sampleAction(1, sample)}</td>
                                                              <td className={classes.td}></td>
@@ -342,7 +333,7 @@ return (
         {modal || modal2  || modal3 || modal4 ? 
       (
         <>
-            <SampleVerification modalstatus={modal} togglestatus={toggleModal} datasample={collectModal} labnumber={labNumber !=="" ? labNumber : labNum['lab_number'] }/>
+            <SampleVerification modalstatus={modal} togglestatus={toggleModal} datasample={collectModal}/>
             {/* <ModalSampleTransfer modalstatus={modal2} togglestatus={toggleModal2} datasample={collectModal} labnumber={labNumber!=="" ? labNumber : labNum}/> */}
             <ModalViewResult modalstatus={modal3} togglestatus={toggleModal3} datasample={collectModal} />
             {/* <TransferModalConfirmation modalstatus={modal4} togglestatusConfirmation={toggleModal4} datasample={collectModal} actionButton={transferSample} labnumber={labNumber!=="" ? labNumber : labNum}/> */}
