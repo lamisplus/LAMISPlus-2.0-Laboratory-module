@@ -21,6 +21,7 @@ public class HistoricalResultResponseDTO {
     private LocalDate DateSampleCollected;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     private LocalTime TimeSampleCollected;
+    private String sampleTypeName;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate DateSampleVerified;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
@@ -35,7 +36,6 @@ public class HistoricalResultResponseDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate PatientDob;
     private String patientHospitalNumber;
-    private int patientId;
     private String patientAddress;
     private String patientPhoneNumber;
     private String patientGender;

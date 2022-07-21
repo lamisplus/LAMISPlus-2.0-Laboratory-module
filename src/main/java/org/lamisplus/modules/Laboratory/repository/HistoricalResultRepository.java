@@ -19,5 +19,5 @@ public interface HistoricalResultRepository extends JpaRepository<HistoricalResu
             "inner join laboratory_labtestgroup f on b.lab_test_group_id=f.id\n" +
             "where a.patient_id=?1 \n" +
             "order by b.id desc", nativeQuery = true)
-    List<HistoricalResult> findAllResultsByPatientId(int patientId);
+    List<HistoricalResult> findHistoricalResultByPatientId(int patientId);
 }
