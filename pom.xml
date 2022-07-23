@@ -264,10 +264,10 @@
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
-						<plugin>
+<!--						<plugin>
 							<groupId>org.springframework.boot</groupId>
 							<artifactId>spring-boot-maven-plugin</artifactId>
-						</plugin>
+						</plugin>-->
 						<plugin>
 							<groupId>com.github.eirslett</groupId>
 							<artifactId>frontend-maven-plugin</artifactId>
@@ -310,7 +310,7 @@
 						<phase>generate-resources</phase>
 						<configuration>
 							<target>
-								<copy todir="${project.build.directory}/classes/views/static/laboratory">
+								<copy todir="${project.build.directory}/classes/static/laboratory">
 									<fileset dir="${project.basedir}/build" />
 								</copy>
 							</target>
