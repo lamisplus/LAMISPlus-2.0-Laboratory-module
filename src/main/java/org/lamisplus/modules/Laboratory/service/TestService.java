@@ -8,6 +8,8 @@ import org.lamisplus.modules.Laboratory.domain.mapper.LabMapper;
 import org.lamisplus.modules.Laboratory.repository.TestRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -17,6 +19,7 @@ public class TestService {
 
     public TestDTO Save(TestDTO testDTO){
         Test test = labMapper.toTest(testDTO);
+        test.setUuid(UUID.randomUUID().toString());
         return labMapper.toTestDto(repository.save(test));
     }
 
@@ -27,39 +30,8 @@ public class TestService {
 
     public String Delete(Integer id){
         Test labOrder = repository.findById(id).orElse(null);
+        assert labOrder != null;
         repository.delete(labOrder);
-        return id.toString() + " deleted successfully";
+        return id + " deleted successfully";
     }
-
-//    public List<PatientTestDTO> GetTestsPendingSampleCollection(){
-//        return appendPatientDetails(repository.findAllPendingSampleCollection());
-//    }
-//
-//    public List<PatientTestDTO> GetTestsPendingSampleVerification(){
-//        return appendPatientDetails(repository.findAllPendingSampleVerification());
-//    }
-//
-//    public List<PatientTestDTO> GetTestsPendingResults(){
-//        return appendPatientDetails(repository.findAllPendingResults());
-//    }
-
-//    private List<PatientTestDTO> appendPatientDetails(List<Test> testsList){
-//        List<PatientTestDTO> patientTestDTOS = new ArrayList<>();
-//        for (Test test: testsList) {
-//            PatientTestDTO dto = new PatientTestDTO();
-//            dto.setPatientAddress("Sample Address");
-//            dto.setPatientDob(null);
-//            dto.setPatientGender("Male");
-//            dto.setPatientFirstName("John");
-//            dto.setPatientId(test.getPatientId());
-//            dto.setPatientHospitalNumber("12345XYZ");
-//            dto.setPatientLastName("Doe");
-//            dto.setPatientPhoneNumber("+234567890");
-//            dto.setTest(labMapper.toTestDto(test));
-//
-//            patientTestDTOS.add(dto);
-//        }
-//
-//        return patientTestDTOS;
-//    }
 }

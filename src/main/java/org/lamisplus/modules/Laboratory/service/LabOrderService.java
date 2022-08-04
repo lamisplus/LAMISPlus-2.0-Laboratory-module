@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 import static org.lamisplus.modules.Laboratory.utility.LabOrderStatus.*;
 
@@ -45,6 +46,7 @@ public class LabOrderService {
     public LabOrderResponseDTO Save(LabOrderDTO labOrderDTO){
         LabOrder labOrder = labMapper.toLabOrder(labOrderDTO);
         labOrder.setUserId(SecurityUtils.getCurrentUserLogin().orElse(""));
+        labOrder.setUuid(UUID.randomUUID().toString());
         for (Test test:labOrder.getTests()){
             test.setLabTestOrderStatus(PENDING_SAMPLE_COLLECTION);
         }
@@ -63,7 +65,7 @@ public class LabOrderService {
     public String Delete(Integer id){
         LabOrder labOrder = labOrderRepository.findById(id).orElse(null);
         labOrderRepository.delete(labOrder);
-        return id.toString() + " deleted successfully";
+        return id + " deleted successfully";
     }
 
     public List<PatientLabOrderDTO> GetAllOrdersByPatientId(int patient_id){

@@ -15,6 +15,8 @@ import org.lamisplus.modules.patient.service.PersonService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 import static org.lamisplus.modules.Laboratory.utility.LabOrderStatus.RESULT_REPORTED;
 
 @Service
@@ -33,6 +35,7 @@ public class ResultService {
     public ResultDTO Save(ResultDTO resultDTO){
         Result result = labMapper.toResult(resultDTO);
         result.setResultReportedBy(SecurityUtils.getCurrentUserLogin().orElse(""));
+        result.setUuid(UUID.randomUUID().toString());
 
         Test test = testRepository.findById(result.getTestId()).orElse(null);
         test.setLabTestOrderStatus(RESULT_REPORTED);
