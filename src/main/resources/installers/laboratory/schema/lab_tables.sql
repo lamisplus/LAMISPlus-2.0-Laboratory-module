@@ -11,7 +11,6 @@ CREATE TABLE public.laboratory_order
 	userid character varying(100),
     PRIMARY KEY (id)
 );
-ALTER TABLE IF EXISTS public.laboratory_order OWNER to postgres;
 ALTER SEQUENCE laboratory_order_id_seq OWNED BY laboratory_order.id;
 
 
@@ -33,7 +32,6 @@ CREATE TABLE public.laboratory_test
 	lab_order_id INTEGER,
     PRIMARY KEY (id)
 );
-ALTER TABLE IF EXISTS public.laboratory_test OWNER to postgres;
 ALTER SEQUENCE laboratory_test_id_seq OWNED BY laboratory_test.id;
 
 
@@ -59,7 +57,6 @@ CREATE TABLE public.laboratory_sample
 	test_id INTEGER,
     PRIMARY KEY (id)
 );
-ALTER TABLE IF EXISTS public.laboratory_sample OWNER to postgres;
 ALTER SEQUENCE laboratory_sample_id_seq OWNED BY laboratory_sample.id;
 
 
@@ -78,7 +75,6 @@ CREATE TABLE public.laboratory_result
 	test_id INTEGER,
     PRIMARY KEY (id)
 );
-ALTER TABLE IF EXISTS public.laboratory_result OWNER to postgres;
 ALTER SEQUENCE laboratory_result_id_seq OWNED BY laboratory_result.id;
 
 
@@ -93,7 +89,6 @@ CREATE TABLE public.laboratory_labtest
 	labtestgroup_id INTEGER,
     PRIMARY KEY (id)
 );
-ALTER TABLE IF EXISTS public.laboratory_labtest OWNER to postgres;
 ALTER SEQUENCE laboratory_labtest_id_seq OWNED BY laboratory_labtest.id;
 
 
@@ -106,7 +101,6 @@ CREATE TABLE public.laboratory_labtestgroup
     group_name character varying(500),
     PRIMARY KEY (id)
 );
-ALTER TABLE IF EXISTS public.laboratory_labtestgroup OWNER to postgres;
 ALTER SEQUENCE laboratory_labtestgroup_id_seq OWNED BY laboratory_labtestgroup.id;
 
 insert into laboratory_labtestgroup(id, group_name)values(1, 'Chemistry');

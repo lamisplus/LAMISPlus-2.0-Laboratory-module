@@ -18,6 +18,8 @@ public class Sample {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private int id;
+    @Column(name = "uuid")
+    private String uuid;
     @Column(name = "sample_type_id")
     private int sampleTypeId;
     @Column(name = "sample_order_date")
