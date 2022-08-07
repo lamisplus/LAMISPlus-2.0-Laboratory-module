@@ -305,7 +305,7 @@ return (
                                           sampleverified: row.dateResultReported === null ? "----" : row.dateResultReported + ' ' + row.timeResultReported,
                                           results:  row.dateResultReported !== null ? "Available" : "Not Available"
                                           }))}
-                                          
+
                                            options={{
                                               headerStyle: {
                                                   backgroundColor: "#014d88",
