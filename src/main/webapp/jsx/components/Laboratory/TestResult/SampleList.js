@@ -247,7 +247,7 @@ return (
                                         className=" float-right mr-1"
                                         onClick={() => handleTableChange()}
                                     >
-                                        <TiDocumentText/>{" "} { flipTable === true ? "View Recent Results": "Historical Sample Results"}
+                                        <TiDocumentText/>{" "} { flipTable === true ? "View Recent Results": "Historical Results"}
                                     </MatButton>
                                 </Col>
                             </Row>
@@ -298,13 +298,30 @@ return (
 
                                           Id: row.patientId,
                                           name: row.patientFirstName +  ' ' + row.patientLastName,
-                                          date: row.orderDate + '@' + row.orderTime,
+                                          date: row.orderDate + ' ' + row.orderTime,
                                           samplecount: row.sampleTypeName,
-                                          count: row.DateSampleCollected === null ? "----" : row.DateSampleCollected + '@'+ row.TimeSampleCollected,
-                                          samples: row.dateSampleVerified === null ? "----": row.dateSampleVerified + '@' + row.timeSampleVerified,
-                                          sampleverified: row.dateResultReported === null ? "----" : row.dateResultReported + '@' + row.timeResultReported,
+                                          count: row.DateSampleCollected === null ? "----" : row.DateSampleCollected + ' ' + row.TimeSampleCollected,
+                                          samples: row.dateSampleVerified === null ? "----": row.dateSampleVerified + ' ' + row.timeSampleVerified,
+                                          sampleverified: row.dateResultReported === null ? "----" : row.dateResultReported + ' ' + row.timeResultReported,
                                           results:  row.dateResultReported !== null ? "Available" : "Not Available"
                                           }))}
+
+                                           options={{
+                                              headerStyle: {
+                                                  backgroundColor: "#014d88",
+                                                  color: "#fff"
+                                              },
+                                              searchFieldStyle: {
+                                                  width : '300%',
+                                                  margingLeft: '250px',
+                                              },
+                                              filtering: false,
+                                              exportButton: false,
+                                              searchFieldAlignment: 'left',
+                                              pageSizeOptions:[10,20,100],
+                                              pageSize:10,
+                                              debounceInterval: 400
+                                          }}
                                         />
                                         :
                                         <>
@@ -349,7 +366,7 @@ return (
                                          <Form >
                                             <br/>
                                             <Table  striped responsive>
-                                                <thead style={{  backgroundColor:'#000000', color:'#ffffff' }}>
+                                                <thead style={{  backgroundColor: "#014d88", color: "#fff" }}>
                                                     <tr>
                                                         <th>Test Group</th>
                                                         <th>Test Type</th>
@@ -368,7 +385,7 @@ return (
                                                                  <th className={classes.td}>{row.labTestGroupName}</th>
                                                                 <td className={classes.td}>{row.labTestName}</td>
                                                                  <td className={classes.td}><Badge  color="primary">{sample.sampleTypeName}</Badge></td>
-                                                                 <td className={classes.td}>{sample.dateSampleVerified + '@' + sample.timeSampleVerified}</td>
+                                                                 <td className={classes.td}>{sample.dateSampleVerified + ' ' + sample.timeSampleVerified}</td>
                                                                  <td className={classes.td}>{sampleStatus(3)}</td>
                                                                  <td className={classes.td}>{sampleAction(3, sample)}</td>
                                                                  <td className={classes.td}></td>

@@ -57,21 +57,16 @@ const PatientSearch = (props) => {
             const response = await axios.get(`${url}laboratory/orders/pending-results`, { headers: {"Authorization" : `Bearer ${token}`} });
             console.log("sample results", response);
             setCollectedSamples(response.data);
+            setLoading(false)
         } catch (e) {
             toast.error("An error occurred while fetching lab", {
                 position: toast.POSITION.TOP_RIGHT
             });
+            setLoading(false)
         }
     }, []);
     
     useEffect(() => {
-         setLoading('true');
-         const onSuccess = () => {
-             setLoading(false)
-         }
-         const onError = () => {
-             setLoading(false)
-         }
          loadLabTestData();
     }, [loadLabTestData]);
 
@@ -144,12 +139,12 @@ const PatientSearch = (props) => {
                     filtering: false,
                   },
               ]}
-              //isLoading={loading}
+              isLoading={loading}
               data={ collectedSamples.map((row) => ({
 
               Id: row.patientHospitalNumber,
               name: row.patientFirstName +  ' ' + row.patientLastName,
-              date: row.orderDate + '@' + row.orderTime,
+              date: row.orderDate + ' ' + row.orderTime,
               count: row.testOrders,
               samples: row.collectedSamples,
               sampleverified: row.verifiedSamples,
@@ -168,46 +163,11 @@ const PatientSearch = (props) => {
                             </Link> : ""
 
                 }))}
-            // data={query =>
-            //       new Promise((resolve, reject) =>
-            //           axios.get(`${baseUrl}encounters/${LABSERVICECODE}/{dateStart}/{dateEnd}?size=${query.pageSize}&page=${query.page}&search=${query.search}`)
-            //               .then(response => response)
-            //               .then(result => {
-
-            //                   //console.log('in result')
-            //                   //console.log( result.headers);
-            //                   console.log( result.headers['x-total-count']);
-            //                   resolve({
-            //                       data: result.data.map((row) => ({
-            //                         Id: row.hospitalNumber,
-            //                         name: row.firstName +  ' ' + row.lastName,
-            //                         date: row.dateEncounter,
-            //                         count: row.formDataObj.length,
-            //                         samplecount: totalSampleConllected(row.formDataObj),
-            //                           actions:
-            //                           <Link to ={{ 
-            //                                         pathname: "/collect-sample",  
-            //                                         state: row
-            //                                     }} 
-            //                                         style={{ cursor: "pointer", color: "blue", fontStyle: "bold"}}
-            //                                     >
-            //                                         <Tooltip title="Collect Sample">
-            //                                             <IconButton aria-label="Collect Sample" >
-            //                                                 <VisibilityIcon color="primary"/>
-            //                                             </IconButton>
-            //                                         </Tooltip>
-            //                                     </Link>
-            //                       })),
-            //                       page: query.page,
-            //                       totalCount: result.headers['x-total-count'],
-            //                   })
-            //               })
-            //       )}
 
                   options={{
                     headerStyle: {
-                        backgroundColor: "#9F9FA5",
-                        color: "#000",
+                        backgroundColor: "#014d88",
+                        color: "#fff"
                     },
                     searchFieldStyle: {
                         width : '300%',
