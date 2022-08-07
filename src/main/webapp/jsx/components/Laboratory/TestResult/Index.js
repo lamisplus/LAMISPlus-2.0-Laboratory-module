@@ -83,7 +83,7 @@ function PatientCard(props) {
             <br/>
             <SampleList  patientObj={labObj}/>
             </>
-            : "Loading.."
+            : ""
         }
          </CardContent>
       </Card>

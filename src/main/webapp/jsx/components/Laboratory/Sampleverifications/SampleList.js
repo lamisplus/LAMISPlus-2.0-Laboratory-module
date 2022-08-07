@@ -287,7 +287,7 @@ return (
                                     <Form >
                                     <br/>
                                         <Table  striped responsive>
-                                            <thead style={{  backgroundColor:'#000000', color:'#ffffff' }}>
+                                            <thead style={{  backgroundColor:'#014d88', color:'#fff' }}>
                                                 <tr>
                                                     <th>Test Group</th>
                                                     <th>Test Type</th>
