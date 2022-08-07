@@ -6,12 +6,9 @@ import org.lamisplus.modules.Laboratory.domain.dto.ResultDTO;
 import org.lamisplus.modules.Laboratory.domain.entity.Result;
 import org.lamisplus.modules.Laboratory.domain.entity.Test;
 import org.lamisplus.modules.Laboratory.domain.mapper.LabMapper;
-import org.lamisplus.modules.Laboratory.repository.LabOrderRepository;
 import org.lamisplus.modules.Laboratory.repository.ResultRepository;
 import org.lamisplus.modules.Laboratory.repository.TestRepository;
-import org.lamisplus.modules.Laboratory.utility.JsonNodeTransformer;
 import org.lamisplus.modules.base.security.SecurityUtils;
-import org.lamisplus.modules.patient.service.PersonService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,10 +24,6 @@ public class ResultService {
     private final ResultRepository repository;
     private final LabMapper labMapper;
     private final TestRepository testRepository;
-    private final LabOrderService labOrderService;
-    private final JsonNodeTransformer jsonNodeTransformer;
-    private final PersonService personService;
-    private final LabOrderRepository labOrderRepository;
 
     public ResultDTO Save(ResultDTO resultDTO){
         Result result = labMapper.toResult(resultDTO);

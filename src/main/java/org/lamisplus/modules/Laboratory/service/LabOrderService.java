@@ -2,6 +2,7 @@ package org.lamisplus.modules.Laboratory.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.audit4j.core.util.Log;
 import org.jetbrains.annotations.NotNull;
 import org.lamisplus.modules.Laboratory.domain.dto.*;
 import org.lamisplus.modules.Laboratory.domain.entity.LabOrder;
@@ -44,13 +45,20 @@ public class LabOrderService {
     private static final Integer LAB_ORDER_STATUS = 5;
 
     public LabOrderResponseDTO Save(LabOrderDTO labOrderDTO){
-        LabOrder labOrder = labMapper.toLabOrder(labOrderDTO);
-        labOrder.setUserId(SecurityUtils.getCurrentUserLogin().orElse(""));
-        labOrder.setUuid(UUID.randomUUID().toString());
-        for (Test test:labOrder.getTests()){
-            test.setLabTestOrderStatus(PENDING_SAMPLE_COLLECTION);
+        try {
+            LabOrder labOrder = labMapper.toLabOrder(labOrderDTO);
+            labOrder.setUserId(SecurityUtils.getCurrentUserLogin().orElse(""));
+            labOrder.setUuid(UUID.randomUUID().toString());
+            for (Test test : labOrder.getTests()) {
+                test.setLabTestOrderStatus(PENDING_SAMPLE_COLLECTION);
+            }
+            Log.info(labOrderDTO);
+            return labMapper.toLabOrderResponseDto(labOrderRepository.save(labOrder));
         }
-        return labMapper.toLabOrderResponseDto(labOrderRepository.save(labOrder));
+        catch(Exception e){
+            Log.error(e);
+            return null;
+        }
     }
 
     public LabOrderResponseDTO Update(int order_id, LabOrderDTO labOrderDTO){
