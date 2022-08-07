@@ -247,7 +247,7 @@ return (
                                         className=" float-right mr-1"
                                         onClick={() => handleTableChange()}
                                     >
-                                        <TiDocumentText/>{" "} { flipTable === true ? "View Recent Results": "Historical Sample Results"}
+                                        <TiDocumentText/>{" "} { flipTable === true ? "View Recent Results": "Historical Results"}
                                     </MatButton>
                                 </Col>
                             </Row>
