@@ -18,6 +18,8 @@ public class RDETestDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dateAssayed;
     private String result;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate dateResultReceived;
     private String comments;
     private int viralLoadIndication;
 }

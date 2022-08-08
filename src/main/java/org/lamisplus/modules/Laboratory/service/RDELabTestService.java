@@ -63,10 +63,11 @@ public class RDELabTestService {
             ResultDTO result = new ResultDTO();
             result.setTestId(test.getId());
             result.setResultReported(dto.getResult());
-            result.setDateResultReported(dto.getDateAssayed());
+            result.setDateResultReported(dto.getDateResultReceived());
             result.setTimeResultReported(LocalTime.parse("00:00:00"));
             result.setDateAssayed(dto.getDateAssayed());
             result.setTimeAssayed(LocalTime.parse("00:00:00"));
+
             resultService.Save(result);
         }
 
@@ -85,16 +86,23 @@ public class RDELabTestService {
         for(TestResponseDTO dto:order.getLabOrder().getTests()){
             RDETestDTO testDTO = new RDETestDTO();
             testDTO.setLabTestId(dto.getLabTestId());
-            testDTO.setComments(dto.getSamples().get(0).getCommentSampleCollected());
-            testDTO.setLabTestGroupId(dto.getLabTestGroupId());
-            testDTO.setDateAssayed(dto.getResults().get(0).getDateAssayed());
-            testDTO.setResult(dto.getResults().get(0).getResultReported());
             testDTO.setLabNumber(dto.getLabNumber());
             testDTO.setPatientId(order.getPatientId());
-            testDTO.setSampleCollectionDate(dto.getSamples().get(0).getDateSampleCollected());
             testDTO.setVisitId(order.getLabOrder().getVisitId());
             testDTO.setId(order.getLabOrder().getId());
             testDTO.setViralLoadIndication(dto.getViralLoadIndication());
+            testDTO.setLabTestGroupId(dto.getLabTestGroupId());
+
+            if(dto.getSamples().size()>0) {
+                testDTO.setSampleCollectionDate(dto.getSamples().get(0).getDateSampleCollected());
+                testDTO.setComments(dto.getSamples().get(0).getCommentSampleCollected());
+            }
+
+            if(dto.getResults().size()>0) {
+                testDTO.setDateAssayed(dto.getResults().get(0).getDateAssayed());
+                testDTO.setResult(dto.getResults().get(0).getResultReported());
+                testDTO.setDateResultReceived(dto.getResults().get(0).getDateResultReported());
+            }
 
             testDTOList.add(testDTO);
         }
