@@ -12,9 +12,10 @@ import org.lamisplus.modules.base.security.SecurityUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
-import static org.lamisplus.modules.Laboratory.utility.LabOrderStatus.RESULT_REPORTED;
+import static org.lamisplus.modules.Laboratory.utility.LabUtils.RESULT_REPORTED;
 
 @Service
 @Transactional
@@ -53,53 +54,14 @@ public class ResultService {
     }
 
     public ResultDTO GetResultsByTestId(Integer TestId){
-        return labMapper.toResultDto(repository.findAllByTestId(TestId).get(0));
-    }
+        List<Result> resultList = repository.findAllByTestId(TestId);
 
-//    public List<HistoricalResultResponseDTO> GetHistoricalResultsByPatientId(Integer patientId){
-//        List<LabOrderResponseDTO> orders =  labMapper.toLabOrderResponseDtoList(labOrderRepository.findAllByPatientId(patientId));
-//        List<HistoricalResultResponseDTO> historicalResults = new ArrayList<>();
-//
-//        for(LabOrderResponseDTO order: orders){
-//            LabOrderResponseDTO updated_order = labOrderService.AppendAdditionalTestDetails(order);
-//
-//            for(TestResponseDTO test: updated_order.getTests()){
-//                HistoricalResultResponseDTO result = new HistoricalResultResponseDTO();
-//
-//                result.setId(test.getId());
-//                result.setOrderId(updated_order.getId());
-//                result.setPatientId(patientId);
-//                result.setOrderDate(updated_order.getOrderDate());
-//                result.setOrderTime(updated_order.getOrderTime());
-//                result.setLabTestName(test.getLabTestName());
-//                result.setGroupName(test.getLabTestGroupName());
-//
-//                /*
-//                if((long) test.getSamples().size() > 0) {
-//                    result.setDateSampleCollected(test.getSamples().get(0).getDateSampleCollected());
-//                    result.setTimeSampleCollected(test.getSamples().get(0).getTimeSampleCollected());
-//                    result.setDateSampleVerified(test.getSamples().get(0).getDateSampleVerified());
-//                    result.setTimeSampleVerified(test.getSamples().get(0).getTimeSampleVerified());
-//                }
-//                if((long) test.getResults().size() > 0) {
-//                    result.setResultReported(test.getResults().get(0).getResultReported());
-//                    result.setDateResultReported(test.getResults().get(0).getDateResultReported());
-//                    result.setTimeResultReported(test.getResults().get(0).getTimeResultReported());
-//                }*/
-//
-//                PersonResponseDto personResponseDTO = personService.getPersonById((long) updated_order.getPatientId());
-//                result.setPatientAddress(jsonNodeTransformer.getNodeValue(personResponseDTO.getAddress(), "address", "city", true));
-//                result.setPatientDob(personResponseDTO.getDateOfBirth());
-//                result.setPatientGender(jsonNodeTransformer.getNodeValue(personResponseDTO.getGender(), null, "display", false));
-//                result.setPatientFirstName(personResponseDTO.getFirstName());
-//                result.setPatientHospitalNumber(jsonNodeTransformer.getNodeValue(personResponseDTO.getIdentifier(), "identifier", "value", true));
-//                result.setPatientLastName(personResponseDTO.getSurname());
-//                result.setPatientPhoneNumber(jsonNodeTransformer.getNodeValue(personResponseDTO.getContactPoint(),"contactPoint", "value", true));
-//
-//                historicalResults.add(result);
-//            }
-//        }
-//
-//        return historicalResults;
-//    }
+        if(resultList.size() > 0) {
+            return labMapper.toResultDto(resultList.get(0));
+        }
+        else
+        {
+            return new ResultDTO();
+        }
+    }
 }

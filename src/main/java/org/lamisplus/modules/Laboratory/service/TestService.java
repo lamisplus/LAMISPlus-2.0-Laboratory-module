@@ -34,4 +34,8 @@ public class TestService {
         repository.delete(labOrder);
         return id + " deleted successfully";
     }
+
+    public TestDTO FindById(Integer id){
+        return labMapper.toTestDto(repository.findAllById(id).get(0));
+    }
 }

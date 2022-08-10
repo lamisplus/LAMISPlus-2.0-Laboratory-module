@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-import static org.lamisplus.modules.Laboratory.utility.LabOrderStatus.*;
+import static org.lamisplus.modules.Laboratory.utility.LabUtils.*;
 
 @Service
 @Slf4j
@@ -37,12 +37,6 @@ public class LabOrderService {
     private final LabMapper labMapper;
     private final PersonService personService;
     private final JsonNodeTransformer jsonNodeTransformer;
-
-    private static final Integer APPLICATION_CODE_SET = 1;
-    private static final Integer LAB_TEST = 2;
-    private static final Integer LAB_TEST_UNITS = 3;
-    private static final Integer LAB_TEST_GROUP = 4;
-    private static final Integer LAB_ORDER_STATUS = 5;
 
     public LabOrderResponseDTO Save(LabOrderDTO labOrderDTO){
         try {
@@ -129,23 +123,28 @@ public class LabOrderService {
     }
 
     public LabOrderResponseDTO AppendAdditionalTestDetails(LabOrderResponseDTO labOrderDTO){
-        List<TestResponseDTO> testDTOList = UpdateTestResponses(labOrderDTO.getTests());
-        for (TestResponseDTO testDTO: testDTOList) {
-            List<SampleResponseDTO> sampleDTOList = labMapper.toSampleResponseDtoList(sampleRepository.findAllByTestId(testDTO.getId()));
+        try {
+            List<TestResponseDTO> testDTOList = UpdateTestResponses(labOrderDTO.getTests());
+            for (TestResponseDTO testDTO : testDTOList) {
+                List<SampleResponseDTO> sampleDTOList = labMapper.toSampleResponseDtoList(sampleRepository.findAllByTestId(testDTO.getId()));
 
-            for (SampleResponseDTO sampleResponseDTO : sampleDTOList) {
-                sampleResponseDTO.setSampleTypeName(GetNameById(sampleResponseDTO.getSampleTypeId(), APPLICATION_CODE_SET));
-                sampleResponseDTO.setLabNumber(testDTO.getLabNumber());
+                for (SampleResponseDTO sampleResponseDTO : sampleDTOList) {
+                    sampleResponseDTO.setSampleTypeName(GetNameById(sampleResponseDTO.getSampleTypeId(), APPLICATION_CODE_SET));
+                    sampleResponseDTO.setLabNumber(testDTO.getLabNumber());
+                }
+
+                List<ResultDTO> resultDTOList = labMapper.toResultDtoList(resultRepository.findAllByTestId(testDTO.getId()));
+                testDTO.setSamples(sampleDTOList);
+                testDTO.setResults(resultDTOList);
+                testDTO.setOrderDate(labOrderDTO.getOrderDate());
+                testDTO.setOrderTime(labOrderDTO.getOrderTime());
             }
-
-            List<ResultDTO> resultDTOList = labMapper.toResultDtoList(resultRepository.findAllByTestId(testDTO.getId()));
-            testDTO.setSamples(sampleDTOList);
-            testDTO.setResults(resultDTOList);
-            testDTO.setOrderDate(labOrderDTO.getOrderDate());
-            testDTO.setOrderTime(labOrderDTO.getOrderTime());
+            labOrderDTO.setTests(testDTOList);
+            return labOrderDTO;
+        }catch(Exception ex) {
+            Log.info(ex);
+            return labOrderDTO;
         }
-        labOrderDTO.setTests(testDTOList);
-        return labOrderDTO;
     }
 
     private List<PatientLabOrderDTO> AppendPatientDetails(List<LabOrder> orders){
@@ -153,6 +152,7 @@ public class LabOrderService {
 
         for (LabOrder order: orders) {
             PersonResponseDto personResponseDTO = personService.getPersonById((long) order.getPatientId());
+            Log.info("PERSON: "+personResponseDTO);
             PatientLabOrderDTO dto = new PatientLabOrderDTO();
             dto.setPatientAddress(jsonNodeTransformer.getNodeValue(personResponseDTO.getAddress(), "address", "city", true));
             dto.setPatientDob(personResponseDTO.getDateOfBirth());
@@ -162,11 +162,13 @@ public class LabOrderService {
             dto.setPatientHospitalNumber(jsonNodeTransformer.getNodeValue(personResponseDTO.getIdentifier(), "identifier", "value", true));
             dto.setPatientLastName(personResponseDTO.getSurname());
             dto.setPatientPhoneNumber(jsonNodeTransformer.getNodeValue(personResponseDTO.getContactPoint(),"contactPoint", "value", true));
+            Log.info("HERE 1: "+personResponseDTO);
             dto.setLabOrder(AppendAdditionalTestDetails(labMapper.toLabOrderResponseDto(order)));
 
             patientLabOrderDTOS.add(dto);
         }
 
+        Log.info("ORDER: "+patientLabOrderDTOS);
         return patientLabOrderDTOS;
     }
 

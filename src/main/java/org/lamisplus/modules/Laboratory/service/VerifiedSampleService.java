@@ -12,7 +12,7 @@ import org.lamisplus.modules.base.security.SecurityUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.lamisplus.modules.Laboratory.utility.LabOrderStatus.SAMPLE_VERIFIED;
+import static org.lamisplus.modules.Laboratory.utility.LabUtils.SAMPLE_VERIFIED;
 
 @Service
 @Transactional

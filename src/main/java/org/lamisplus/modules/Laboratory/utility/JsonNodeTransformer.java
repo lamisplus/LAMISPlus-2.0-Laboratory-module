@@ -8,32 +8,36 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JsonNodeTransformer {
-    public String getNodeValue(Object obj, String arrayName, String value, Boolean array){
-        String jsonStr = obj.toString();
-        ObjectMapper mapper = new ObjectMapper();
-        if(array) {
-            ArrayNode arrayNode;
-            try {
-                arrayNode = (ArrayNode) mapper.readTree(jsonStr).get(arrayName);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
-            if (arrayNode.isArray()) {
-                for (JsonNode jsonNode : arrayNode) {
-                    if (jsonNode.get("value") != null) {
-                        return jsonNode.get("value").asText("none");
+    public String getNodeValue(Object obj, String arrayName, String value, Boolean array) {
+        if (obj == null) {
+            return "";
+        } else {
+            String jsonStr = obj.toString();
+            ObjectMapper mapper = new ObjectMapper();
+            if (array) {
+                ArrayNode arrayNode;
+                try {
+                    arrayNode = (ArrayNode) mapper.readTree(jsonStr).get(arrayName);
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }
+                if (arrayNode.isArray()) {
+                    for (JsonNode jsonNode : arrayNode) {
+                        if (jsonNode.get("value") != null) {
+                            return jsonNode.get("value").asText("none");
+                        }
                     }
                 }
+            } else {
+                JsonNode jsonNode;
+                try {
+                    jsonNode = mapper.readTree(obj.toString());
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }
+                return jsonNode.get(value).asText();
             }
-        } else {
-            JsonNode jsonNode;
-            try {
-                jsonNode = mapper.readTree(obj.toString());
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
-            return jsonNode.get(value).asText();
+            return null;
         }
-        return null;
     }
 }
