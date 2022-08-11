@@ -130,6 +130,7 @@ public class RDELabTestService {
             testDTO.setVisitId(order.getLabOrder().getVisitId());
             testDTO.setOrderId(order.getLabOrder().getId());
             testDTO.setId(dto.getId());
+            testDTO.setComments(dto.getDescription());
             testDTO.setViralLoadIndication(dto.getViralLoadIndication());
             testDTO.setLabTestGroupId(dto.getLabTestGroupId());
 
@@ -139,7 +140,6 @@ public class RDELabTestService {
 
             if(dto.getSamples().size()>0) {
                 testDTO.setSampleCollectionDate(dto.getSamples().get(0).getDateSampleCollected());
-                testDTO.setComments(dto.getSamples().get(0).getCommentSampleCollected());
             }
 
             if(dto.getResults().size()>0) {
