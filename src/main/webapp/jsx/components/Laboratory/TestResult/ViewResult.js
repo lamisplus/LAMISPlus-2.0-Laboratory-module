@@ -53,7 +53,7 @@ const ModalViewResult = (props) => {
 
     const classes = useStyles()
     const datasample = props.datasample ? props.datasample : {};
-    //console.log(datasample)
+    console.log("bnm",datasample)
     const sample_type = datasample.sampleTypeName;
     const lab_number = datasample.labNumber;
     const date_sample_verified = datasample.dateSampleVerified;
@@ -79,23 +79,9 @@ const ModalViewResult = (props) => {
          sampleTestable: "true"
        })
 
-     const loadSampleResults = useCallback(async () => {
-       try {
-            if (typeof datasample.id !== "undefined") {
-                const response = await axios.get(`${url}lims/results/${datasample.id}`, { headers: {"Authorization" : `Bearer ${token}`} });
-                console.log("sample results",response);
-            }
-
-        } catch (e) {
-            toast.error("An error occurred while fetching lab", {
-                position: toast.POSITION.TOP_RIGHT
-            });
-        }
-    }, []);
-
     const getResults = useCallback(async () => {
         try {
-            const response = await axios.get(`${url}laboratory/results/${sample_id}`, { headers: {"Authorization" : `Bearer ${token}`}});
+            const response = await axios.get(`${url}laboratory/results/tests/${datasample.testId}`, { headers: {"Authorization" : `Bearer ${token}`}});
             //console.log("results ccxc", response);
             setCollectResult(response.data);
         } catch (e) {
@@ -106,9 +92,8 @@ const ModalViewResult = (props) => {
     }, []);
 
     useEffect(() => {
-        loadSampleResults();
         getResults();
-    }, [getResults, loadSampleResults]);
+    }, [getResults]);
 
   return (      
       <div>
@@ -172,7 +157,7 @@ const ModalViewResult = (props) => {
                                             <hr />
                                             </>
                                             :  !collectResult ? "No Result Available" :
-
+                                             collectResult.dateAssayed !== null ?
                                               <Row >
                                                   <Col xs="4">
                                                   <span style={{ fontWeight: 'bold'}}>Date Assayed </span>: {collectResult.dateAssayed + " " + collectResult.timeAssayed }
@@ -198,6 +183,7 @@ const ModalViewResult = (props) => {
                                                       <Divider  />
                                                   </Col>
                                               </Row>
+                                              : "No Result Available"
                                         }
                                     </Col>
                     

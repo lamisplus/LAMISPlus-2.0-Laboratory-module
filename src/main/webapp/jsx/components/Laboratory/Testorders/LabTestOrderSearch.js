@@ -3,7 +3,8 @@ import React, {useEffect, useCallback, useState} from 'react';
 import MaterialTable from 'material-table';
 import { Link } from 'react-router-dom'
 import { connect } from "react-redux";
-// import { fetchAllLabTestOrder } from "./../../../actions/laboratory";
+import { Container, Button, Icon } from 'semantic-ui-react'
+
 import "./../laboratory.css";
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import Tooltip from '@material-ui/core/Tooltip';
