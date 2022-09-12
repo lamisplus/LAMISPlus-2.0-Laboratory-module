@@ -8,6 +8,7 @@ import "./../laboratory.css";
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
+import MatButton from '@material-ui/core/Button'
 
 import { forwardRef } from 'react';
 import axios from "axios";
@@ -105,17 +106,13 @@ const PatientSearch = (props) => {
            icons={tableIcons}
               title="Laboratory Test Sample Verification"
               columns={[
-                  { title: "Patient ID", field: "Id" },
+                  { title: "Hospital ID", field: "Id" },
                   {
                     title: "Patient Name",
                     field: "name",
                   },
                   { title: "Date Order", field: "date", type: "dateTime" , filtering: false},
-                  {
-                      title: "Lab Tests Orders",
-                      field: "count",
-                      filtering: false
-                    },
+
                   {
                     title: "Sample Collected",
                     field: "samples",
@@ -142,7 +139,6 @@ const PatientSearch = (props) => {
                 Id: row.patientHospitalNumber,
                 name: row.patientFirstName +  ' ' + row.patientLastName,
                 date: row.orderDate + ' ' + row.orderTime,
-                count: row.testOrders,
                 samples: row.collectedSamples,
                 samplecount: row.verifiedSamples,
                 sampleresults: row.reportedResults,
@@ -153,11 +149,10 @@ const PatientSearch = (props) => {
                                         style={{ cursor: "pointer", color: "blue", fontStyle: "bold" 
                                     }}
                         >
-                                    <Tooltip title="Sample Verification">
-                                        <IconButton aria-label="Sample Verification" >
-                                            <VisibilityIcon color="primary"/>
-                                        </IconButton>
-                                    </Tooltip>
+                            <MatButton variant="outlined" color="primary">
+                               <VisibilityIcon color="primary"/>
+                               View
+                            </MatButton>
                         </Link>
                         : " "
                 })

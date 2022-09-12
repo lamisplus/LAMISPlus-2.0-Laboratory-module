@@ -8,6 +8,7 @@ import "./../laboratory.css";
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
+import MatButton from '@material-ui/core/Button'
 
 import { forwardRef } from 'react';
 import axios from "axios";
@@ -113,7 +114,7 @@ const PatientSearch = (props) => {
            icons={tableIcons}
               title="Laboratory Test Orders"
               columns={[
-                  { title: "Patient ID", field: "Id" },
+                  { title: "Hospital ID", field: "Id" },
                   {
                     title: "Patient Name",
                     field: "name",
@@ -161,11 +162,11 @@ const PatientSearch = (props) => {
                               }} 
                                   style={{ cursor: "pointer", color: "blue", fontStyle: "bold"}}
                             >
-                                <Tooltip title="Collect Sample">
-                                    <IconButton aria-label="Collect Sample" >
-                                        <VisibilityIcon color="primary"/>
-                                    </IconButton>
-                                </Tooltip>
+                            <MatButton variant="outlined" color="primary">
+                               <VisibilityIcon color="primary"/>
+                               View
+                            </MatButton>
+
                             </Link>
 
               }))}
