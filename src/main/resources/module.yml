@@ -2,7 +2,7 @@ basePackage: org.lamisplus.modules.laboratory
 name: LaboratoryModule
 store: true
 menus:
-  - icon: flaticon-087-stop
+  - icon: fa fa-flask
     disabled: false
     name: Laboratory
     state: laboratory

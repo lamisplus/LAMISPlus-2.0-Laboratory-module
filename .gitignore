@@ -206,3 +206,4 @@ yarn-debug.log*
 yarn-error.log*
 
 
+src/main/resources/views/static/laboratory/
