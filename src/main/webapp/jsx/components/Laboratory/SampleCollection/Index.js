@@ -1,5 +1,6 @@
 import React, {useEffect, useCallback, useState} from 'react';
 import {token, url } from "../../../../api";
+import CircularProgress from '@mui/material/CircularProgress';
 import axios from "axios";
 import { withStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom'
@@ -82,7 +83,7 @@ function PatientCard(props) {
             <br/>
             <SampleList  patientObj={labObj}/>
             </>
-            : ""
+            : <CircularProgress />
         }
          </CardContent>
       </Card>

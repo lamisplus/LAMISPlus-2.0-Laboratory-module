@@ -25,23 +25,70 @@ import axios from "axios";
 import {token, url} from '../../../../api'
 import { toast} from "react-toastify";
 
+const useStyles = makeStyles(theme => ({
+    card: {
+        margin: theme.spacing(20),
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
+    },
+    form: {
+        width: '100%', // Fix IE 11 issue.
+        marginTop: theme.spacing(3)
+    },
+    submit: {
+        margin: theme.spacing(3, 0, 2)
+    },
+    cardBottom: {
+        marginBottom: 20
+    },
+    Select: {
+        height: 45,
+        width: 350
+    },
+    button: {
+        margin: theme.spacing(1)
+    },
 
-
-const useStyles = makeStyles({
     root: {
-        width: '100%'
+        '& > *': {
+            margin: theme.spacing(1)
+        }
     },
-    container: {
-        maxHeight: 440
+    input: {
+        border:'2px solid #014d88',
+        borderRadius:'0px',
+        fontSize:'16px',
+        color:'#000'
     },
-    td: { borderBottom :'#fff'}
-})
+    error: {
+        color: "#f85032",
+        fontSize: "11px",
+    },
+    success: {
+        color: "#4BB543 ",
+        fontSize: "11px",
+    },
+    inputGroupText:{
+        backgroundColor:'#014d88',
+        fontWeight:"bolder",
+        color:'#fff',
+        borderRadius:'0px'
+    },
+    label:{
+        fontSize:'16px',
+        color:'rgb(153, 46, 98)',
+        fontWeight:'600'
+    }
+}))
 
   const SampleList = (props) => {
-    //console.log("sr",props.patientObj)
 
     const testOrders = [];
     const sampleCollections = props.patientObj ? props.patientObj : {};
+
+    console.log("results",sampleCollections)
+
     const encounterDate = null ;
     const hospitalNumber =  null;
     //const dispatch = useDispatch();
@@ -56,7 +103,7 @@ const useStyles = makeStyles({
      const previousData = useCallback(async () => {
         try {
             const response = await axios.get(`${url}laboratory/results/patients/${props.patientObj.patientId}`, { headers: {"Authorization" : `Bearer ${token}`} });
-            console.log("prev results", response);
+            //console.log("prev results", response);
             setPreviousRecords(response.data);
         } catch (e) {
             toast.error("An error occurred while fetching previous results", {
@@ -95,8 +142,6 @@ const useStyles = makeStyles({
 
         let lab = localStorage.getItem('labnumber');
 
-        console.log("TR",lab);
-
         if (lab !== null) {
             labNumber = lab;
         }
@@ -121,9 +166,9 @@ const useStyles = makeStyles({
         setModal(!modal)
     }
 
-    const viewresult = (row) => {  
-        setcollectModal({...collectModal, ...row});
-        setModal3(!modal3) 
+    const viewresult = (row, labTestName) => {
+        setcollectModal({...collectModal, ...row, labTestName: labTestName});
+        setModal3(!modal3)
     }
 
     const getGroup = e => {
@@ -170,7 +215,8 @@ const useStyles = makeStyles({
         }
     }
 
-    const sampleAction = (id, row) =>{
+    const sampleAction = (id, row, labTestName) =>{
+    //console.log(row)
     if(id===3){
         return (
                 <Menu>
@@ -178,8 +224,10 @@ const useStyles = makeStyles({
                     Action <span aria-hidden>▾</span>
                 </MenuButton>
                     <MenuList style={{hover:"#eee"}}>
-                        <MenuItem onSelect={() => viewresult(row)}><FaRegEye size="15" style={{color: '#3F51B5'}}/>{" "}View Result</MenuItem>
+                        <MenuItem onSelect={() => viewresult(row, labTestName)}><FaRegEye size="15" style={{color: '#3F51B5'}}/>{" "}View Result</MenuItem>
+                        { labTestName !== "Viral Load" ?
                         <MenuItem onSelect={() => addResult(row)}><FaPlusSquare size="15" style={{color: '#3F51B5'}}/>{" "} Add Result</MenuItem>
+                        : " "}
                     </MenuList>
 
                 </Menu>
@@ -328,13 +376,14 @@ return (
                                         <Row >
                                             <Col md="3">
                                                 <FormGroup>
-                                                    <Label for="occupation">Lab Test Group </Label>
+                                                    <Label for="occupation" className={classes.label}>Lab Test Group </Label>
 
                                                         <Input
                                                           type="select"
                                                           name="testgroup"
                                                           id="testgroup"
                                                           onChange={getGroup}
+                                                          className={classes.input}
                                                         >
                                                            <option value="All"> All </option>
                                                             {
@@ -387,7 +436,7 @@ return (
                                                                  <td className={classes.td}><Badge  color="primary">{sample.sampleTypeName}</Badge></td>
                                                                  <td className={classes.td}>{sample.dateSampleVerified + ' ' + sample.timeSampleVerified}</td>
                                                                  <td className={classes.td}>{sampleStatus(3)}</td>
-                                                                 <td className={classes.td}>{sampleAction(3, sample)}</td>
+                                                                 <td className={classes.td}>{sampleAction(3, sample, row.labTestName)}</td>
                                                                  <td className={classes.td}></td>
                                                                </tr>
                                                                :

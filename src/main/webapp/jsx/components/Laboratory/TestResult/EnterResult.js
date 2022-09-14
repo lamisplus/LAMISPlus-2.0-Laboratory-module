@@ -51,8 +51,30 @@ const useStyles = makeStyles(theme => ({
         }
     },
     input: {
-        display: 'none'
-    } 
+        border:'2px solid #014d88',
+        borderRadius:'0px',
+        fontSize:'16px',
+        color:'#000'
+    },
+    error: {
+        color: "#f85032",
+        fontSize: "11px",
+    },
+    success: {
+        color: "#4BB543 ",
+        fontSize: "11px",
+    },
+    inputGroupText:{
+        backgroundColor:'#014d88',
+        fontWeight:"bolder",
+        color:'#fff',
+        borderRadius:'0px'
+    },
+    label:{
+        fontSize:'16px',
+        color:'rgb(153, 46, 98)',
+        fontWeight:'600'
+    }
 }))
 
 const ModalSampleResult = (props) => {
@@ -144,9 +166,7 @@ const ModalSampleResult = (props) => {
 
                   //history.push('/result-reporting');
               });
-
-
-
+              props.togglestatus()
       }
     }
     const textstyle = {
@@ -176,11 +196,11 @@ const ModalSampleResult = (props) => {
                                   <Row style={{ marginTop: '20px'}}>
                                       <Col md="12" >
                                           <Alert color="primary" style={{color:"#000" , fontWeight: 'bolder', }}>
-                                          <p style={{marginTop: '.7rem' }}>Lab number: <span style={{ fontWeight: 'bolder'}}>{lab_number}</span>
-                                              &nbsp;&nbsp;&nbsp;&nbsp;Sample type:
+                                          <p style={{marginTop: '.7rem' }}>Lab number: &nbsp;<span style={{ fontWeight: 'bolder'}}>{lab_number}</span>
+                                              &nbsp;&nbsp;&nbsp;&nbsp;Sample type:&nbsp;
                                               <span style={{ fontWeight: 'bolder'}}>{" "}{sample_type}</span>
                                                       &nbsp;&nbsp;&nbsp;&nbsp; Date sample collected :
-                                              <span style={{ fontWeight: 'bolder'}}>{" "}{date_sample_collected + "@" + time_sample_collected}</span>
+                                              <span style={{ fontWeight: 'bolder'}}>{" "} &nbsp;{date_sample_collected + " " + time_sample_collected}</span>
                                           </p>
 
                                         </Alert>
@@ -188,28 +208,33 @@ const ModalSampleResult = (props) => {
                                       </Col>
 
                                       <Col xs="6">
-                                          Date Assayed
-                                            <br/>
-                                            <DateTimePicker time={false} name="date_asseyed"  id="date_asseyed"  
+                                        <FormGroup>
+                                          <Label for='date Assayed' className={classes.label}>Date Assayed</Label>
+                                            <DateTimePicker time={false} name="date_asseyed"  id="date_asseyed" className={classes.input}
                                               onChange={value1 =>
                                                 setOtherFields({ ...otherfields, date_asseyed: value1 })
                                               }
-                                            /> 
+                                            />
+                                         </FormGroup>
                                       </Col>
                                       <Col xs="6">
-                                          Date Reported
-                                              <br/>
-                                              <DateTimePicker time={false} name="date_result_reported"  id="date_result_reported"  
+                                            <FormGroup>
+                                              <Label for='date reported' className={classes.label}>Date Reported</Label>
+                                              <DateTimePicker time={false} name="date_result_reported"  id="date_result_reported" className={classes.input}
                                                 onChange={value1 =>
                                                   setOtherFields({ ...otherfields, date_result_reported: value1 })
                                                 }
-                                              />            
+                                              />
+                                            </FormGroup>
                                       </Col>
+                                  </Row>
+                                  <Row>
                                       <Col md={6}>
                                           <FormGroup>
-                                            <Label for=''>Time Assayed</Label>
+                                            <Label for='' className={classes.label}>Time Assayed</Label>
 
                                              <Input
+                                                 className={classes.input}
                                                 type="text"
                                                 name="time_result_assayed"
                                                 id="time_result_assayed"
@@ -226,9 +251,10 @@ const ModalSampleResult = (props) => {
                                       </Col>
                                         <Col md={6}>
                                             <FormGroup>
-                                              <Label for=''>Time Reported</Label>
+                                              <Label for='' className={classes.label}>Time Reported</Label>
 
                                                <Input
+                                                   className={classes.input}
                                                   type="text"
                                                   name="time_result_reported"
                                                   id="time_result_reported"
@@ -247,8 +273,9 @@ const ModalSampleResult = (props) => {
                                   <Row>             
                                      <Col md={12}>
                                        <FormGroup>
-                                         <Label for='resultReported'>Result Report</Label>
+                                         <Label for='resultReported' className={classes.label}>Result Report</Label>
                                          <Input
+                                            className={classes.input}
                                            type='textarea'
                                            name='resultReported'
                                            id='resultReported'
