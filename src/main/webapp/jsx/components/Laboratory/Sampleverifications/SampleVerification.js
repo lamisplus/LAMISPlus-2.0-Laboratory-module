@@ -20,43 +20,62 @@ import { Spinner } from "reactstrap";
 import { toast} from "react-toastify";
 import { useHistory } from 'react-router-dom';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
     card: {
         margin: theme.spacing(20),
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
     },
     form: {
-        width: "100%", // Fix IE 11 issue.
-        marginTop: theme.spacing(3),
+        width: '100%', // Fix IE 11 issue.
+        marginTop: theme.spacing(3)
     },
     submit: {
-        margin: theme.spacing(3, 0, 2),
+        margin: theme.spacing(3, 0, 2)
     },
     cardBottom: {
-        marginBottom: 20,
+        marginBottom: 20
     },
     Select: {
         height: 45,
-        width: 350,
+        width: 350
     },
     button: {
-        margin: theme.spacing(1),
+        margin: theme.spacing(1)
     },
+
     root: {
-        "& > *": {
-            margin: theme.spacing(1),
-        },
+        '& > *': {
+            margin: theme.spacing(1)
+        }
     },
     input: {
-        display: "none",
+        border:'2px solid #014d88',
+        borderRadius:'0px',
+        fontSize:'16px',
+        color:'#000'
     },
     error: {
         color: "#f85032",
-        fontSize: "12.8px",
+        fontSize: "11px",
     },
-}));
+    success: {
+        color: "#4BB543 ",
+        fontSize: "11px",
+    },
+    inputGroupText:{
+        backgroundColor:'#014d88',
+        fontWeight:"bolder",
+        color:'#fff',
+        borderRadius:'0px'
+    },
+    label:{
+        fontSize:'16px',
+        color:'rgb(153, 46, 98)',
+        fontWeight:'600'
+    }
+}))
 
 const ModalVerifySample = (props) => {
     const history = useHistory();
@@ -199,15 +218,16 @@ const ModalVerifySample = (props) => {
                                                     &nbsp;&nbsp;&nbsp;&nbsp;Sample type:
                                                     <span style={{ fontWeight: 'bolder'}}>{" "}{sample_type}</span>
                                                             &nbsp;&nbsp;&nbsp;&nbsp; Date sample collected :
-                                                    <span style={{ fontWeight: 'bolder'}}>{" "}{date_sample_collected + "@" + time_sample_collected}</span>
+                                                    <span style={{ fontWeight: 'bolder'}}>{" "}{date_sample_collected + " " + time_sample_collected}</span>
                                                 </p>
 
                                               </Alert>
                                         </Col>
                                             <Col md={6}>
                                               <FormGroup>
-                                                <Label for='maritalStatus'>Date Verified</Label>
+                                                <Label for='maritalStatus' className={classes.label}>Date Verified</Label>
                                                 <DateTimePicker
+                                                    className={classes.input}
                                                     time={false}
                                                     name="date_sample_verified"
                                                     id="date_sample_verified"
@@ -222,9 +242,10 @@ const ModalVerifySample = (props) => {
                                             </Col>
                                             <Col md={6}>
                                               <FormGroup>
-                                                <Label for=''>Time Verified</Label>
+                                                <Label for='' className={classes.label}>Time Verified</Label>
 
                                                  <Input
+                                                    className={classes.input}
                                                     type="text"
                                                     name="time_sample_verified"
                                                     id="time_sample_verified"
@@ -241,9 +262,9 @@ const ModalVerifySample = (props) => {
                                               </Col>
                                           <Col md={6}>
                                               <FormGroup>
-                                                <Label for="exampleSelect">Confirm Sample</Label>
+                                                <Label for="exampleSelect" className={classes.label}>Confirm Sample</Label>
                                                 <Input type="select" name="verification_status" id="verification_status"
-                                                  value={otherFields.verification_status}
+                                                  value={otherFields.verification_status} className={classes.input}
                                                   {...(errors.verification_status && { invalid: true})}
                                                 onChange={handleOtherFieldInputChange}>
                                                   <option>Select</option>
@@ -256,9 +277,10 @@ const ModalVerifySample = (props) => {
                                               </Col>
                                               <Col md={6}>
                                                 <FormGroup>
-                                                    <Label for="sample_verified_by">Verify by </Label>
+                                                    <Label for="sample_verified_by" className={classes.label}>Verify by </Label>
 
                                                         <Input
+                                                        className={classes.input}
                                                           type="select"
                                                           name="sample_verified_by"
                                                           id="sample_verified_by"
@@ -267,17 +289,17 @@ const ModalVerifySample = (props) => {
                                                           {...(errors.sample_verified_by && { invalid: true})}
                                                         >
                                                           <option value=""> </option>
-                                                          <option value="Dorcas"> Dorcas </option>
-                                                          <option value="Mike"> Mike </option>
-                                                          <option value="Admin"> Admin </option>
+                                                           <option value="Data clerks"> Data clerks </option>
+                                                           <option value="Admin"> Admin </option>
                                                       </Input>
                                                           <FormFeedback>{errors.sample_verified_by}</FormFeedback>
                                                 </FormGroup>
                                             </Col>
                                               <Col md={12}>
                                               <FormGroup>
-                                                <Label for='maritalStatus'>Note</Label>
+                                                <Label for='maritalStatus' className={classes.label}>Note</Label>
                                                 <Input
+                                                className={classes.input}
                                                   type='textarea'
                                                   name='comment'
                                                   id='comment'

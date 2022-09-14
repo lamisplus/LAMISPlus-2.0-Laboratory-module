@@ -23,21 +23,68 @@ import ModalViewResult from './../TestResult/ViewResult';
 import SampleVerification from './SampleVerification'
 import { checkStatus } from '../../../../utils'
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
+    card: {
+        margin: theme.spacing(20),
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
+    },
+    form: {
+        width: '100%', // Fix IE 11 issue.
+        marginTop: theme.spacing(3)
+    },
+    submit: {
+        margin: theme.spacing(3, 0, 2)
+    },
+    cardBottom: {
+        marginBottom: 20
+    },
+    Select: {
+        height: 45,
+        width: 350
+    },
+    button: {
+        margin: theme.spacing(1)
+    },
+
     root: {
-        width: '100%'
+        '& > *': {
+            margin: theme.spacing(1)
+        }
     },
-    container: {
-        maxHeight: 440
+    input: {
+        border:'2px solid #014d88',
+        borderRadius:'0px',
+        fontSize:'16px',
+        color:'#000'
     },
-    td: { borderBottom :'#fff'}
-})
+    error: {
+        color: "#f85032",
+        fontSize: "11px",
+    },
+    success: {
+        color: "#4BB543 ",
+        fontSize: "11px",
+    },
+    inputGroupText:{
+        backgroundColor:'#014d88',
+        fontWeight:"bolder",
+        color:'#fff',
+        borderRadius:'0px'
+    },
+    label:{
+        fontSize:'16px',
+        color:'rgb(153, 46, 98)',
+        fontWeight:'600'
+    }
+}))
 
   const SampleList = (props) => {
 
     const testOrders = [];
     const sampleCollections = props.patientObj ? props.patientObj : {};
-   // console.log("row", sampleCollections)
+    console.log("verifed samples", sampleCollections)
     const encounterDate = null ;
     const hospitalNumber =  null;
     //const dispatch = useDispatch();
@@ -246,23 +293,24 @@ return (
                             <Card body>
                                 <Row >
                                     <Col md="3">
-                                        <FormGroup>
-                                            <Label for="occupation">Lab Test Group </Label>
+                                          <FormGroup>
+                                             <Label for="occupation" className={classes.label}>Lab Test Group </Label>
 
                                                 <Input
                                                   type="select"
                                                   name="testgroup"
                                                   id="testgroup"
                                                   onChange={getGroup}
+                                                  className={classes.input}
                                                 >
                                                    <option value="All"> All </option>
                                                     {
-                                                      uniqueValues.map(x => 
+                                                      uniqueValues.map(x =>
                                                         <option key={x} value={x}>
                                                           {x}
                                                         </option>
                                                     )}
-                                                    
+
                                               </Input>
                                         </FormGroup>
                                     </Col>
@@ -287,7 +335,7 @@ return (
                                     <Form >
                                     <br/>
                                         <Table  striped responsive>
-                                            <thead style={{  backgroundColor:'#000000', color:'#ffffff' }}>
+                                            <thead style={{  backgroundColor:'#014d88', color:'#fff' }}>
                                                 <tr>
                                                     <th>Test Group</th>
                                                     <th>Test Type</th>
@@ -306,7 +354,7 @@ return (
                                                              <th className={classes.td}>{row.labTestGroupName}</th>
                                                              <td className={classes.td}>{row.labTestName}</td>
                                                              <td className={classes.td}><Badge  color="primary">{sample.sampleTypeName}</Badge></td>
-                                                             <td className={classes.td}>{sample.dateSampleCollected + '@' + sample.timeSampleCollected}</td>
+                                                             <td className={classes.td}>{sample.dateSampleCollected + ' ' + sample.timeSampleCollected}</td>
                                                              <td className={classes.td}>{sampleStatus(1)}</td>
                                                              <td className={classes.td}>{sampleAction(1, sample)}</td>
                                                              <td className={classes.td}></td>

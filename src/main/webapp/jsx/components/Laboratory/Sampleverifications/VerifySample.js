@@ -18,42 +18,60 @@ import { Alert } from 'reactstrap';
 import { Spinner } from 'reactstrap';
 
 const useStyles = makeStyles(theme => ({
-  card: {
-    margin: theme.spacing(20),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center'
-  },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(3)
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2)
-  },
-  cardBottom: {
-    marginBottom: 20
-  },
-  Select: {
-    height: 45,
-    width: 350
-  },
-  button: {
-    margin: theme.spacing(1)
-  },
+    card: {
+        margin: theme.spacing(20),
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
+    },
+    form: {
+        width: '100%', // Fix IE 11 issue.
+        marginTop: theme.spacing(3)
+    },
+    submit: {
+        margin: theme.spacing(3, 0, 2)
+    },
+    cardBottom: {
+        marginBottom: 20
+    },
+    Select: {
+        height: 45,
+        width: 350
+    },
+    button: {
+        margin: theme.spacing(1)
+    },
 
-  root: {
-    '& > *': {
-      margin: theme.spacing(1)
+    root: {
+        '& > *': {
+            margin: theme.spacing(1)
+        }
+    },
+    input: {
+        border:'2px solid #014d88',
+        borderRadius:'0px',
+        fontSize:'16px',
+        color:'#000'
+    },
+    error: {
+        color: "#f85032",
+        fontSize: "11px",
+    },
+    success: {
+        color: "#4BB543 ",
+        fontSize: "11px",
+    },
+    inputGroupText:{
+        backgroundColor:'#014d88',
+        fontWeight:"bolder",
+        color:'#fff',
+        borderRadius:'0px'
+    },
+    label:{
+        fontSize:'16px',
+        color:'rgb(153, 46, 98)',
+        fontWeight:'600'
     }
-  },
-  input: {
-    display: 'none'
-  },
-  error:{
-    color: '#f85032',
-    fontSize: '12.8px'
-  }
 }))
 
 Moment.locale('en');
@@ -63,7 +81,7 @@ momentLocalizer();
 const ModalVerifySample = (props) => {
   const classes = useStyles()
   const dataSample = props.datasample ? props.datasample : {};
-  console.log("xc", dataSample)
+  //console.log("xc", dataSample)
   const lab_test_group = dataSample.id ? dataSample.labTestGroupName : null ;
   const description = dataSample.id ? dataSample.labTestName : null ;
   const date_sample_collected = dataSample.data ? dataSample.data.date_sample_collected : null ;
@@ -148,7 +166,7 @@ const ModalVerifySample = (props) => {
       </Col>
       <Col md={6}>
           <FormGroup>
-            <Label for='maritalStatus'>Date Verified</Label>
+            <Label for='maritalStatus' className={classes.label}>Date Verified</Label>
             <DateTimePicker
                 time={false}
                 name="date_sample_verified"
@@ -164,7 +182,7 @@ const ModalVerifySample = (props) => {
         </Col>
         <Col md={6}>
           <FormGroup> 
-            <Label for=''>Time Verified</Label>
+            <Label for='' className={classes.label}>Time Verified</Label>
             
             <DateTimePicker
                 date={false}
@@ -181,7 +199,7 @@ const ModalVerifySample = (props) => {
           </Col>
         <Col md={6}>
           <FormGroup>
-            <Label for="exampleSelect">Confirm Sample</Label>
+            <Label for="exampleSelect" className={classes.label}>Confirm Sample</Label>
             <Input type="select" name="verification_status" id="verification_status" 
               value={otherFields.verification_status}
               {...(errors.verification_status && { invalid: true})}
@@ -196,7 +214,7 @@ const ModalVerifySample = (props) => {
           </Col>
           <Col md={6}>
             <FormGroup>
-                <Label for="occupation">Verify by </Label>
+                <Label for="occupation" className={classes.label}>Verify by </Label>
 
                     <Input
                       type="select"
@@ -216,7 +234,7 @@ const ModalVerifySample = (props) => {
         </Col>
           <Col md={7}>
           <FormGroup>
-            <Label for='maritalStatus'>Note</Label>
+            <Label for='maritalStatus' className={classes.label}>Note</Label>
             <Input
               type='textarea'
               name='comment'

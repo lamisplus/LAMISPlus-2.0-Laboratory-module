@@ -1,7 +1,8 @@
 package org.lamisplus.modules.Laboratory.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -17,6 +18,8 @@ public class Result {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private int id;
+    @Column(name = "uuid")
+    private String uuid;
     @Column(name = "date_assayed")
     private LocalDate dateAssayed;
     @Column(name = "time_assayed")

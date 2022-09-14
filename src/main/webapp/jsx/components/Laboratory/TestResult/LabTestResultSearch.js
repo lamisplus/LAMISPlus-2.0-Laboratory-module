@@ -7,6 +7,7 @@ import NoteAddIcon from '@material-ui/icons/NoteAdd';
 import "./../laboratory.css";
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
+import MatButton from '@material-ui/core/Button'
 
 import { forwardRef } from 'react';
 import axios from "axios";
@@ -55,23 +56,18 @@ const PatientSearch = (props) => {
     const loadLabTestData = useCallback(async () => {
         try {
             const response = await axios.get(`${url}laboratory/orders/pending-results`, { headers: {"Authorization" : `Bearer ${token}`} });
-            console.log("sample results", response);
+            //console.log("sample results", response);
             setCollectedSamples(response.data);
+            setLoading(false)
         } catch (e) {
             toast.error("An error occurred while fetching lab", {
                 position: toast.POSITION.TOP_RIGHT
             });
+            setLoading(false)
         }
     }, []);
     
     useEffect(() => {
-         setLoading('true');
-         const onSuccess = () => {
-             setLoading(false)
-         }
-         const onError = () => {
-             setLoading(false)
-         }
          loadLabTestData();
     }, [loadLabTestData]);
 
@@ -112,22 +108,13 @@ const PatientSearch = (props) => {
            icons={tableIcons}
               title="Laboratory Test Result Reporting"
               columns={[
-                  { title: "Patient ID", field: "Id" },
+                  { title: "Hospital ID", field: "Id" },
                   {
                     title: "Patient Name",
                     field: "name",
                   },
-                  { title: "Date Order", field: "date", type: "date" , filtering: false},
-                  {
-                      title: "Lab Tests Orders",
-                      field: "count",
-                      filtering: false
-                    },
-                  {
-                    title: "Sample Collected",
-                    field: "samples",
-                    filtering: false
-                  },
+                  { title: "Date Order", field: "date", type: "dateTime" , filtering: false},
+
                    {
                       title: "Sample Verified",
                       field: "sampleverified",
@@ -144,14 +131,12 @@ const PatientSearch = (props) => {
                     filtering: false,
                   },
               ]}
-              //isLoading={loading}
+              isLoading={loading}
               data={ collectedSamples.map((row) => ({
 
               Id: row.patientHospitalNumber,
               name: row.patientFirstName +  ' ' + row.patientLastName,
-              date: row.orderDate + '@' + row.orderTime,
-              count: row.testOrders,
-              samples: row.collectedSamples,
+              date: row.orderDate + ' ' + row.orderTime,
               sampleverified: row.verifiedSamples,
               samplecount: row.reportedResults,
               actions: row.verifiedSamples > 0 ? <Link to ={{
@@ -160,54 +145,18 @@ const PatientSearch = (props) => {
                           }} 
                             style={{ cursor: "pointer", color: "blue", 
                             fontStyle: "bold" }}>
-                              <Tooltip title="Enter Result">
-                                <IconButton aria-label="Enter Result" >
-                                <NoteAddIcon color="primary"/>
-                              </IconButton>
-                              </Tooltip>
+                              <MatButton variant="outlined" color="primary">
+                                 <NoteAddIcon color="primary"/>
+                                 View
+                              </MatButton>
                             </Link> : ""
 
                 }))}
-            // data={query =>
-            //       new Promise((resolve, reject) =>
-            //           axios.get(`${baseUrl}encounters/${LABSERVICECODE}/{dateStart}/{dateEnd}?size=${query.pageSize}&page=${query.page}&search=${query.search}`)
-            //               .then(response => response)
-            //               .then(result => {
-
-            //                   //console.log('in result')
-            //                   //console.log( result.headers);
-            //                   console.log( result.headers['x-total-count']);
-            //                   resolve({
-            //                       data: result.data.map((row) => ({
-            //                         Id: row.hospitalNumber,
-            //                         name: row.firstName +  ' ' + row.lastName,
-            //                         date: row.dateEncounter,
-            //                         count: row.formDataObj.length,
-            //                         samplecount: totalSampleConllected(row.formDataObj),
-            //                           actions:
-            //                           <Link to ={{ 
-            //                                         pathname: "/collect-sample",  
-            //                                         state: row
-            //                                     }} 
-            //                                         style={{ cursor: "pointer", color: "blue", fontStyle: "bold"}}
-            //                                     >
-            //                                         <Tooltip title="Collect Sample">
-            //                                             <IconButton aria-label="Collect Sample" >
-            //                                                 <VisibilityIcon color="primary"/>
-            //                                             </IconButton>
-            //                                         </Tooltip>
-            //                                     </Link>
-            //                       })),
-            //                       page: query.page,
-            //                       totalCount: result.headers['x-total-count'],
-            //                   })
-            //               })
-            //       )}
 
                   options={{
                     headerStyle: {
-                        backgroundColor: "#9F9FA5",
-                        color: "#000",
+                        backgroundColor: "#014d88",
+                        color: "#fff"
                     },
                     searchFieldStyle: {
                         width : '300%',

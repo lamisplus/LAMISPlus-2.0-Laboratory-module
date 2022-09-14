@@ -1,5 +1,6 @@
 import React, {useEffect, useCallback, useState} from 'react';
 import {token, url } from "../../../../api";
+import CircularProgress from '@mui/material/CircularProgress';
 import axios from "axios";
 import { withStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom'
@@ -47,7 +48,6 @@ const styles = theme => ({
   },
 });
 
-
 function PatientCard(props) {
     let history = useHistory();
     const [labObj, setLabObj] = useState({});
@@ -59,7 +59,7 @@ function PatientCard(props) {
     const loadData = useCallback(async () => {
         try {
             const response = await axios.get(`${url}laboratory/orders/${patientObj.orderId}`, { headers: {"Authorization" : `Bearer ${token}`} });
-            console.log("lab test obj", response);
+
             setLabObj(response.data);
         } catch (e) {
             toast.error("An error occurred while fetching lab", {
@@ -83,7 +83,7 @@ function PatientCard(props) {
             <br/>
             <SampleList  patientObj={labObj}/>
             </>
-            : "Error Page!!!"
+            : <CircularProgress />
         }
          </CardContent>
       </Card>

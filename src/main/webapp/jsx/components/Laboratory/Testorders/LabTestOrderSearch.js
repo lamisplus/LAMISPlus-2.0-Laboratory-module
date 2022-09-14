@@ -3,11 +3,13 @@ import React, {useEffect, useCallback, useState} from 'react';
 import MaterialTable from 'material-table';
 import { Link } from 'react-router-dom'
 import { connect } from "react-redux";
-// import { fetchAllLabTestOrder } from "./../../../actions/laboratory";
+import { Container, Button, Icon } from 'semantic-ui-react'
+
 import "./../laboratory.css";
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
+import MatButton from '@material-ui/core/Button'
 
 import { forwardRef } from 'react';
 import axios from "axios";
@@ -51,18 +53,20 @@ ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
 const PatientSearch = (props) => {
-    const [loading, setLoading] = useState('')
     const [collectedSamples, setCollectedSamples] = useState([])
+    const [loading, setLoading] = useState(true)
 
      const loadLabTestData = useCallback(async () => {
             try {
                 const response = await axios.get(`${url}laboratory/orders/pending-sample-collection`, { headers: {"Authorization" : `Bearer ${token}`} });
                 //console.log("lab test", response);
                 setCollectedSamples(response.data);
+                setLoading(false)
             } catch (e) {
                 toast.error("An error occurred while fetching lab", {
                     position: toast.POSITION.TOP_RIGHT
                 });
+                setLoading(false)
             }
         }, []);
     
@@ -111,12 +115,12 @@ const PatientSearch = (props) => {
            icons={tableIcons}
               title="Laboratory Test Orders"
               columns={[
-                  { title: "Patient ID", field: "Id" },
+                  { title: "Hospital ID", field: "Id" },
                   {
                     title: "Patient Name",
                     field: "name",
                   },
-                  { title: "Date Order", field: "date", type: "date" , filtering: false},          
+                  { title: "Date Order", field: "date", type: "dateTime" , filtering: false},
                   {
                     title: "Lab Tests Orders",
                     field: "count",
@@ -143,11 +147,12 @@ const PatientSearch = (props) => {
                     filtering: false,
                   },
               ]}
+              isLoading={loading}
               //isLoading={loading}
               data={ collectedSamples.map((row) => ({
                   Id: row.patientHospitalNumber,
                   name: row.patientFirstName +  ' ' + row.patientLastName,
-                  date: row.orderDate + '@' + row.orderTime,
+                  date: row.orderDate + ' ' + row.orderTime,
                   count: row.testOrders,
                   samplecount: row.collectedSamples,
                   sampleVerified: row.verifiedSamples,
@@ -158,19 +163,19 @@ const PatientSearch = (props) => {
                               }} 
                                   style={{ cursor: "pointer", color: "blue", fontStyle: "bold"}}
                             >
-                                <Tooltip title="Collect Sample">
-                                    <IconButton aria-label="Collect Sample" >
-                                        <VisibilityIcon color="primary"/>
-                                    </IconButton>
-                                </Tooltip>
+                            <MatButton variant="outlined" color="primary">
+                               <VisibilityIcon color="primary"/>
+                               View
+                            </MatButton>
+
                             </Link>
 
               }))}
 
                   options={{
                     headerStyle: {
-                        backgroundColor: "#9F9FA5",
-                        color: "#000",
+                        backgroundColor: "#014d88",
+                        color: "#fff"
                     },
                     searchFieldStyle: {
                         width : '300%',

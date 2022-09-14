@@ -286,7 +286,7 @@ return (
                                 </Row>
                                     <Form >
                                         <Table  striped responsive>
-                                            <thead style={{  backgroundColor:'#9F9FA5' }}>
+                                            <thead style={{  backgroundColor: "#014d88", color: "#fff"}}>
                                                 <tr>
                                                     <th>Test</th>
                                                     <th>Sample Type</th>

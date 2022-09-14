@@ -39,4 +39,9 @@ public interface LabMapper {
     List<TestResponseDTO> toTestResponseDtoList(List<Test> tests);
     List<LabOrderResponseDTO> toLabOrderResponseDtoList(List<LabOrder> labOrders);
     List<PendingOrderDTO> toPendingOrderDtoList(List<PendingOrder> pendingOrders);
+
+    RDETestDTO toRdeTestDto(RDETestResponseDTO testResponseDTO);
+    RDETestResponseDTO toRdeTestResponseDto(RDETestDTO rdeTestDTO);
+    List<RDETestDTO> toRdeTestDtoList(List<RDETestResponseDTO> testResponseDTOList);
+    List<RDETestResponseDTO> toRdeTestResponseDtoList(List<RDETestDTO> rdeTestDTOList);
 }

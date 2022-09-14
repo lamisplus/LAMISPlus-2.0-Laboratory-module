@@ -11,6 +11,7 @@ import java.util.List;
 public class TestResponseDTO {
     private int id;
     private int labTestId;
+    private String description;
     private String labTestName;
     private String labNumber;
     private String unitMeasurement;

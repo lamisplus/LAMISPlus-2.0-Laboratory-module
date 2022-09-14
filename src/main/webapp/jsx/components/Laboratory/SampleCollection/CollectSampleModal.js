@@ -20,49 +20,72 @@ import { Spinner } from "reactstrap";
 import { toast} from "react-toastify";
 import { useHistory } from 'react-router-dom';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
     card: {
         margin: theme.spacing(20),
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
     },
     form: {
-        width: "100%", // Fix IE 11 issue.
-        marginTop: theme.spacing(3),
+        width: '100%', // Fix IE 11 issue.
+        marginTop: theme.spacing(3)
     },
     submit: {
-        margin: theme.spacing(3, 0, 2),
+        margin: theme.spacing(3, 0, 2)
     },
     cardBottom: {
-        marginBottom: 20,
+        marginBottom: 20
     },
     Select: {
         height: 45,
-        width: 350,
+        width: 350
     },
     button: {
-        margin: theme.spacing(1),
+        margin: theme.spacing(1)
     },
+
     root: {
-        "& > *": {
-            margin: theme.spacing(1),
-        },
+        '& > *': {
+            margin: theme.spacing(1)
+        }
     },
     input: {
-        display: "none",
+        border:'2px solid #014d88',
+        borderRadius:'0px',
+        fontSize:'16px',
+        color:'#000'
+    },
+    arial: {
+        border:'2px solid #014d88',
+        borderRadius:'0px',
+        fontSize:'15px',
+        color:'#000'
     },
     error: {
         color: "#f85032",
-        fontSize: "12.8px",
+        fontSize: "11px",
     },
-}));
+    success: {
+        color: "#4BB543 ",
+        fontSize: "11px",
+    },
+    inputGroupText:{
+        backgroundColor:'#014d88',
+        fontWeight:"bolder",
+        color:'#fff',
+        borderRadius:'0px'
+    },
+    label:{
+        fontSize:'16px',
+        color:'rgb(153, 46, 98)',
+        fontWeight:'600'
+    }
+}))
 
 const ModalSample = (props) => {
 
     const history = useHistory();
-
-
     const classes = useStyles()
     const datasample = props.datasample && props.datasample!==null ? props.datasample : {};
     const order_priority = datasample.id && datasample.orderPriority ? datasample.orderPriorityName : null;
@@ -235,8 +258,9 @@ const ModalSample = (props) => {
                                             </Col>
                                             <Col md={6}>
                                                 <FormGroup>
-                                                    <Label for='date collected'>Date Collected</Label>
+                                                    <Label for='date collected' className={classes.label}>Date Collected</Label>
                                                     <DateTimePicker
+                                                        className={classes.input}
                                                         time={false}
                                                         name="date_sample_collected"
                                                         id="date_sample_collected"
@@ -253,9 +277,10 @@ const ModalSample = (props) => {
                                             </Col>
                                             <Col md={6}>
                                                 <FormGroup>
-                                                    <Label for='time collected'>Time Collected</Label>
+                                                    <Label for='time collected' className={classes.label}>Time Collected</Label>
 
                                                     <Input
+                                                        className={classes.input}
                                                         type="text"
                                                         name="time_sample_collected"
                                                         id="time_sample_collected"
@@ -273,8 +298,9 @@ const ModalSample = (props) => {
                
                                             <Col md={6}>
                                                 <FormGroup>
-                                                    <Label for="sample type">Sample Type</Label>
+                                                    <Label for="sample type" className={classes.label}>Sample Type</Label>
                                                     <Autocomplete
+
                                                         multiple="true"
                                                         id="sample_type"
                                                         size="small"
@@ -292,8 +318,7 @@ const ModalSample = (props) => {
                                                                 />
                                                             ))
                                                         }
-                                                        style={{ width: "auto", marginTop: "-1rem" }}
-                                                        s
+                                                        className={classes.arial}
                                                         renderInput={(params) => (
                                                             <TextField
                                                                 {...params}
@@ -314,9 +339,10 @@ const ModalSample = (props) => {
                                             </Col>
                                             <Col md={6}>
                                                 <FormGroup>
-                                                    <Label for="collected">Collected by </Label>
+                                                    <Label for="collected" className={classes.label}>Collected by </Label>
 
                                                     <Input
+                                                        className={classes.input}
                                                         type="select"
                                                         name="sample_collected_by"
                                                         id="sample_collected_by"
@@ -327,9 +353,9 @@ const ModalSample = (props) => {
                                                         })}
                                                     >
                                                         <option value=""> </option>
-                                                        <option value="1"> Dorcas </option>
-                                                        <option value="2"> Jeph </option>
-                                                        <option value="3"> Debora </option>
+                                                        <option value="Data clerks"> Data clerks </option>
+                                                        <option value="Admin"> Admin </option>
+
                                                     </Input>
                                                     <FormFeedback>
                                                         {errors.sample_collected_by}
@@ -338,8 +364,9 @@ const ModalSample = (props) => {
                                             </Col>
                                             <Col md={12}>
                                                 <FormGroup>
-                                                    <Label for="Note">Note</Label>
+                                                    <Label for="Note" className={classes.label}>Note</Label>
                                                     <Input
+                                                        className={classes.input}
                                                         type="textarea"
                                                         name="comment"
                                                         id="comment"

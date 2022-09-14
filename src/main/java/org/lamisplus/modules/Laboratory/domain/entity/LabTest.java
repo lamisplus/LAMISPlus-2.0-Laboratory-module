@@ -19,6 +19,8 @@ public class LabTest {
     private String labTestName;
     @Column(name = "unit")
     private String unit;
+    @Column(name = "uuid")
+    private String uuid;
 
     @ManyToOne
     @JoinColumn(name = "labtestgroup_id")

@@ -57,7 +57,6 @@ CREATE TABLE public.laboratory_sample
 	test_id INTEGER,
     PRIMARY KEY (id)
 );
-
 ALTER SEQUENCE laboratory_sample_id_seq OWNED BY laboratory_sample.id;
 
 
@@ -76,7 +75,6 @@ CREATE TABLE public.laboratory_result
 	test_id INTEGER,
     PRIMARY KEY (id)
 );
-
 ALTER SEQUENCE laboratory_result_id_seq OWNED BY laboratory_result.id;
 
 

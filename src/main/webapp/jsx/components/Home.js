@@ -27,7 +27,6 @@ const Home = (props) => {
     }
   }, [urlTabs]);
 
-
   return (
     <Fragment>
      
@@ -59,8 +58,6 @@ const Home = (props) => {
                     </Tab>
                     
                     </Tabs>
-
-
               </div>
             </Card.Body>
           </Card>

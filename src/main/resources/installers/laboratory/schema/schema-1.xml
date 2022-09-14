@@ -4,14 +4,14 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
-    <changeSet id="20220510100000-0001" author="kennedy">
+    <changeSet id="20220510100000-0002" author="kennedy">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
-                SELECT count(*) FROM information_schema.tables WHERE table_name = 'laboratory_order';
+                SELECT count(*) FROM information_schema.columns WHERE table_name='laboratory_sample' and column_name='sample_accepted';
             </sqlCheck>
         </preConditions>
         <sqlFile dbms="postgresql"
-                 path="lab_tables.sql"
+                 path="updates_v1.sql"
                  relativeToChangelogFile="true"
                  splitStatements="false"
                  stripComments="true"/>

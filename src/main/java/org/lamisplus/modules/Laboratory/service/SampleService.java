@@ -12,7 +12,10 @@ import org.lamisplus.modules.base.security.SecurityUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.lamisplus.modules.Laboratory.utility.LabOrderStatus.SAMPLE_COLLECTED;
+import java.util.List;
+import java.util.UUID;
+
+import static org.lamisplus.modules.Laboratory.utility.LabUtils.SAMPLE_COLLECTED;
 
 @Service
 @Transactional
@@ -26,6 +29,7 @@ public class SampleService {
     public SampleDTO Save(String labNumber, SampleDTO sampleDTO){
         Sample sample = labMapper.tosSample(sampleDTO);
         sample.setSampleCollectedBy(SecurityUtils.getCurrentUserLogin().orElse(""));
+        sample.setUuid(UUID.randomUUID().toString());
         SaveLabNumber(sample.getTestId(), labNumber, SAMPLE_COLLECTED);
         return labMapper.tosSampleDto(repository.save(sample));
     }
@@ -47,5 +51,16 @@ public class SampleService {
         Sample labOrder = repository.findById(id).orElse(null);
         repository.delete(labOrder);
         return id + " deleted successfully";
+    }
+
+    public SampleDTO FindByTestId(int id){
+        List<Sample> sampleList = repository.findAllByTestId(id);
+        if(sampleList.size() > 0) {
+            return labMapper.tosSampleDto(sampleList.get(0));
+        }
+        else
+        {
+            return new SampleDTO();
+        }
     }
 }
