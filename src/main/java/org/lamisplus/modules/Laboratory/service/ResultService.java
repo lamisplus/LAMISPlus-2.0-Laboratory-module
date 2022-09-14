@@ -32,6 +32,7 @@ public class ResultService {
         result.setUuid(UUID.randomUUID().toString());
 
         Test test = testRepository.findById(result.getTestId()).orElse(null);
+        assert test != null;
         test.setLabTestOrderStatus(RESULT_REPORTED);
         testRepository.save(test);
 
@@ -59,8 +60,7 @@ public class ResultService {
         if(resultList.size() > 0) {
             return labMapper.toResultDto(resultList.get(0));
         }
-        else
-        {
+        else {
             return new ResultDTO();
         }
     }

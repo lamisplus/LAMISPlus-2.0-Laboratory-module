@@ -63,4 +63,9 @@ public class SampleService {
             return new SampleDTO();
         }
     }
+
+    public SampleDTO FindById(int id) {
+        Sample sample = repository.findById(id).orElse(null);
+        return labMapper.tosSampleDto(sample);
+    }
 }
