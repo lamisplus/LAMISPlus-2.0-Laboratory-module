@@ -157,6 +157,7 @@ public class LabOrderService {
             dto.setPatientAddress(jsonNodeTransformer.getNodeValue(personResponseDTO.getAddress(), "address", "city", true));
             dto.setPatientDob(personResponseDTO.getDateOfBirth());
             dto.setPatientGender(jsonNodeTransformer.getNodeValue(personResponseDTO.getGender(), null, "display", false));
+            dto.setPatientSex(personResponseDTO.getSex());
             dto.setPatientFirstName(personResponseDTO.getFirstName());
             dto.setPatientId(order.getPatientId());
             dto.setPatientHospitalNumber(jsonNodeTransformer.getNodeValue(personResponseDTO.getIdentifier(), "identifier", "value", true));
