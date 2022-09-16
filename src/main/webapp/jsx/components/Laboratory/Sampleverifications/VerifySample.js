@@ -89,15 +89,15 @@ const ModalVerifySample = (props) => {
   const [loading, setLoading] = useState(false)
   const [samples, setSamples] = useState({}) 
   const [otherFields, setotherFields] = 
-            useState({  date_sample_verified:"",
-                        sample_verified_by:"",
-                        sample_priority:"",
-                        time_sample_verified:"",
-                        comment:"", 
-                        verification_status:"", 
-                        comment_sample_verified:""
+    useState({  date_sample_verified:"",
+                sample_verified_by:"",
+                sample_priority:"",
+                time_sample_verified:"",
+                comment:"",
+                verification_status:"",
+                comment_sample_verified:""
 
-                    });
+            });
 
   const [errors, setErrors] = useState({});
 

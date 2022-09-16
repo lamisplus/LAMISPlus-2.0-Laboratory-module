@@ -63,7 +63,7 @@ const PatientSearch = (props) => {
                 setCollectedSamples(response.data);
                 setLoading(false)
             } catch (e) {
-                toast.error("An error occurred while fetching lab", {
+                toast.error("An error occurred while fetching lab test orders", {
                     position: toast.POSITION.TOP_RIGHT
                 });
                 setLoading(false)
@@ -80,33 +80,9 @@ const PatientSearch = (props) => {
          }
 
          loadLabTestData();
+         localStorage.clear();
             // props.fetchAllLabTestOrderToday(onSuccess, onError);
      }, [loadLabTestData]); //componentDidMount
-
-    function totalSampleConllected (test){
-    console.log(test)
-        const  maxVal = []
-          for(var i=0; i<test.length; i++){
-              for (var key in test[i]) {
-                  if ( test[i][key]!==null && test[i][key].labTestOrderStatus)
-                        if(test[i][key].labTestOrderStatus >=1)
-                            maxVal.push(test[i][key])
-              }
-          }
-        return maxVal.length;
-    }
-
-    const totalSamples = (test) => {
-        const  maxVal = []
-        for(var i=0; i<test.length; i++){
-          for (var key in test[i]) {
-              if ( test[i][key]!==null && test[i][key].labTestOrderStatus)
-                    if(test[i][key].labTestOrderStatus >=1)
-                        maxVal.push(test[i][key])
-          }
-        }
-        return maxVal.length;
-    }
     
   return (
       <div>

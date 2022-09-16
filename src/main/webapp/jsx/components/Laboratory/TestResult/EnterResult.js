@@ -91,7 +91,6 @@ const ModalSampleResult = (props) => {
     const unit_measurement = datasample.id ? datasample.unitMeasurement : null ;
     const labId = datasample.id
 
-
     const [visible, setVisible] = useState(true);
     const onDismiss = () => setVisible(false);
     const [loading, setLoading] = useState(false)
@@ -158,13 +157,12 @@ const ModalSampleResult = (props) => {
               { headers: {"Authorization" : `Bearer ${token}`}}).then(resp => {
                   console.log("sample result", resp);
                   setLoading(!true);
-                   toast.success("Sample verified successfully!!", {
+                   toast.success("Sample result added successfully!!", {
                       position: toast.POSITION.TOP_RIGHT
                   });
 
-                  //localStorage.removeItem('labnumber');
-
-                  //history.push('/result-reporting');
+                  props.togglestatus()
+                  //props.handDataReload()
               });
               props.togglestatus()
       }

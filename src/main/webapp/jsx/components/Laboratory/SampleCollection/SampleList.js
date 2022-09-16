@@ -9,7 +9,8 @@ import {FaPlusSquare} from 'react-icons/fa';
 import {TiArrowForward} from 'react-icons/ti';
 import 'react-widgets/styles.css'
 import { ToastContainer } from "react-toastify";
-//Date Picker
+import axios from "axios";
+import {token, url } from "../../../../api";
 
 import { Spinner } from 'reactstrap';
 import { Badge } from 'reactstrap';
@@ -84,69 +85,56 @@ const useStyles = makeStyles(theme => ({
 
     const testOrders = [];
     const sampleCollections = props.patientObj ? props.patientObj : {};
-
+    //console.log("samples collected", sampleCollections);
     const laborderArray = sampleCollections.labOrder.tests;
 
-    //console.log("lab tests", sampleCollections)
     const encounterDate = null ;
     const hospitalNumber =  null;
-    //const dispatch = useDispatch();
+
     const [loading, setLoading] = useState('')
     const [fetchTestOrders, setFetchTestOrders] = useState(sampleCollections)
 
     const classes = useStyles()
-    useEffect(() => {
 
-    }, []); //componentDidMount 
+    const labTestType = [];
 
-        //Get list of test type
-        const labTestType = [];
-            if(testOrders !== null || testOrders ===""){
-                testOrders.forEach(function(value, index, array) {
-                    if(value['data']!==null)
-                        labTestType.push(value['data'].lab_test_group);
-                });
-            }
-
-        //Make the list contain unique list of Data 
-        const uniqueValues = [...new Set(labTestType)];
-        const [modal, setModal] = useState(false) //Modal to collect sample 
-        const toggleModal = () => setModal(!modal)
-        const [modal2, setModal2] = useState(false)//modal to transfer sample
-        const toggleModal2 = () => setModal2(!modal2)
-        const [modal4, setModal4] = useState(false)//modal to transfer sample Confirmation
-        const toggleModal4 = () => setModal4(!modal4)
-        const [modal3, setModal3] = useState(false)//modal to View Result
-        const toggleModal3 = () => setModal3(!modal3)
-        const [collectModal, setcollectModal] = useState([])//to collect array of datas into the modal and pass it as props
-        const [labNum, setlabNum] = useState({lab_number:""})
-        const [labNumValue, setlabNumValue] = useState("")
-
-        let  labNumber = "" //check if that key exist in the array
+    if(testOrders !== null || testOrders ===""){
             testOrders.forEach(function(value, index, array) {
-                if(value['data']!==null && value['data'].hasOwnProperty("lab_number")){
-                   // setlabNum({lab_number:value['data'].lab_number})
-                    if(value['data'].lab_number !== null){
-                        labNumber = value['data'].lab_number
-                    }
-                }               
+                if(value['data']!==null)
+                    labTestType.push(value['data'].lab_test_group);
             });
+        }
+
+    const uniqueValues = [...new Set(labTestType)];
+
+    const [modal, setModal] = useState(false) //Modal to collect sample
+    const toggleModal = () => setModal(!modal)
+    const [modal2, setModal2] = useState(false)//modal to transfer sample
+    const toggleModal2 = () => setModal2(!modal2)
+    const [modal4, setModal4] = useState(false)//modal to transfer sample Confirmation
+    const toggleModal4 = () => setModal4(!modal4)
+    const [modal3, setModal3] = useState(false)//modal to View Result
+    const toggleModal3 = () => setModal3(!modal3)
+    const [collectModal, setcollectModal] = useState([])//to collect array of datas into the modal and pass it as props
+
+    let  labNumber = ""
+
+    const [labNumValue, setlabNumValue] = useState("")
+
+    const [labNum, setlabNum] = useState({lab_number:""})
+
+    const getLabNumber = localStorage.getItem('labnumber')
 
     const handleLabNumber = e => {
-        e.preventDefault();   
-            setlabNum({ ...labNum, [e.target.name]: e.target.value })
-            labNumber = e.target.value
-
-            //localStorage.setItem('labnumber', labNumber);
+        e.preventDefault();
+        setlabNum({ ...labNum, [e.target.name]: e.target.value })
+        labNumber = e.target.value
+        setlabNumValue(labNumber)
     }
 
-    const handleSample = (row,dateEncounter) => { 
-        //console.log('fg', row)
-        setlabNumValue(labNumber ==="" ? labNum.lab_number  : labNumber)
-        ///return console.log(labNumber ==="" ? labNum.lab_number  : labNumber)
+    const handleSample = (row,dateEncounter) => {
         setcollectModal({...collectModal, ...row, dateEncounter, hospitalNumber});
-        setModal(!modal) 
-       // console.log(labNumber ==="" ? labNum.lab_number  : labNumber)
+        setModal(!modal)
     }
 
     const transferSample = (row) => {
@@ -154,11 +142,8 @@ const useStyles = makeStyles(theme => ({
         setcollectModal({...collectModal, ...row});
     }
     const transferSampleConfirmation = (row) => {
-        //console.log('row', row);
         setModal3(!modal3)
         setcollectModal({...collectModal, ...row});
-
-        //console.log('collected', collectModal);
     }
 
     const viewresult = (row) => {  
@@ -169,17 +154,15 @@ const useStyles = makeStyles(theme => ({
     const getGroup = e => {
         const getValue =e.target.value;
         if(getValue!=='All' || getValue ===null)
-        { 
-            //const testOrders = fetchTestOrders.length >0 ? fetchTestOrders:{}
+        {
             const getNewTestOrder = testOrders.find(x => x.data!==null && x.data.lab_test_group === getValue)
             setFetchTestOrders([getNewTestOrder])
-           // testOrders =[...getNewTestOrder] 
+
         }else{
             setFetchTestOrders(testOrders)
         }
     };
 
-    //This is function to check for the status of each collection to display on the tablist below 
     const sampleStatus = e =>{
         if(e===1){
             return <p><Badge  color="light">Sample Collected</Badge></p>
@@ -210,7 +193,7 @@ const useStyles = makeStyles(theme => ({
         return maxVal.toString();
         }
     }
-//This is function to check for the status of each collection to display on the tablist below 
+
     const sampleAction = (row,dateEncounter) =>{
             if(row.labTestOrderStatus ===0 || row.labTestOrderStatus ===null){
                 return (  <Menu>
@@ -246,6 +229,11 @@ const useStyles = makeStyles(theme => ({
                         )
             }
   }
+
+    const handDataReload = () => {
+        window.location.reload(false);
+        //setFetchTestOrders({...fetchTestOrders})
+    }
 
 return (
     <div>
@@ -322,6 +310,7 @@ return (
                                               </Input>
                                         </FormGroup>
                                     </Col>
+                                    { getLabNumber === null ?
                                     <Col md="3" className='float-right mr-1'>
                                         {/* {labNum['lab_number']==="" ? */}
                                         <FormGroup>
@@ -337,6 +326,7 @@ return (
                                         />
                                         </FormGroup>                            
                                     </Col>
+                                    : " " }
                                 </Row>
                                 
                                     <Form >
@@ -384,9 +374,9 @@ return (
         {modal || modal2  || modal3 || modal4 ? 
       (
         <>
-            <SampleCollection modalstatus={modal} togglestatus={toggleModal} datasample={collectModal} labnumber={labNumValue}/>
+            <SampleCollection modalstatus={modal} togglestatus={toggleModal} datasample={collectModal} labnumber={labNumValue} handDataReload={handDataReload}/>
             {/* <ModalSampleTransfer modalstatus={modal2} togglestatus={toggleModal2} datasample={collectModal} labnumber={labNumber!=="" ? labNumber : labNum}/> */}
-            <ModalViewResult modalstatus={modal3} togglestatus={toggleModal3} datasample={collectModal} />
+            {/* <ModalViewResult modalstatus={modal3} togglestatus={toggleModal3} datasample={collectModal} />*/}
             {/* <TransferModalConfirmation modalstatus={modal4} togglestatusConfirmation={toggleModal4} datasample={collectModal} actionButton={transferSample} labnumber={labNumber!=="" ? labNumber : labNum}/> */}
        </>
       ) 

@@ -92,8 +92,20 @@ const ModalSample = (props) => {
     const lab_test_group = datasample.id ? datasample.labTestGroupName : null ;
     const sample_ordered_by = datasample.data ? datasample.data.sample_ordered_by : null ;
     const description = datasample.labTestName ? datasample.labTestName : null ;
-    const lab_number = props.labnumber;
-   
+    let lab_number = props.labnumber;
+
+    console.log("lab nos",lab_number);
+    let getLabNumber = ""
+
+    if (lab_number) {
+        localStorage.setItem('labnumber',  lab_number);
+        console.log("base value", lab_number)
+    }else{
+        getLabNumber = localStorage.getItem('labnumber')
+        console.log("value", getLabNumber)
+        lab_number = getLabNumber;
+    }
+
     const labId = datasample.id
     const [loading, setLoading] = useState(false)
     const [visible, setVisible] = useState(true);
@@ -102,8 +114,6 @@ const ModalSample = (props) => {
     const [optionsample, setOptionsample] = useState([]);
     const [saveButtonStatus, setSaveButtonStatus] = useState(false);
     const [otherfields, setOtherFields] = useState({sample_collected_by:"",sample_ordered_by:"",sample_priority:"",time_sample_collected:"", comment_sample_collected:""});
-
-    //This is to get SAMPLE TYPE from application Codeset
     const [errors, setErrors] = useState({});
     const [samplesCollected, setSamplesCollected] = useState({
          "commentSampleCollected": "",
@@ -189,29 +199,17 @@ const ModalSample = (props) => {
                     datasample.sample_type = datasample.data.sample_type;
                 }
 
-               //console.log("samples collection", samplesCollected)
-
-                await axios.post(`${url}laboratory/samples/${lab_number}`, samplesCollected,
-                { headers: {"Authorization" : `Bearer ${token}`}}).then(resp => {
-                    //console.log("sample collected", resp);
-                    setLoading(!true);
-                     toast.success("Sample collection saved successfully!!", {
-                        position: toast.POSITION.TOP_RIGHT
+               if (lab_number) {
+                     await axios.post(`${url}laboratory/samples/${lab_number}`, samplesCollected,
+                    { headers: {"Authorization" : `Bearer ${token}`}}).then(resp => {
+                        setLoading(!true);
+                         toast.success("Sample collection saved successfully!!", {
+                            position: toast.POSITION.TOP_RIGHT
+                        });
                     });
-                });
-
-                /* end of the process */
-//                const onSuccess = () => {
-//                    setLoading(false);
-//                    props.togglestatus();
-//                };
-//                const onError = () => {
-//                    setLoading(false);
-//                    props.togglestatus();
-//                };
-
-                 history.push('/');
-
+               }
+                props.togglestatus()
+                props.handDataReload()
             }
 
          } catch (e) {
