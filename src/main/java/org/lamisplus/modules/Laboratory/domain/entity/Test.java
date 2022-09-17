@@ -34,4 +34,10 @@ public class Test {
     private int labTestOrderStatus;
     @Column(name = "viral_load_indication")
     private int viralLoadIndication;
+    @Column(name = "lab_order_id")
+    private int labOrderId;
+    @Column(name = "patient_uuid")
+    private String patientUuid;
+    @Column(name = "facility_id")
+    private Long facilityId;
 }

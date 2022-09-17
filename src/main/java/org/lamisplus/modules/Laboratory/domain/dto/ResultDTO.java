@@ -3,7 +3,6 @@ package org.lamisplus.modules.Laboratory.domain.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
-import javax.persistence.Column;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -20,4 +19,11 @@ public class ResultDTO {
     private LocalTime timeResultReported;
     private String resultReported;
     private int testId;
+    private String resultReportedBy;
+    private String patientUuid;
+    private Long facilityId;
+    private int PatientId;
+    private String pcrLabSampleNumber;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private String dateSampleReceivedAtPcrLab;
 }

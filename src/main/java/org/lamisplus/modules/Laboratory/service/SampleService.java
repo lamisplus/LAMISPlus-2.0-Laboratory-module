@@ -8,11 +8,14 @@ import org.lamisplus.modules.Laboratory.domain.entity.Test;
 import org.lamisplus.modules.Laboratory.domain.mapper.LabMapper;
 import org.lamisplus.modules.Laboratory.repository.SampleRepository;
 import org.lamisplus.modules.Laboratory.repository.TestRepository;
+import org.lamisplus.modules.base.domain.entities.User;
 import org.lamisplus.modules.base.security.SecurityUtils;
+import org.lamisplus.modules.base.service.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.lamisplus.modules.Laboratory.utility.LabUtils.SAMPLE_COLLECTED;
@@ -25,13 +28,26 @@ public class SampleService {
     private final SampleRepository repository;
     private final LabMapper labMapper;
     private final TestRepository testRepository;
+    private  final UserService userService;
 
     public SampleDTO Save(String labNumber, SampleDTO sampleDTO){
         Sample sample = labMapper.tosSample(sampleDTO);
         sample.setSampleCollectedBy(SecurityUtils.getCurrentUserLogin().orElse(""));
         sample.setUuid(UUID.randomUUID().toString());
+
+        Test test = testRepository.findById(sample.getTestId()).orElse(null);
+        assert test != null;
+        sample.setPatientUuid(test.getPatientUuid());
+        sample.setPatientId(test.getPatientId());
+        sample.setFacilityId(getCurrentUserOrganization());
+
         SaveLabNumber(sample.getTestId(), labNumber, SAMPLE_COLLECTED);
         return labMapper.tosSampleDto(repository.save(sample));
+    }
+
+    private Long getCurrentUserOrganization() {
+        Optional<User> userWithRoles = userService.getUserWithRoles ();
+        return userWithRoles.map (User::getCurrentOrganisationUnitId).orElse (null);
     }
 
     public void SaveLabNumber(int testId, String labNumber, int orderStatus){

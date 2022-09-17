@@ -10,15 +10,16 @@ import org.lamisplus.modules.Laboratory.domain.entity.Test;
 import org.lamisplus.modules.Laboratory.domain.mapper.LabMapper;
 import org.lamisplus.modules.Laboratory.repository.*;
 import org.lamisplus.modules.Laboratory.utility.JsonNodeTransformer;
+import org.lamisplus.modules.base.domain.entities.User;
 import org.lamisplus.modules.base.security.SecurityUtils;
+import org.lamisplus.modules.base.service.UserService;
 import org.lamisplus.modules.patient.domain.dto.PersonResponseDto;
+import org.lamisplus.modules.patient.domain.entity.Person;
+import org.lamisplus.modules.patient.repository.PersonRepository;
 import org.lamisplus.modules.patient.service.PersonService;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 import static org.lamisplus.modules.Laboratory.utility.LabUtils.*;
 
@@ -36,23 +37,41 @@ public class LabOrderService {
 
     private final LabMapper labMapper;
     private final PersonService personService;
+    private  final UserService userService;
+    private final PersonRepository personRepository;
     private final JsonNodeTransformer jsonNodeTransformer;
 
     public LabOrderResponseDTO Save(LabOrderDTO labOrderDTO){
         try {
+            Person person = personRepository.findById((long) labOrderDTO.getPatientId()).orElse(null);
+
             LabOrder labOrder = labMapper.toLabOrder(labOrderDTO);
             labOrder.setUserId(SecurityUtils.getCurrentUserLogin().orElse(""));
             labOrder.setUuid(UUID.randomUUID().toString());
+            assert person != null;
+            labOrder.setPatientUuid(person.getUuid());
+            labOrder.setFacilityId(getCurrentUserOrganization());
+
             for (Test test : labOrder.getTests()) {
+                test.setUuid(UUID.randomUUID().toString());
                 test.setLabTestOrderStatus(PENDING_SAMPLE_COLLECTION);
+                test.setPatientId(labOrder.getPatientId());
+                test.setFacilityId(getCurrentUserOrganization());
+                test.setPatientUuid(person.getUuid());
             }
-            Log.info(labOrderDTO);
+
+            LogInfo("LAB_ORDER", labOrderDTO);
             return labMapper.toLabOrderResponseDto(labOrderRepository.save(labOrder));
         }
         catch(Exception e){
             Log.error(e);
             return null;
         }
+    }
+
+    private Long getCurrentUserOrganization() {
+        Optional<User> userWithRoles = userService.getUserWithRoles ();
+        return userWithRoles.map (User::getCurrentOrganisationUnitId).orElse (null);
     }
 
     public LabOrderResponseDTO Update(int order_id, LabOrderDTO labOrderDTO){
