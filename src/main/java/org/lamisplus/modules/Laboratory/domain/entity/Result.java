@@ -40,4 +40,8 @@ public class Result {
     private Long facilityId;
     @Column(name = "patient_id")
     private int PatientId;
+    @Column(name = "pcr_lab_sample_number")
+    private String pcrLabSampleNumber;
+    @Column(name = "date_sample_received_at_pcr_lab")
+    private String dateSampleReceivedAtPcrLab;
 }
