@@ -8,11 +8,15 @@ import org.lamisplus.modules.Laboratory.domain.entity.Test;
 import org.lamisplus.modules.Laboratory.domain.mapper.LabMapper;
 import org.lamisplus.modules.Laboratory.repository.ResultRepository;
 import org.lamisplus.modules.Laboratory.repository.TestRepository;
+import org.lamisplus.modules.base.domain.entities.User;
 import org.lamisplus.modules.base.security.SecurityUtils;
+import org.lamisplus.modules.base.service.UserService;
+import org.lamisplus.modules.patient.repository.PersonRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.lamisplus.modules.Laboratory.utility.LabUtils.RESULT_REPORTED;
@@ -24,7 +28,9 @@ import static org.lamisplus.modules.Laboratory.utility.LabUtils.RESULT_REPORTED;
 public class ResultService {
     private final ResultRepository repository;
     private final LabMapper labMapper;
+    private final PersonRepository personRepository;
     private final TestRepository testRepository;
+    private  final UserService userService;
 
     public ResultDTO Save(ResultDTO resultDTO){
         Result result = labMapper.toResult(resultDTO);
@@ -36,7 +42,16 @@ public class ResultService {
         test.setLabTestOrderStatus(RESULT_REPORTED);
         testRepository.save(test);
 
+        result.setPatientUuid(test.getPatientUuid());
+        result.setPatientId(test.getPatientId());
+        result.setFacilityId(getCurrentUserOrganization());
+
         return labMapper.toResultDto(repository.save(result));
+    }
+
+    private Long getCurrentUserOrganization() {
+        Optional<User> userWithRoles = userService.getUserWithRoles ();
+        return userWithRoles.map (User::getCurrentOrganisationUnitId).orElse (null);
     }
 
     public ResultDTO Update(int order_id, ResultDTO resultDTO){

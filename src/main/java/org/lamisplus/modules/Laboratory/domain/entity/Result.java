@@ -34,4 +34,10 @@ public class Result {
     private String resultReportedBy;
     @Column(name = "test_id")
     private int testId;
+    @Column(name = "patient_uuid")
+    private String patientUuid;
+    @Column(name = "facility_id")
+    private Long facilityId;
+    @Column(name = "patient_id")
+    private int PatientId;
 }
