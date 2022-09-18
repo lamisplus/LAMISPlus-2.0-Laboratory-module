@@ -1,6 +1,5 @@
-import React from 'react'
+import React, {useEffect, useCallback, useState} from 'react';
 import {Card, CardBody,CardHeader,Col,Row,Alert,Table, Form,FormGroup,Label,Input} from 'reactstrap'
-import { useState , useEffect} from 'react'
 import { TiArrowBack } from 'react-icons/ti'
 import MatButton from '@material-ui/core/Button'
 import { makeStyles } from '@material-ui/core/styles'
@@ -11,6 +10,7 @@ import 'react-widgets/styles.css'
 import { ToastContainer } from "react-toastify";
 import axios from "axios";
 import {token, url } from "../../../../api";
+import { toast } from 'react-toastify';
 
 import { Spinner } from 'reactstrap';
 import { Badge } from 'reactstrap';
@@ -81,11 +81,13 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-  const SampleList = (props) => {
+    const SampleList = (props) => {
 
     const testOrders = [];
     const sampleCollections = props.patientObj ? props.patientObj : {};
-    //console.log("samples collected", sampleCollections);
+    const Id = props.id;
+    console.log("id", Id);
+
     const laborderArray = sampleCollections.labOrder.tests;
 
     const encounterDate = null ;
@@ -194,6 +196,17 @@ const useStyles = makeStyles(theme => ({
         }
     }
 
+    const loadData = useCallback(async () => {
+        try {
+            const response = await axios.get(`${url}laboratory/orders/${Id}`, { headers: {"Authorization" : `Bearer ${token}`} });
+            setFetchTestOrders(response.data);
+        } catch (e) {
+            toast.error("An error occurred while fetching lab", {
+                position: toast.POSITION.TOP_RIGHT
+            });
+        }
+    }, []);
+
     const sampleAction = (row,dateEncounter) =>{
             if(row.labTestOrderStatus ===0 || row.labTestOrderStatus ===null){
                 return (  <Menu>
@@ -231,8 +244,7 @@ const useStyles = makeStyles(theme => ({
   }
 
     const handDataReload = () => {
-        window.location.reload(false);
-        //setFetchTestOrders({...fetchTestOrders})
+        loadData();
     }
 
 return (

@@ -82,7 +82,7 @@ function PatientCard(props) {
             <>
             <PatientCardDetail patientObj={labObj}/>
             <br/>
-            <SampleList  patientObj={labObj}/>
+            <SampleList  patientObj={labObj} id={patientObj.orderId}/>
             </>
             : <CircularProgress />
         }
