@@ -88,6 +88,7 @@ const ModalSample = (props) => {
     const history = useHistory();
     const classes = useStyles()
     const datasample = props.datasample && props.datasample!==null ? props.datasample : {};
+    //console.log(datasample)
     const order_priority = datasample.id && datasample.orderPriority ? datasample.orderPriorityName : null;
     const lab_test_group = datasample.id ? datasample.labTestGroupName : null ;
     const sample_ordered_by = datasample.data ? datasample.data.sample_ordered_by : null ;
@@ -260,6 +261,8 @@ const ModalSample = (props) => {
                                                     <DateTimePicker
                                                         className={classes.input}
                                                         time={false}
+                                                        max={new Date()}
+                                                        min={new Date(datasample.dateEncounter)}
                                                         name="date_sample_collected"
                                                         id="date_sample_collected"
                                                         value={samples.date_sample_collected}

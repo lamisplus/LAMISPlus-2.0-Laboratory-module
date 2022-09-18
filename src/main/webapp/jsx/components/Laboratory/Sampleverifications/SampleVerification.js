@@ -228,6 +228,8 @@ const ModalVerifySample = (props) => {
                                                 <DateTimePicker
                                                     className={classes.input}
                                                     time={false}
+                                                    max={new Date()}
+                                                    min={new Date(datasample.dateSampleCollected)}
                                                     name="date_sample_verified"
                                                     id="date_sample_verified"
                                                     onChange={value1 =>

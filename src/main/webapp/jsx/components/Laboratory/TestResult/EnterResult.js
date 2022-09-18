@@ -208,7 +208,10 @@ const ModalSampleResult = (props) => {
                                       <Col xs="6">
                                         <FormGroup>
                                           <Label for='date Assayed' className={classes.label}>Date Assayed</Label>
-                                            <DateTimePicker time={false} name="date_asseyed"  id="date_asseyed" className={classes.input}
+                                            <DateTimePicker time={false} name="date_asseyed"  id="date_asseyed"
+                                            className={classes.input}
+                                             max={new Date()}
+                                             min={new Date(datasample.dateSampleVerified)}
                                               onChange={value1 =>
                                                 setOtherFields({ ...otherfields, date_asseyed: value1 })
                                               }
@@ -219,6 +222,8 @@ const ModalSampleResult = (props) => {
                                             <FormGroup>
                                               <Label for='date reported' className={classes.label}>Date Reported</Label>
                                               <DateTimePicker time={false} name="date_result_reported"  id="date_result_reported" className={classes.input}
+                                                max={new Date()}
+                                                min={new Date(datasample.dateSampleVerified)}
                                                 onChange={value1 =>
                                                   setOtherFields({ ...otherfields, date_result_reported: value1 })
                                                 }
