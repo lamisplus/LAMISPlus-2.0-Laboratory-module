@@ -80,11 +80,11 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-  const SampleList = (props) => {
+    const SampleList = (props) => {
 
     const testOrders = [];
     const sampleCollections = props.patientObj ? props.patientObj : {};
-    console.log("verifed samples", sampleCollections)
+    //console.log("verifed samples", sampleCollections)
     const encounterDate = null ;
     const hospitalNumber =  null;
     //const dispatch = useDispatch();
@@ -117,20 +117,6 @@ const useStyles = makeStyles(theme => ({
         const toggleModal3 = () => setModal3(!modal3)
         const [collectModal, setcollectModal] = useState([])//to collect array of datas into the modal and pass it as props
         const [labNum, setlabNum] = useState({lab_number:""})
-
-//    testOrders.forEach(function(value, index, array) {
-//                if(value['data']!==null && value['data'].hasOwnProperty("lab_number")){
-//                   // setlabNum({lab_number:value['data'].lab_number})
-//                    if(value['data'].lab_number !== null){
-//                        labNumber = value['data'].lab_number
-//                    }
-//                }
-//            });
-    const handleLabNumber = e => {
-        e.preventDefault();   
-            setlabNum({ ...labNum, [e.target.name]: e.target.value })
-            //labNumber = e.target.value
-    }
 
     const handleVerifySample = (row) => {
         //console.log('rowsx', row, sid);
@@ -166,7 +152,7 @@ const useStyles = makeStyles(theme => ({
             setFetchTestOrders(testOrders)
         }
     };
-    //This is function to check for the status of each collection to display on the tablist below 
+
     const sampleStatus = e =>{
         if(e===1){
             return <p><Badge  color="info">Sample Collected</Badge></p>
@@ -197,7 +183,7 @@ const useStyles = makeStyles(theme => ({
         return maxVal.toString();
         }
     }
-//This is function to check for the status of each collection to display on the tablist below 
+
     const sampleAction = (id, row) =>{
         if(id ===1){
             return (
@@ -238,6 +224,9 @@ const useStyles = makeStyles(theme => ({
                         )
                     }
             }
+    const handDataReload = () => {
+        window.location.reload(false);
+    }
 
 return (
     <div>
@@ -314,21 +303,6 @@ return (
                                               </Input>
                                         </FormGroup>
                                     </Col>
-                                    {/*
-                                   <Col md="3" className='float-right mr-1'>
-
-                                        <FormGroup>
-                                            <Label for="occupation">Lab Number </Label>
-                                        <Input
-                                            type='text'
-                                            name='lab_number'
-                                            id='lab_number'
-                                            value={labNumber!=="" ? labNumber : labNum.lab_number}
-                                            onChange={handleLabNumber}
-                                            disabled={labNumber && labNum.lab_number ? 'true' : ''}
-                                        />
-                                        </FormGroup>
-                                    </Col> */}
 
                                 </Row>
                                 
@@ -381,9 +355,9 @@ return (
         {modal || modal2  || modal3 || modal4 ? 
       (
         <>
-            <SampleVerification modalstatus={modal} togglestatus={toggleModal} datasample={collectModal}/>
+            <SampleVerification modalstatus={modal} togglestatus={toggleModal} datasample={collectModal} handDataReload={handDataReload}/>
             {/* <ModalSampleTransfer modalstatus={modal2} togglestatus={toggleModal2} datasample={collectModal} labnumber={labNumber!=="" ? labNumber : labNum}/> */}
-            <ModalViewResult modalstatus={modal3} togglestatus={toggleModal3} datasample={collectModal} />
+            {/*<ModalViewResult modalstatus={modal3} togglestatus={toggleModal3} datasample={collectModal} />*/}
             {/* <TransferModalConfirmation modalstatus={modal4} togglestatusConfirmation={toggleModal4} datasample={collectModal} actionButton={transferSample} labnumber={labNumber!=="" ? labNumber : labNum}/> */}
        </>
       ) 

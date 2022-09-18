@@ -87,20 +87,19 @@ const useStyles = makeStyles(theme => ({
     const testOrders = [];
     const sampleCollections = props.patientObj ? props.patientObj : {};
 
-    console.log("results",sampleCollections)
-
     const encounterDate = null ;
     const hospitalNumber =  null;
-    //const dispatch = useDispatch();
+
     const [loading, setLoading] = useState('')
     const [fetchTestOrders, setFetchTestOrders] = useState(sampleCollections)
+    console.log("data", fetchTestOrders)
 
     const [flipTable, setFlipTable] = useState(false)
     const [previousRecords, setPreviousRecords] = useState([]);
 
     const classes = useStyles()
 
-     const previousData = useCallback(async () => {
+    const previousData = useCallback(async () => {
         try {
             const response = await axios.get(`${url}laboratory/results/patients/${props.patientObj.patientId}`, { headers: {"Authorization" : `Bearer ${token}`} });
             //console.log("prev results", response);
@@ -125,7 +124,6 @@ const useStyles = makeStyles(theme => ({
                 });
             }
 
-        //Make the list contain unique list of Data 
         const uniqueValues = [...new Set(labTestType)];
         const [modal, setModal] = useState(false) //Modal to collect sample 
         const toggleModal = () => setModal(!modal)
@@ -183,7 +181,7 @@ const useStyles = makeStyles(theme => ({
             setFetchTestOrders(testOrders)
         }
     };
-    //This is function to check for the status of each collection to display on the tablist below
+
     const sampleStatus = e =>{
         if(e===1){
             return <p><Badge  color="light">Sample Collected</Badge></p>
@@ -238,6 +236,12 @@ const useStyles = makeStyles(theme => ({
     const handleTableChange = () => {
         setFlipTable(!flipTable)
     }
+
+    const handDataReload = () => {
+        window.location.reload(false);
+    }
+
+    const text = "rejected";
 
 return (
     <div>
@@ -429,7 +433,7 @@ return (
                                                 <tbody>
                                                  {!loading ? fetchTestOrders.labOrder.tests.map((row) => (
                                                         row.samples.map((sample) => (
-                                                             sample.dateSampleCollected !== null && row.labTestOrderStatus !== 1 ?
+                                                             !sample.commentSampleVerified?.toLowerCase().includes(text) && sample.dateSampleCollected !== null && row.labTestOrderStatus !== 1 ?
                                                                <tr key={row.id} style={{ borderBottomColor: '#fff' }}>
                                                                  <th className={classes.td}>{row.labTestGroupName}</th>
                                                                 <td className={classes.td}>{row.labTestName}</td>
@@ -463,7 +467,7 @@ return (
         {modal || modal2  || modal3 || modal4 ? 
       (
         <>
-            <ModalEnterResult modalstatus={modal} togglestatus={toggleModal} datasample={collectModal} labnumber={labNumber !=="" ? labNumber : labNum['lab_number'] }/>
+            <ModalEnterResult modalstatus={modal} togglestatus={toggleModal} datasample={collectModal} labnumber={labNumber !=="" ? labNumber : labNum['lab_number'] } handDataReload={handDataReload}/>
             <ModalViewResult modalstatus={modal3} togglestatus={toggleModal3} datasample={collectModal} />
             {/* <TransferModalConfirmation modalstatus={modal4} togglestatusConfirmation={toggleModal4} datasample={collectModal} actionButton={transferSample} labnumber={labNumber!=="" ? labNumber : labNum}/> */}
        </>

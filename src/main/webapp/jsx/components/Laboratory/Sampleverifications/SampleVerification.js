@@ -79,8 +79,6 @@ const useStyles = makeStyles(theme => ({
 
 const ModalVerifySample = (props) => {
     const history = useHistory();
-
-    //console.log('modal', props)
     const classes = useStyles()
     const datasample = props.datasample && props.datasample!==null ? props.datasample : {};
     //console.log('modal', datasample)
@@ -100,14 +98,14 @@ const ModalVerifySample = (props) => {
     const [optionsample, setOptionsample] = useState([]);
     const [saveButtonStatus, setSaveButtonStatus] = useState(false);
     const [otherFields, setotherFields] = useState({
-                        date_sample_verified:"",
-                        sample_verified_by:"",
-                        sample_priority:"",
-                        time_sample_verified:"",
-                        comment:"",
-                        verification_status:"",
-                        comment_sample_verified:""
-                    });
+        date_sample_verified:"",
+        sample_verified_by:"",
+        sample_priority:"",
+        time_sample_verified:"",
+        comment:"",
+        verification_status:"",
+        comment_sample_verified:""
+    });
 
     const [errors, setErrors] = useState({});
 
@@ -179,7 +177,8 @@ const ModalVerifySample = (props) => {
                     });
                 });
 
-                history.push('/');
+                props.togglestatus()
+                props.handDataReload()
             }
 
          } catch (e) {

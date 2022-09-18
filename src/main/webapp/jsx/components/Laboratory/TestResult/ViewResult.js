@@ -82,7 +82,7 @@ const ModalViewResult = (props) => {
     const getResults = useCallback(async () => {
         try {
             const response = await axios.get(`${url}laboratory/results/tests/${datasample.testId}`, { headers: {"Authorization" : `Bearer ${token}`}});
-            //console.log("results ccxc", response);
+            console.log("results ccxc", response);
             setCollectResult(response.data);
         } catch (e) {
            // toast.error("An error occurred while fetching sample results", {
@@ -123,37 +123,34 @@ const ModalViewResult = (props) => {
                                     <Col xs="12">
                                         <h4>Results: </h4>
                                         <hr/>
-                                        {datasample.labTestName === "Viral Load" ?
+                                        {datasample.labTestName === "Viral Load" && collectResult.dateAssayed !== null?
                                         <>
-                                            <Row>
-                                                <Col xs="4">
-                                                    <span style={{ fontWeight: 'bold'}}>PCR Lab Sample Number </span>: { sampleResults.pcrLabSampleNumber }
-                                                    <br/>
-                                                </Col>
-                                                <Col xs="4">
-                                                    <span style={{ fontWeight: 'bold'}}>Date Received at PCR Lab</span>: { sampleResults.dateSampleReceivedAtPcrLab }
-                                                    <br/>
-                                                </Col>
-                                                 <Col xs="4">
-                                                    <span style={{ fontWeight: 'bold'}}>Assay date</span>: { sampleResults.assayDate }
-                                                    <br/>
-                                                </Col>
-                                            </Row>
-                                            <br/>
-                                             <Row>
-                                                <Col xs="4">
-                                                    <span style={{ fontWeight: 'bold'}}>Sample Test Status</span>: <Badge color="success"> {ReactHtmlParser(sampleResults.sampleStatus)}</Badge>
-                                                    <br/>
-                                                </Col>
-                                                <Col xs="4">
-                                                    <span style={{ fontWeight: 'bold'}}>Result Date</span>: { sampleResults.resultDate }
-                                                    <br/>
-                                                </Col>
-                                                 <Col xs="4">
-                                                    <span style={{ fontWeight: 'bold'}}>Sample Result</span>: { sampleResults.testResult }
-                                                    <br/>
-                                                </Col>
-                                            </Row>
+                                              <Row >
+                                                  <Col xs="4">
+                                                  <span style={{ fontWeight: 'bold'}}>Date Assayed </span>: {collectResult.dateAssayed + " " + collectResult.timeAssayed }
+                                                  <br/>
+                                                  </Col>
+                                                  <br/>
+                                                  <Col xs="4">
+                                                      <span style={{ fontWeight: 'bold'}}>Date Reported </span>: {collectResult.dateResultReported + " " + collectResult.timeResultReported}
+                                                      <br/>
+                                                  </Col>
+
+                                                  <Col xs="4">
+                                                      {/*<span style={{ fontWeight: 'bold'}}> Result </span>:*/}
+                                                      <Badge  color="info"> {ReactHtmlParser("Result Available")}</Badge>
+                                                  </Col>
+                                                                 {/* <Col xs="6">
+                                                                      <span style={{ fontWeight: 'bold'}}> Unit Measurement </span>: {unit_measurement}
+                                                                  </Col> */}
+
+                                                  <Col xs="12">
+                                                  <br />
+                                                      <span style={{ fontWeight: 'bold'}}> Notes </span>: {ReactHtmlParser(collectResult.resultReported)}
+                                                      <Divider  />
+                                                  </Col>
+                                              </Row>
+
                                             <hr />
                                             </>
                                             :  !collectResult ? "No Result Available" :

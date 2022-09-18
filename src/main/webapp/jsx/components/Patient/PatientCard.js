@@ -119,7 +119,6 @@ function PatientCard(props) {
                         <b style={{fontSize: "25px"}}>
                         {patientObj.patientFirstName + " " + patientObj.patientLastName }
                         </b>
-                        
                     </Col>
                     <Col md={4} className={classes.root2}>
                     <span>
@@ -142,8 +141,8 @@ function PatientCard(props) {
                     <Col md={4}>
                     <span>
                         {" "}
-                        Gender :{" "}
-                        <b>{patientObj.patientGender=== "Male" ?"Male": "Female" }</b>
+                        Sex :{" "}
+                        <b>{patientObj.patientSex }</b>
                     </span>
                     </Col>
                     <Col md={4} className={classes.root2}>
