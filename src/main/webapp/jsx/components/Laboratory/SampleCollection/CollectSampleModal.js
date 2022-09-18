@@ -99,10 +99,10 @@ const ModalSample = (props) => {
 
     if (lab_number) {
         localStorage.setItem('labnumber',  lab_number);
-        console.log("base value", lab_number)
+        //console.log("base value", lab_number)
     }else{
         getLabNumber = localStorage.getItem('labnumber')
-        console.log("value", getLabNumber)
+        //console.log("value", getLabNumber)
         lab_number = getLabNumber;
     }
 
