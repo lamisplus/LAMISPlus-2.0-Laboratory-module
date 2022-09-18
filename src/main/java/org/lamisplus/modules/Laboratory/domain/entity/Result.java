@@ -43,5 +43,5 @@ public class Result {
     @Column(name = "pcr_lab_sample_number")
     private String pcrLabSampleNumber;
     @Column(name = "date_sample_received_at_pcr_lab")
-    private String dateSampleReceivedAtPcrLab;
+    private LocalDate dateSampleReceivedAtPcrLab;
 }
