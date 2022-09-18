@@ -43,4 +43,9 @@ public class LaboratoryRDEOrdersController {
     public List<RDETestResponseDTO> GetRDEOrderByPatientId(@PathVariable int patientId){
         return labTestService.GetRDEOrderByPatientId(patientId);
     }
+
+    @GetMapping("/rde-orders/latest-viral-loads/{patientId}")
+    public RDETestResponseDTO GetLatestViralLoadByPatientId(@PathVariable int patientId){
+        return labTestService.GetLatestVL(patientId);
+    }
 }

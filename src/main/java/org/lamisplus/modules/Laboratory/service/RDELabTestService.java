@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.lamisplus.modules.Laboratory.utility.LabUtils.*;
 
@@ -164,5 +166,12 @@ public class RDELabTestService {
         }
 
         return testDTOList;
+    }
+
+    public RDETestResponseDTO GetLatestVL(Integer patientId){
+        List<RDETestResponseDTO> labTests = GetRDEOrderByPatientId(patientId);
+        List<RDETestResponseDTO> viralLoads = labTests.stream().filter(x -> x.getLabTestName().equals("Viral Load"))
+                .sorted(Comparator.comparing(RDETestResponseDTO::getDateResultReceived)).collect(Collectors.toList());
+        return viralLoads.get(viralLoads.size()-1);
     }
 }
