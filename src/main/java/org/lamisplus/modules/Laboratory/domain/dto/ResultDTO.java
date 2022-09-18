@@ -25,5 +25,5 @@ public class ResultDTO {
     private int PatientId;
     private String pcrLabSampleNumber;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private String dateSampleReceivedAtPcrLab;
+    private LocalDate dateSampleReceivedAtPcrLab;
 }
