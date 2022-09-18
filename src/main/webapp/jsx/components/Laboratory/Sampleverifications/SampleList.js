@@ -1,6 +1,6 @@
-import React from 'react'
+import React, {useEffect, useCallback, useState} from 'react';
 import {Card, CardBody,CardHeader,Col,Row,Alert,Table, Form,FormGroup,Label,Input} from 'reactstrap'
-import { useState , useEffect} from 'react'
+
 import { TiArrowBack } from 'react-icons/ti'
 import MatButton from '@material-ui/core/Button'
 import { makeStyles } from '@material-ui/core/styles'
@@ -8,7 +8,9 @@ import { Link } from 'react-router-dom'
 import {FaPlusSquare} from 'react-icons/fa';
 import 'react-widgets/styles.css'
 import { ToastContainer } from "react-toastify";
-//Date Picker
+import { toast } from 'react-toastify';
+import {token, url } from "../../../../api";
+import axios from "axios";
 
 import { Spinner } from 'reactstrap';
 import { Badge } from 'reactstrap';
@@ -84,39 +86,35 @@ const useStyles = makeStyles(theme => ({
 
     const testOrders = [];
     const sampleCollections = props.patientObj ? props.patientObj : {};
-    //console.log("verifed samples", sampleCollections)
+    const Id = props.id;
+
     const encounterDate = null ;
     const hospitalNumber =  null;
-    //const dispatch = useDispatch();
+
     const [loading, setLoading] = useState('')
     const [fetchTestOrders, setFetchTestOrders] = useState(sampleCollections)
     const classes = useStyles()
-   
-    useEffect(() => {
 
-    }, []); //componentDidMount 
+    const labTestType = [];
+    if(testOrders !== null || testOrders ===""){
+            testOrders.forEach(function(value, index, array) {
+                if(value['data']!==null)
+                    labTestType.push(value['data'].lab_test_group);
+            });
+        }
 
-        //Get list of test type
-        const labTestType = [];
-            if(testOrders !== null || testOrders ===""){
-                testOrders.forEach(function(value, index, array) {
-                    if(value['data']!==null)
-                        labTestType.push(value['data'].lab_test_group);
-                });
-            }
-
-        //Make the list contain unique list of Data 
-        const uniqueValues = [...new Set(labTestType)];
-        const [modal, setModal] = useState(false) //Modal to collect sample 
-        const toggleModal = () => setModal(!modal)
-        const [modal2, setModal2] = useState(false)//modal to transfer sample
-        const toggleModal2 = () => setModal2(!modal2)
-        const [modal4, setModal4] = useState(false)//modal to transfer sample Confirmation
-        const toggleModal4 = () => setModal4(!modal4)
-        const [modal3, setModal3] = useState(false)//modal to View Result
-        const toggleModal3 = () => setModal3(!modal3)
-        const [collectModal, setcollectModal] = useState([])//to collect array of datas into the modal and pass it as props
-        const [labNum, setlabNum] = useState({lab_number:""})
+    //Make the list contain unique list of Data
+    const uniqueValues = [...new Set(labTestType)];
+    const [modal, setModal] = useState(false) //Modal to collect sample
+    const toggleModal = () => setModal(!modal)
+    const [modal2, setModal2] = useState(false)//modal to transfer sample
+    const toggleModal2 = () => setModal2(!modal2)
+    const [modal4, setModal4] = useState(false)//modal to transfer sample Confirmation
+    const toggleModal4 = () => setModal4(!modal4)
+    const [modal3, setModal3] = useState(false)//modal to View Result
+    const toggleModal3 = () => setModal3(!modal3)
+    const [collectModal, setcollectModal] = useState([])//to collect array of datas into the modal and pass it as props
+    const [labNum, setlabNum] = useState({lab_number:""})
 
     const handleVerifySample = (row) => {
         //console.log('rowsx', row, sid);
@@ -224,8 +222,20 @@ const useStyles = makeStyles(theme => ({
                         )
                     }
             }
+
+    const loadData = useCallback(async () => {
+        try {
+            const response = await axios.get(`${url}laboratory/orders/${Id}`, { headers: {"Authorization" : `Bearer ${token}`} });
+            setFetchTestOrders(response.data);
+        } catch (e) {
+            toast.error("An error occurred while fetching lab", {
+                position: toast.POSITION.TOP_RIGHT
+            });
+        }
+    }, []);
+
     const handDataReload = () => {
-        window.location.reload(false);
+        loadData();
     }
 
 return (

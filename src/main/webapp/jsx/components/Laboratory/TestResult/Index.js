@@ -48,7 +48,6 @@ const styles = theme => ({
   },
 });
 
-
 function PatientCard(props) {
     let history = useHistory();
     const [labObj, setLabObj] = useState({});
@@ -82,7 +81,7 @@ function PatientCard(props) {
             <>
             <PatientCardDetail patientObj={labObj}/>
             <br/>
-            <SampleList  patientObj={labObj}/>
+            <SampleList  patientObj={labObj} id={patientObj.orderId}/>
             </>
             : <CircularProgress />
         }
