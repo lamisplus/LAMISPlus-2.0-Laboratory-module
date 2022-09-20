@@ -327,7 +327,22 @@ return (
                                         {/* {labNum['lab_number']==="" ? */}
                                         <FormGroup>
                                             <Label for="occupation" className={classes.label}>Lab Number *</Label>
-                                        <Input
+
+                                         <Input
+                                              type="select"
+                                              name='lab_number'
+                                              id='lab_number'
+                                              onChange={getGroup}
+                                              className={classes.input}
+                                              value={labNumber!=="" ? labNumber : labNum.lab_number}
+                                              onChange={handleLabNumber}
+                                            >
+                                               <option value={""}> Select Lab Number </option>
+                                               <option value="A1001"> A1001 </option>
+
+                                          </Input>
+
+                                        {/*<Input
                                             type='text'
                                             name='lab_number'
                                             id='lab_number'
@@ -335,7 +350,7 @@ return (
                                             value={labNumber!=="" ? labNumber : labNum.lab_number}
                                             onChange={handleLabNumber}
                                             disabled={labNumber && labNum.lab_number ? 'true' : ''}
-                                        />
+                                        />*/}
                                         </FormGroup>                            
                                     </Col>
                                     : " " }

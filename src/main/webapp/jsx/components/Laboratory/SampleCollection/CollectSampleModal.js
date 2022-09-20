@@ -51,9 +51,9 @@ const useStyles = makeStyles(theme => ({
         }
     },
     input: {
-        border:'2px solid #014d88',
+        border:'1px solid #014d88',
         borderRadius:'0px',
-        fontSize:'16px',
+        fontSize:'14px',
         color:'#000'
     },
     arial: {
@@ -76,11 +76,11 @@ const useStyles = makeStyles(theme => ({
         color:'#fff',
         borderRadius:'0px'
     },
-    label:{
-        fontSize:'16px',
-        color:'rgb(153, 46, 98)',
-        fontWeight:'600'
-    }
+   label:{
+       fontSize:'14px',
+       color:'#014d88',
+       fontWeight:'bold'
+   }
 }))
 
 const ModalSample = (props) => {
@@ -95,7 +95,6 @@ const ModalSample = (props) => {
     const description = datasample.labTestName ? datasample.labTestName : null ;
     let lab_number = props.labnumber;
 
-    console.log("lab nos",lab_number);
     let getLabNumber = ""
 
     if (lab_number) {
@@ -114,18 +113,16 @@ const ModalSample = (props) => {
     const [samples, setSamples] = useState({});
     const [optionsample, setOptionsample] = useState([]);
     const [saveButtonStatus, setSaveButtonStatus] = useState(false);
-    const [otherfields, setOtherFields] = useState({sample_collected_by:"",sample_ordered_by:"",sample_priority:"",time_sample_collected:"", comment_sample_collected:""});
-    const [errors, setErrors] = useState({});
-    const [samplesCollected, setSamplesCollected] = useState({
-         "commentSampleCollected": "",
-          "dateSampleCollected": moment(new Date()).format("HH:mm:ss"),
-          "id": 0,
-          "sampleCollectedBy": 0,
-          "sampleCollectionMode": 0,
-          "sampleTypeId": 0,
-          "testId": 0,
-          "timeSampleCollected": "",
+
+    const [otherfields, setOtherFields] = useState({
+        sample_collected_by:"",
+        sampleTypeId: 0,
+        sample_comment:"",
+        sample_ID: "",
+        date_sample_collected: "",
     });
+
+    const [errors, setErrors] = useState({});
 
     useEffect(() => {
         async function getCharacters() {
@@ -142,9 +139,6 @@ const ModalSample = (props) => {
         getCharacters();
     }, []);
 
-    const handleInputChangeSample = (e) => {
-        setSamples({ ...samples, [e.target.name]: e.target.value });
-    };
     const handleOtherFieldInputChange = (e) => {
         setOtherFields({ ...otherfields, [e.target.name]: e.target.value });
     };
@@ -152,16 +146,17 @@ const ModalSample = (props) => {
     /*****  Validation */
     const validate = () => {
         let temp = { ...errors };
-        temp.date_sample_collected = samples.date_sample_collected
+
+        temp.date_sample_collected = otherfields.date_sample_collected
             ? ""
-            : "Date is required";
-//        temp.time_sample_collected = otherfields.time_sample_collected
-//            ? ""
-//            : "Time  is required.";
-        temp.sample_type = samples.sample_type ? "" : "Sample Type.";
+            : "Date Time is required";
+        temp.sample_ID = otherfields.sample_ID
+            ? ""
+            : "sample ID  is required.";
+        //temp.sampleTypeId = otherfields.sampleTypeId ? "" : "Sample Type is required.";
         temp.sample_collected_by = otherfields.sample_collected_by
             ? ""
-            : "Collected By  is required.";
+            : "Sample Collected By  is required.";
         //temp.comment = samples.comment ? "" : "This field is required.";
         setErrors({
             ...temp,
@@ -171,37 +166,27 @@ const ModalSample = (props) => {
 
     const saveSample = async (e) => {
         e.preventDefault();
-
          try {
 
              if (validate()) {
                 setLoading(true);
-                const newDatenow = moment(samples.date_sample_collected).format(
-                    "YYYY-MM-DD"
-                );
-
-                const newTimeSampleCollected = moment(samples.date_sample_collected).format("HH:mm:ss");
-
-                samplesCollected.commentSampleCollected = samples.comment;
-                samplesCollected.dateSampleCollected = newDatenow;
-                samplesCollected.sampleCollectedBy = otherfields["sample_collected_by"];
-                samplesCollected.timeSampleCollected = newTimeSampleCollected;
-                samplesCollected.testId = labId;
-
 
                 if (samples.sample_type.length > 0) {
                     const arr = [];
                     samples.sample_type.forEach(function (value, index, array) {
                         arr.push(value["value"]);
                     });
+                    console.log(arr.toString())
                     const sampletostring = arr.toString();
-                    samplesCollected.sampleTypeId = sampletostring;
+                    otherfields.sampleTypeId = sampletostring;
                 } else {
                     datasample.sample_type = datasample.data.sample_type;
                 }
 
+                console.log("samples", otherfields)
+
                if (lab_number) {
-                     await axios.post(`${url}laboratory/samples/${lab_number}`, samplesCollected,
+                     await axios.post(`${url}laboratory/samples/${lab_number}`, otherfields,
                     { headers: {"Authorization" : `Bearer ${token}`}}).then(resp => {
                         setLoading(!true);
                          toast.success("Sample collection saved successfully!!", {
@@ -221,7 +206,7 @@ const ModalSample = (props) => {
          }
     };
 
-    function checklanumber(lab_num) {       
+    function checklanumber(lab_num) {
         if (lab_num === "" || lab_num===null) {
             return (
                 <Alert color="danger" isOpen={visible} toggle={onDismiss}>
@@ -257,20 +242,16 @@ const ModalSample = (props) => {
                                             </Col>
                                             <Col md={6}>
                                                 <FormGroup>
-                                                    <Label for='date collected' className={classes.label}>Date Collected</Label>
-                                                    <DateTimePicker
-                                                        className={classes.input}
-                                                        time={false}
-                                                        max={new Date()}
-                                                        min={new Date(datasample.dateEncounter)}
-                                                        name="date_sample_collected"
-                                                        id="date_sample_collected"
-                                                        value={samples.date_sample_collected}
-                                                        onChange={value1 =>
-                                                            setSamples({ ...samples, date_sample_collected: value1 })
-                                                        }
-                                                        {...(errors.date_sample_collected && { invalid: true})}
-                                                    />
+                                                    <Label for='date collected' className={classes.label}>Date Time Collected *</Label>
+                                                    <Input
+                                                         type="datetime-local"
+                                                         className={classes.input}
+                                                         max={new Date().toISOString().substr(0, 16)}
+                                                         min={new Date(datasample.dateEncounter).toISOString().substr(0, 16)}
+                                                         name="date_sample_collected"
+                                                         id="date_sample_collected"
+                                                         value={otherfields.date_sample_collected}
+                                                         onChange={handleOtherFieldInputChange}                                                     />
                                                     {errors.date_sample_collected !="" ? (
                                                         <span className={classes.error}>{errors.date_sample_collected}</span>
                                                     ) : "" }
@@ -278,25 +259,23 @@ const ModalSample = (props) => {
                                             </Col>
                                             <Col md={6}>
                                                 <FormGroup>
-                                                    <Label for='time collected' className={classes.label}>Time Collected</Label>
+                                                    <Label for='sample id' className={classes.label}>Sample ID</Label>
 
                                                     <Input
                                                         className={classes.input}
                                                         type="text"
-                                                        name="time_sample_collected"
-                                                        id="time_sample_collected"
-                                                        onChange={value1 =>
-                                                            setOtherFields({ ...otherfields, time_sample_collected: value1 })
-                                                        }
-                                                        value={samplesCollected.dateSampleCollected}
+                                                        name="sample_ID"
+                                                        id="sample_ID"
+                                                        onChange={handleOtherFieldInputChange}
+                                                        value={otherfields.sampleID}
                                                     />
 
-                                                   {/* {errors.time_sample_collected !="" ? (
+                                                   {errors.time_sample_collected !="" ? (
                                                         <span className={classes.error}>{errors.time_sample_collected}</span>
-                                                    ) : "" } */}
+                                                    ) : "" }
                                                 </FormGroup>
                                             </Col>
-               
+
                                             <Col md={6}>
                                                 <FormGroup>
                                                     <Label for="sample type" className={classes.label}>Sample Type</Label>
@@ -319,7 +298,10 @@ const ModalSample = (props) => {
                                                                 />
                                                             ))
                                                         }
-                                                        className={classes.arial}
+                                                        style={{border: "1px solid #014d88",
+                                                        borderRadius:'0px',
+                                                        fontSize:'14px',
+                                                        color:'#000'}}
                                                         renderInput={(params) => (
                                                             <TextField
                                                                 {...params}
@@ -341,23 +323,21 @@ const ModalSample = (props) => {
                                             <Col md={6}>
                                                 <FormGroup>
                                                     <Label for="collected" className={classes.label}>Collected by </Label>
-
-                                                    <Input
-                                                        className={classes.input}
-                                                        type="select"
+                                                     <select
+                                                        className="form-control"
                                                         name="sample_collected_by"
                                                         id="sample_collected_by"
+                                                        style={{border: "1px solid #014d88",
+                                                        borderRadius:'0px',
+                                                        fontSize:'14px',
+                                                        color:'#000'}}
                                                         vaule={otherfields.sample_collected_by}
                                                         onChange={handleOtherFieldInputChange}
-                                                        {...(errors.sample_collected_by && {
-                                                            invalid: true,
-                                                        })}
-                                                    >
-                                                        <option value=""> </option>
+                                                     >
+                                                        <option value={""}> Select laboratory scientist</option>
                                                         <option value="Data clerks"> Data clerks </option>
                                                         <option value="Admin"> Admin </option>
-
-                                                    </Input>
+                                                    </select>
                                                     <FormFeedback>
                                                         {errors.sample_collected_by}
                                                     </FormFeedback>
@@ -369,11 +349,11 @@ const ModalSample = (props) => {
                                                     <Input
                                                         className={classes.input}
                                                         type="textarea"
-                                                        name="comment"
-                                                        id="comment"
+                                                        name="sample_comment"
+                                                        id="sample_comment"
                                                         style={{ minHeight: 100, fontSize: 14 }}
-                                                        onChange={handleInputChangeSample}
-                                                        value={samples.comment}
+                                                        onChange={handleOtherFieldInputChange}
+                                                        value={otherfields.sample_comment}
                                                         {...(errors.comment && { invalid: true })}
                                                     ></Input>
                                                     <FormFeedback>{errors.comment}</FormFeedback>

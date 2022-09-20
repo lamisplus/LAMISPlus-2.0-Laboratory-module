@@ -6,4 +6,4 @@ export const apiUrl =  '/api/v1/'
 
 export const apiUrl =  'http://localhost:8282/api/v1/';
 export const url =  'http://localhost:8282/api/v1/';
-export const  token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJndWVzdEBsYW1pc3BsdXMub3JnIiwiYXV0aCI6IlN1cGVyIEFkbWluIiwibmFtZSI6Ikd1ZXN0IEd1ZXN0IiwiZXhwIjoxNjYzNTY4MjY0fQ.93a8K0AR4oRYM7cY_aZ1zouPF_0aEFbv_Zn2V-ltAuirvOop1UewccbKVHQiE6b1Q002pgARYgJGPBygO85xJA';
+export const  token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJndWVzdEBsYW1pc3BsdXMub3JnIiwiYXV0aCI6IlN1cGVyIEFkbWluIiwibmFtZSI6Ikd1ZXN0IEd1ZXN0IiwiZXhwIjoxNjYzNzE0MDQ1fQ.6dR7OUfgmlY233YKmIRAM7osoc-GAdLKZhdCumZlUVawGJniLKBIfnK44rQ6EkHifdvAj7WTdllqDR0h1NEFpA';
