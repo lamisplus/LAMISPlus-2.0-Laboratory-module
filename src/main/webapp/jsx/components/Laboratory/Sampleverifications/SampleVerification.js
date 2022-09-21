@@ -51,9 +51,15 @@ const useStyles = makeStyles(theme => ({
         }
     },
     input: {
+        border:'1px solid #014d88',
+        borderRadius:'0px',
+        fontSize:'14px',
+        color:'#000'
+    },
+    arial: {
         border:'2px solid #014d88',
         borderRadius:'0px',
-        fontSize:'16px',
+        fontSize:'15px',
         color:'#000'
     },
     error: {
@@ -70,11 +76,11 @@ const useStyles = makeStyles(theme => ({
         color:'#fff',
         borderRadius:'0px'
     },
-    label:{
-        fontSize:'16px',
-        color:'rgb(153, 46, 98)',
-        fontWeight:'600'
-    }
+   label:{
+       fontSize:'14px',
+       color:'#014d88',
+       fontWeight:'bold'
+   }
 }))
 
 const ModalVerifySample = (props) => {
@@ -82,7 +88,6 @@ const ModalVerifySample = (props) => {
     const classes = useStyles()
     const datasample = props.datasample && props.datasample!==null ? props.datasample : {};
     //console.log('modal', datasample)
-
     const sample_type = datasample.sampleTypeName;
     const lab_number = datasample.labNumber;
     const date_sample_collected = datasample.dateSampleCollected;
@@ -100,35 +105,31 @@ const ModalVerifySample = (props) => {
     const [otherFields, setotherFields] = useState({
         date_sample_verified:"",
         sample_verified_by:"",
-        sample_priority:"",
-        time_sample_verified:"",
-        comment:"",
         verification_status:"",
         comment_sample_verified:""
     });
-
+    const [users, setUsers] = useState([])
     const [errors, setErrors] = useState({});
 
-    const [samplesVerified, setSamplesVerified] = useState({
-          "commentSampleVerified": "",
-          "dateSampleVerified": moment(new Date()).format("HH:mm:ss"),
-          "sampleAccepted": "string",
-          "sampleVerifiedBy": "string",
-          "testId": 0,
-          "timeSampleVerified": ""
-    });
+
+    const loginUser = async () => {
+        try {
+             const response = await axios.get(`${url}users`, { headers: {"Authorization" : `Bearer ${token}`} });
+             setUsers(response.data);
+        }
+        catch(error) {
+
+        }
+    }
 
     useEffect(() => {
+        loginUser()
         async function getCharacters() {
             try {
             } catch (error) {
             }
         }
     }, []);
-
-    const handleInputChangeSample = (e) => {
-        setSamples({ ...samples, [e.target.name]: e.target.value });
-    };
 
     const handleOtherFieldInputChange = e => {
       setotherFields ({ ...otherFields, [e.target.name]: e.target.value });
@@ -137,10 +138,10 @@ const ModalVerifySample = (props) => {
     /*****  Validation */
    const validate = () => {
          let temp = { ...errors }
-         temp.date_sample_verified = otherFields.date_sample_verified ? "" : "Date is required"
-         //temp.time_sample_verified = otherFields.time_sample_verified ? "" : "Time  is required."
-         //temp.sample_verified_by = otherFields.sample_verified_by ? "" : "This filed is required."
-         temp.comment = otherFields.comment ? "" : "Comment is required."
+         temp.date_sample_verified = otherFields.date_sample_verified ? "" : "This field is required"
+         temp.verification_status = otherFields.verification_status ? "" : "This field  is required."
+         temp.sample_verified_by = otherFields.sample_verified_by ? "" : "This field is required."
+         //temp.comment_sample_verified = otherFields.comment_sample_verified ? "" : "Sample verification Comments is required."
          //temp.verification_status = otherFields.verification_status ? "" : "This filed is required."
          setErrors({
              ...temp
@@ -156,19 +157,9 @@ const ModalVerifySample = (props) => {
              if (validate()) {
                 setLoading(true);
 
-                const newDatenow = moment(otherFields.date_sample_verified).format(
-                                    "YYYY-MM-DD"
-                                );
-                const newTimeSampleVerified = moment(otherFields.date_sample_verified).format("HH:mm:ss");
+                console.log(otherFields)
 
-                samplesVerified.commentSampleVerified = otherFields.comment;
-                samplesVerified.dateSampleVerified = newDatenow;
-                samplesVerified.sampleAccepted = otherFields.verification_status;
-                samplesVerified.sampleVerifiedBy = otherFields.sample_verified_by;
-                samplesVerified.testId = lab_test_id;
-                samplesVerified.timeSampleVerified = newTimeSampleVerified;
-
-                await axios.post(`${url}laboratory/verified-samples/${lab_test_id}`, samplesVerified,
+                await axios.post(`${url}laboratory/verified-samples/${lab_test_id}`, otherFields,
                 { headers: {"Authorization" : `Bearer ${token}`}}).then(resp => {
                     console.log("sample verify", resp);
                     setLoading(!true);
@@ -222,26 +213,25 @@ const ModalVerifySample = (props) => {
 
                                               </Alert>
                                         </Col>
-                                            <Col md={6}>
+                                            <Col md={12}>
                                               <FormGroup>
-                                                <Label for='maritalStatus' className={classes.label}>Date Verified</Label>
-                                                <DateTimePicker
-                                                    className={classes.input}
-                                                    time={false}
-                                                    max={new Date()}
-                                                    min={new Date(datasample.dateSampleCollected)}
-                                                    name="date_sample_verified"
-                                                    id="date_sample_verified"
-                                                    onChange={value1 =>
-                                                      setotherFields({ ...otherFields, date_sample_verified: value1 })
-                                                    }
-                                                />
-                                                  {errors.time_sample_transfered !="" ? (
-                                                    <span className={classes.error}>{errors.time_sample_transfered}</span>
+                                                <Label for='date_sample_verified' className={classes.label}>Date Time Verified</Label>
+                                                <Input
+                                                 type="datetime-local"
+                                                 className={classes.input}
+                                                 max={new Date().toISOString().substr(0, 16)}
+                                                 min={new Date(datasample.dateSampleCollected).toISOString().substr(0, 16)}
+                                                 name="date_sample_verified"
+                                                 id="date_sample_verified"
+                                                 value={otherFields.date_sample_verified}
+                                                 onChange={handleOtherFieldInputChange} />
+
+                                                  {errors.date_sample_verified !="" ? (
+                                                    <span className={classes.error}>{errors.date_sample_verified}</span>
                                                   ) : "" }
                                               </FormGroup>
                                             </Col>
-                                            <Col md={6}>
+                                            {/*<Col md={6}>
                                               <FormGroup>
                                                 <Label for='' className={classes.label}>Time Verified</Label>
 
@@ -256,54 +246,74 @@ const ModalVerifySample = (props) => {
                                                     value={samplesVerified.dateSampleVerified}
                                                 />
 
-                                                  {/*  {errors.time_sample_verified !="" ? (
+                                                   {errors.time_sample_verified !="" ? (
                                                       <span className={classes.error}>{errors.time_sample_verified}</span>
-                                                      ) : "" } */}
+                                                      ) : "" }
                                               </FormGroup>
-                                              </Col>
-                                          <Col md={6}>
-                                              <FormGroup>
-                                                <Label for="exampleSelect" className={classes.label}>Confirm Sample</Label>
-                                                <Input type="select" name="verification_status" id="verification_status"
-                                                  value={otherFields.verification_status} className={classes.input}
-                                                  {...(errors.verification_status && { invalid: true})}
-                                                onChange={handleOtherFieldInputChange}>
-                                                  <option>Select</option>
-                                                  <option value="Valid">Sample Valid </option>
-                                                  <option value="Rejected">Sample Rejected</option>
+                                              </Col>*/}
 
-                                                </Input>
-                                                <FormFeedback>{errors.verification_status}</FormFeedback>
+                                              <Col md={6}>
+                                              <FormGroup>
+                                                  <Label for="verification_status" className={classes.label}>Approve Sample</Label>
+
+                                                    <select
+                                                        className={classes.input}
+                                                        className="form-control"
+                                                        name="verification_status"
+                                                        id="verification_status"
+                                                        style={{border: "1px solid #014d88",
+                                                        borderRadius:'0px',
+                                                        fontSize:'14px',
+                                                        color:'#000'}}
+                                                        vaule={otherFields.sample_verified_by}
+                                                        onChange={handleOtherFieldInputChange}
+                                                        {...(errors.sample_verified_by && { invalid: true})}
+                                                      >
+                                                         <option value={""}>Select</option>
+                                                          <option value="Valid">Sample is Valid </option>
+                                                          <option value="Rejected">Sample is Rejected</option>
+                                                    </select>
+                                                      {errors.sample_verified_by !="" ? (
+                                                        <span className={classes.error}>{errors.sample_verified_by}</span>
+                                                      ) : "" }
                                               </FormGroup>
-                                              </Col>
+                                          </Col>
                                               <Col md={6}>
                                                 <FormGroup>
                                                     <Label for="sample_verified_by" className={classes.label}>Verify by </Label>
 
-                                                        <Input
-                                                        className={classes.input}
-                                                          type="select"
+                                                      <select
+                                                          className={classes.input}
+                                                          className="form-control"
                                                           name="sample_verified_by"
                                                           id="sample_verified_by"
+                                                          style={{border: "1px solid #014d88",
+                                                          borderRadius:'0px',
+                                                          fontSize:'14px',
+                                                          color:'#000'}}
                                                           vaule={otherFields.sample_verified_by}
                                                           onChange={handleOtherFieldInputChange}
                                                           {...(errors.sample_verified_by && { invalid: true})}
                                                         >
-                                                          <option value=""> </option>
-                                                           <option value="Data clerks"> Data clerks </option>
-                                                           <option value="Admin"> Admin </option>
-                                                      </Input>
-                                                          <FormFeedback>{errors.sample_verified_by}</FormFeedback>
+                                                          <option value={""}> Sample verified by</option>
+                                                           {users && users.map((user, i) =>
+                                                           (
+                                                               <option key={i} value={user.id}>{user.firstName}</option>
+                                                           ))}
+                                                      </select>
+                                                        {errors.sample_verified_by !="" ? (
+                                                          <span className={classes.error}>{errors.sample_verified_by}</span>
+                                                        ) : "" }
                                                 </FormGroup>
                                             </Col>
-                                              <Col md={12}>
+                                            <Col md={12}>
                                               <FormGroup>
-                                                <Label for='maritalStatus' className={classes.label}>Note</Label>
+                                                <Label for='comment_sample_verified' className={classes.label}>Note</Label>
                                                 <Input
                                                 className={classes.input}
                                                   type='textarea'
-                                                  name='comment'
-                                                  id='comment'
+                                                  name='comment_sample_verified'
+                                                  id='comment_sample_verified'
                                                   style={{ minHeight: 100, fontSize: 14 }}
                                                   onChange={handleOtherFieldInputChange}
                                                   value = {otherFields.comment}

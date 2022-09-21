@@ -88,7 +88,6 @@ const ModalSample = (props) => {
     const history = useHistory();
     const classes = useStyles()
     const datasample = props.datasample && props.datasample!==null ? props.datasample : {};
-    //console.log(datasample)
     const order_priority = datasample.id && datasample.orderPriority ? datasample.orderPriorityName : null;
     const lab_test_group = datasample.id ? datasample.labTestGroupName : null ;
     const sample_ordered_by = datasample.data ? datasample.data.sample_ordered_by : null ;
@@ -113,6 +112,7 @@ const ModalSample = (props) => {
     const [samples, setSamples] = useState({});
     const [optionsample, setOptionsample] = useState([]);
     const [saveButtonStatus, setSaveButtonStatus] = useState(false);
+    const [users, setUsers] = useState([])
 
     const [otherfields, setOtherFields] = useState({
         sample_collected_by:"",
@@ -124,7 +124,18 @@ const ModalSample = (props) => {
 
     const [errors, setErrors] = useState({});
 
+    const loginUser = async () => {
+        try {
+             const response = await axios.get(`${url}users`, { headers: {"Authorization" : `Bearer ${token}`} });
+             setUsers(response.data);
+        }
+        catch(error) {
+
+        }
+    }
+
     useEffect(() => {
+        loginUser();
         async function getCharacters() {
             try {
                 const response = await axios.get(`${url}application-codesets/v2/SAMPLE_TYPE`, { headers: {"Authorization" : `Bearer ${token}`} });
@@ -251,7 +262,7 @@ const ModalSample = (props) => {
                                                          name="date_sample_collected"
                                                          id="date_sample_collected"
                                                          value={otherfields.date_sample_collected}
-                                                         onChange={handleOtherFieldInputChange}                                                     />
+                                                         onChange={handleOtherFieldInputChange} />
                                                     {errors.date_sample_collected !="" ? (
                                                         <span className={classes.error}>{errors.date_sample_collected}</span>
                                                     ) : "" }
@@ -335,8 +346,11 @@ const ModalSample = (props) => {
                                                         onChange={handleOtherFieldInputChange}
                                                      >
                                                         <option value={""}> Select laboratory scientist</option>
-                                                        <option value="Data clerks"> Data clerks </option>
-                                                        <option value="Admin"> Admin </option>
+                                                        {users && users.map((user, i) =>
+                                                        (
+                                                            <option key={i} value={user.id}>{user.firstName}</option>
+                                                        ))}
+
                                                     </select>
                                                     <FormFeedback>
                                                         {errors.sample_collected_by}

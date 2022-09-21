@@ -56,7 +56,7 @@ const useStyles = makeStyles(theme => ({
         }
     },
     input: {
-        border:'2px solid #014d88',
+        border:'1px solid #014d88',
         borderRadius:'0px',
         fontSize:'16px',
         color:'#000'
@@ -97,11 +97,11 @@ const useStyles = makeStyles(theme => ({
 
     const labTestType = [];
     if(testOrders !== null || testOrders ===""){
-            testOrders.forEach(function(value, index, array) {
-                if(value['data']!==null)
-                    labTestType.push(value['data'].lab_test_group);
-            });
-        }
+        testOrders.forEach(function(value, index, array) {
+            if(value['data']!==null)
+                labTestType.push(value['data'].lab_test_group);
+        });
+    }
 
     //Make the list contain unique list of Data
     const uniqueValues = [...new Set(labTestType)];
@@ -262,25 +262,8 @@ return (
                 </div>
                 <br/>
                 <Card className="mb-12">
-                    <CardHeader> <span style={{  textTransform: 'capitalize'}}>Test Order Details </span>
-                        <Link 
-                            to ={{ 
-                              pathname: "/laboratory",  
-                              state: 'verification'
-                            }} 
-                        >
-                                
-                            <MatButton
-                                type='submit'
-                                variant='contained'
-                                color='primary'
-                                //className={classes.button}                        
-                                className=" float-right mr-1"
-                            >
-                                <TiArrowBack/>{" "} Back
-                            </MatButton>
-                      
-                        </Link>
+                    <CardHeader> <span style={{  textTransform: 'capitalize'}}>Samples Collected Details </span>
+
                   </CardHeader>
                 <CardBody>
                     { /* <Alert color="primary">

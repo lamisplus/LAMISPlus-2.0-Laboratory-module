@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { Modal, ModalHeader, ModalBody,Form,FormFeedback,Row,Col,
 FormGroup,Label,Input,Card,CardBody} from 'reactstrap';
 import { connect } from 'react-redux';
@@ -51,7 +51,7 @@ const useStyles = makeStyles(theme => ({
         }
     },
     input: {
-        border:'2px solid #014d88',
+        border:'1px solid #014d88',
         borderRadius:'0px',
         fontSize:'16px',
         color:'#000'
@@ -82,6 +82,7 @@ const ModalSampleResult = (props) => {
     const classes = useStyles()
     const datasample = props.datasample ? props.datasample : {};
     const sample_type = datasample.sampleTypeName;
+     const [users, setUsers] = useState([])
 
     const lab_number = datasample.labNumber;
     const date_sample_collected = datasample.dateSampleCollected;
@@ -97,25 +98,26 @@ const ModalSampleResult = (props) => {
     const [samples, setSamples] = useState({}) 
     const [otherfields, setOtherFields] = 
             useState({
-            time_result_enetered:"",
+            date_asseyed:"",
             date_result_reported:"",
             resultReported:"",
-            //test_result:"",
-            date_asseyed:"",
-            timeAssayed:"",
-            //result_reported_by: ""
+            test_result:"",
+            result_reported_by: ""
           }); 
     const [errors, setErrors] = useState({});
 
-    const [sampleResult, setSampleResult] = useState({
-          "dateAssayed": "",
-          "dateResultReported": "",
-          "id": 0,
-          "resultReported": "",
-          "testId": 0,
-          "timeAssayed": moment(new Date()).format("HH:mm:ss"),
-          "timeResultReported": moment(new Date()).format("HH:mm:ss"),
-    });
+      const loginUser = async () => {
+            try {
+                 const response = await axios.get(`${url}users`, { headers: {"Authorization" : `Bearer ${token}`} });
+                 setUsers(response.data);
+            }
+            catch(error) {
+
+            }
+        }
+      useEffect(() => {
+          loginUser()
+      }, []);
 
   const handleOtherFieldInputChange = e => {
       setOtherFields ({ ...otherfields, [e.target.name]: e.target.value });
@@ -139,21 +141,9 @@ const ModalSampleResult = (props) => {
         if(validate()){
               setLoading(true);
 
-              const newDateReported = moment(otherfields.date_result_reported).format(
-                                                  "YYYY-MM-DD"
-                                              );
-              const newTimeSampleEntered = moment(otherfields.date_result_reported).format("HH:mm:ss");
+              console.log("samples result", otherfields);
 
-              sampleResult.dateAssayed = newDateReported;
-              sampleResult.dateResultReported = newDateReported;
-              sampleResult.testId = lab_test_id;
-              sampleResult.timeAssayed = newTimeSampleEntered;
-              sampleResult.timeResultReported = newTimeSampleEntered;
-              sampleResult.resultReported = otherfields.resultReported;
-
-              console.log("samples result", otherfields, sampleResult);
-
-              await axios.post(`${url}laboratory/results`, sampleResult,
+              await axios.post(`${url}laboratory/results`, otherfields,
               { headers: {"Authorization" : `Bearer ${token}`}}).then(resp => {
                   console.log("sample result", resp);
                   setLoading(!true);
@@ -206,70 +196,87 @@ const ModalSampleResult = (props) => {
                                       </Col>
 
                                       <Col xs="6">
-                                        <FormGroup>
-                                          <Label for='date Assayed' className={classes.label}>Date Assayed</Label>
-                                            <DateTimePicker time={false} name="date_asseyed"  id="date_asseyed"
-                                            className={classes.input}
-                                             max={new Date()}
-                                             min={new Date(datasample.dateSampleVerified)}
-                                              onChange={value1 =>
-                                                setOtherFields({ ...otherfields, date_asseyed: value1 })
-                                              }
-                                            />
-                                         </FormGroup>
+                                          <FormGroup>
+                                             <Label for='date_asseyed' className={classes.label}>Date Assayed</Label>
+                                             <Input
+                                              type="datetime-local"
+                                              className={classes.input}
+                                              max={new Date().toISOString().substr(0, 16)}
+                                              min={new Date(datasample.dateSampleVerified).toISOString().substr(0, 16)}
+                                              name="date_asseyed"
+                                              id="date_asseyed"
+                                              value={otherfields.date_asseyed}
+                                              onChange={handleOtherFieldInputChange} />
+
+                                               {errors.date_asseyed !="" ? (
+                                                 <span className={classes.error}>{errors.date_asseyed}</span>
+                                               ) : "" }
+                                           </FormGroup>
                                       </Col>
                                       <Col xs="6">
-                                            <FormGroup>
-                                              <Label for='date reported' className={classes.label}>Date Reported</Label>
-                                              <DateTimePicker time={false} name="date_result_reported"  id="date_result_reported" className={classes.input}
-                                                max={new Date()}
-                                                min={new Date(datasample.dateSampleVerified)}
-                                                onChange={value1 =>
-                                                  setOtherFields({ ...otherfields, date_result_reported: value1 })
-                                                }
-                                              />
-                                            </FormGroup>
+                                           <FormGroup>
+                                             <Label for='date_result_reported' className={classes.label}>Date Result Reported</Label>
+                                             <Input
+                                              type="datetime-local"
+                                              className={classes.input}
+                                              max={new Date().toISOString().substr(0, 16)}
+                                              min={new Date(datasample.dateSampleVerified).toISOString().substr(0, 16)}
+                                              name="date_result_reported"
+                                              id="date_result_reported"
+                                              value={otherfields.date_result_reported}
+                                              onChange={handleOtherFieldInputChange} />
+
+                                               {errors.date_result_reported !="" ? (
+                                                 <span className={classes.error}>{errors.date_result_reported}</span>
+                                               ) : "" }
+                                           </FormGroup>
                                       </Col>
                                   </Row>
                                   <Row>
                                       <Col md={6}>
-                                          <FormGroup>
-                                            <Label for='' className={classes.label}>Time Assayed</Label>
+                                              <FormGroup>
+                                                  <Label for="result_reported_by" className={classes.label}>Reported by </Label>
 
-                                             <Input
-                                                 className={classes.input}
-                                                type="text"
-                                                name="time_result_assayed"
-                                                id="time_result_assayed"
-                                                onChange={value1 =>
-                                                    setOtherFields({ ...otherfields, timeAssayed: value1 })
-                                                }
-                                                value={sampleResult.timeAssayed}
-                                            />
-
-                                              {/*  {errors.time_sample_verified !="" ? (
-                                                  <span className={classes.error}>{errors.time_sample_verified}</span>
-                                                  ) : "" } */}
-                                          </FormGroup>
+                                                    <select
+                                                        className={classes.input}
+                                                        className="form-control"
+                                                        name="result_reported_by"
+                                                        id="result_reported_by"
+                                                        style={{border: "1px solid #014d88",
+                                                        borderRadius:'0px',
+                                                        fontSize:'14px',
+                                                        color:'#000'}}
+                                                        vaule={otherfields.result_reported_by}
+                                                        onChange={handleOtherFieldInputChange}
+                                                        {...(errors.result_reported_by && { invalid: true})}
+                                                      >
+                                                        <option value={""}> Sample result reported by</option>
+                                                         {users && users.map((user, i) =>
+                                                         (
+                                                             <option key={i} value={user.id}>{user.firstName}</option>
+                                                         ))}
+                                                    </select>
+                                                      {errors.result_reported_by !="" ? (
+                                                        <span className={classes.error}>{errors.result_reported_by}</span>
+                                                      ) : "" }
+                                              </FormGroup>
                                       </Col>
                                         <Col md={6}>
                                             <FormGroup>
-                                              <Label for='' className={classes.label}>Time Reported</Label>
+                                              <Label for='test_result' className={classes.label}>Result</Label>
 
                                                <Input
                                                    className={classes.input}
                                                   type="text"
-                                                  name="time_result_reported"
-                                                  id="time_result_reported"
-                                                  onChange={value1 =>
-                                                      setOtherFields({ ...otherfields, timeResultReported: value1 })
-                                                  }
-                                                  value={sampleResult.timeResultReported}
+                                                  name="test_result"
+                                                  id="test_result"
+                                                  onChange={handleOtherFieldInputChange}
+                                                  value={otherfields.test_result}
                                               />
 
-                                                {/*  {errors.time_sample_verified !="" ? (
-                                                    <span className={classes.error}>{errors.time_sample_verified}</span>
-                                                    ) : "" } */}
+                                               {errors.test_result !="" ? (
+                                                    <span className={classes.error}>{errors.test_result}</span>
+                                                    ) : "" }
                                             </FormGroup>
                                         </Col>
                                   </Row>

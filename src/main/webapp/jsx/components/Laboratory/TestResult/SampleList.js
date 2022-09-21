@@ -56,7 +56,7 @@ const useStyles = makeStyles(theme => ({
         }
     },
     input: {
-        border:'2px solid #014d88',
+        border:'1px solid #014d88',
         borderRadius:'0px',
         fontSize:'16px',
         color:'#000'
@@ -272,29 +272,9 @@ return (
         <br/>
         <Row>
             <Col>
-                <div >
 
-                </div>
-                <br/>
                 <Card className="mb-12">
                     <CardHeader> <span style={{  textTransform: 'capitalize'}}>Test Order Details </span>
-                        <Link 
-                            to ={{ 
-                              pathname: "/laboratory",  
-                              state: 'collect-sample'
-                            }} 
-                        >
-                                
-                            <MatButton
-                                type='submit'
-                                variant='contained'
-                                color='primary'
-                                className=" float-right mr-1"
-                            >
-                                <TiArrowBack/>{" "} Back
-                            </MatButton>
-                        </Link>
-
                   </CardHeader>
                 <CardBody>
                     <Row>
