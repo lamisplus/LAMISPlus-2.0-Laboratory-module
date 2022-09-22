@@ -82,7 +82,7 @@ const ModalSampleResult = (props) => {
     const classes = useStyles()
     const datasample = props.datasample ? props.datasample : {};
     const sample_type = datasample.sampleTypeName;
-     const [users, setUsers] = useState([])
+    const [users, setUsers] = useState([])
 
     const lab_number = datasample.labNumber;
     const date_sample_collected = datasample.dateSampleCollected;
@@ -105,6 +105,7 @@ const ModalSampleResult = (props) => {
             result_reported_by: ""
           }); 
     const [errors, setErrors] = useState({});
+    const [inputFlip, setInputFlip] = useState(0)
 
       const loginUser = async () => {
             try {
@@ -171,6 +172,17 @@ const ModalSampleResult = (props) => {
               );
           }
       }
+
+   const formField = () => {
+        if(inputFlip === 0) {
+
+        }
+        else if(inputFlip === 1) {
+
+        }else {
+
+        }
+   }
       
   return (
       <div >
@@ -261,13 +273,14 @@ const ModalSampleResult = (props) => {
                                                       ) : "" }
                                               </FormGroup>
                                       </Col>
+                                      {inputFlip === 0 ?
                                         <Col md={6}>
                                             <FormGroup>
                                               <Label for='test_result' className={classes.label}>Result</Label>
 
                                                <Input
                                                    className={classes.input}
-                                                  type="text"
+                                                  type="number"
                                                   name="test_result"
                                                   id="test_result"
                                                   onChange={handleOtherFieldInputChange}
@@ -279,6 +292,51 @@ const ModalSampleResult = (props) => {
                                                     ) : "" }
                                             </FormGroup>
                                         </Col>
+                                        : inputFlip === 1 ?
+                                          <Col md={6}>
+                                             <FormGroup>
+                                               <Label for="test_result" className={classes.label}>Result </Label>
+
+                                                 <select
+                                                     className={classes.input}
+                                                     className="form-control"
+                                                     name="test_result"
+                                                     id="test_result"
+                                                     style={{border: "1px solid #014d88",
+                                                     borderRadius:'0px',
+                                                     fontSize:'14px',
+                                                     color:'#000'}}
+                                                     vaule={otherfields.test_result}
+                                                     onChange={handleOtherFieldInputChange}
+                                                     {...(errors.test_result && { invalid: true})}
+                                                   >
+                                                     <option value={""}> Select sample result</option>
+                                                     <option value="1"> Positive</option>
+                                                     <option value="0"> Negative</option>
+                                                 </select>
+                                                   {errors.result_reported_by !="" ? (
+                                                     <span className={classes.error}>{errors.result_reported_by}</span>
+                                                   ) : "" }
+                                           </FormGroup>
+                                         </Col> : inputFlip === 2 ?
+                                          <Col md={6}>
+                                              <FormGroup>
+                                                <Label for='test_result' className={classes.label}>Result</Label>
+
+                                                 <Input
+                                                     className={classes.input}
+                                                    type="text"
+                                                    name="test_result"
+                                                    id="test_result"
+                                                    onChange={handleOtherFieldInputChange}
+                                                    value={otherfields.test_result}
+                                                />
+
+                                                 {errors.test_result !="" ? (
+                                                      <span className={classes.error}>{errors.test_result}</span>
+                                                      ) : "" }
+                                              </FormGroup>
+                                          </Col> : " "}
                                   </Row>
                                   <Row>             
                                      <Col md={12}>
