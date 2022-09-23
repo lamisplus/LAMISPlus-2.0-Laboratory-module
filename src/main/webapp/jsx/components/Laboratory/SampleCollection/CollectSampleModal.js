@@ -182,29 +182,35 @@ const ModalSample = (props) => {
              if (validate()) {
                 setLoading(true);
 
+                let sampletostring = null;
+
                 if (samples.sample_type.length > 0) {
                     const arr = [];
                     samples.sample_type.forEach(function (value, index, array) {
                         arr.push(value["value"]);
                     });
                     console.log(arr.toString())
-                    const sampletostring = arr.toString();
-                    otherfields.sampleTypeId = sampletostring;
-                } else {
-                    datasample.sample_type = datasample.data.sample_type;
+                    sampletostring = arr.toString();
+
                 }
 
-                console.log("samples", otherfields)
+                const stringArr = sampletostring.split(',')
 
-               if (lab_number) {
-                     await axios.post(`${url}laboratory/samples/${lab_number}`, otherfields,
-                    { headers: {"Authorization" : `Bearer ${token}`}}).then(resp => {
-                        setLoading(!true);
-                         toast.success("Sample collection saved successfully!!", {
-                            position: toast.POSITION.TOP_RIGHT
+                for (let sampleType of stringArr) {
+                   otherfields.sampleTypeId = sampleType;
+
+                   console.log("samples", otherfields)
+
+                   if (lab_number) {
+                        await axios.post(`${url}laboratory/samples/${lab_number}`, otherfields,
+                        { headers: {"Authorization" : `Bearer ${token}`}}).then(resp => {
+                            setLoading(!true);
+                             toast.success("Sample collection saved successfully!!", {
+                                position: toast.POSITION.TOP_RIGHT
+                            });
                         });
-                    });
-               }
+                   }
+                }
                 props.togglestatus()
                 props.handDataReload()
             }

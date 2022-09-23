@@ -53,7 +53,13 @@ const useStyles = makeStyles(theme => ({
     input: {
         border:'1px solid #014d88',
         borderRadius:'0px',
-        fontSize:'16px',
+        fontSize:'14px',
+        color:'#000'
+    },
+    arial: {
+        border:'2px solid #014d88',
+        borderRadius:'0px',
+        fontSize:'15px',
         color:'#000'
     },
     error: {
@@ -70,11 +76,11 @@ const useStyles = makeStyles(theme => ({
         color:'#fff',
         borderRadius:'0px'
     },
-    label:{
-        fontSize:'16px',
-        color:'rgb(153, 46, 98)',
-        fontWeight:'600'
-    }
+   label:{
+       fontSize:'14px',
+       color:'#014d88',
+       fontWeight:'bold'
+   }
 }))
 
 const ModalSampleResult = (props) => {
@@ -105,7 +111,7 @@ const ModalSampleResult = (props) => {
             result_reported_by: ""
           }); 
     const [errors, setErrors] = useState({});
-    const [inputFlip, setInputFlip] = useState(0)
+    const [inputFlip, setInputFlip] = useState(2)
 
       const loginUser = async () => {
             try {
@@ -172,17 +178,6 @@ const ModalSampleResult = (props) => {
               );
           }
       }
-
-   const formField = () => {
-        if(inputFlip === 0) {
-
-        }
-        else if(inputFlip === 1) {
-
-        }else {
-
-        }
-   }
       
   return (
       <div >

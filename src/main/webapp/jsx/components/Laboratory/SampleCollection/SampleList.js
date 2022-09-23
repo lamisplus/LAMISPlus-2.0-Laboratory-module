@@ -323,7 +323,7 @@ return (
                                               onChange={handleLabNumber}
                                             >
                                                <option value={""}> Select Lab Number </option>
-                                               <option value="A1001"> A1001 </option>
+                                               <option value="100001"> 100001 </option>
 
                                           </Input>
 
