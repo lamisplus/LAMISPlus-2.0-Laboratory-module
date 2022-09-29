@@ -82,7 +82,7 @@ const ModalViewResult = (props) => {
     const getResults = useCallback(async () => {
         try {
             const response = await axios.get(`${url}laboratory/results/tests/${datasample.testId}`, { headers: {"Authorization" : `Bearer ${token}`}});
-            //console.log("results ccxc", response);
+            console.log("results ccxc", response);
             setCollectResult(response.data);
         } catch (e) {
            // toast.error("An error occurred while fetching sample results", {
@@ -115,24 +115,24 @@ const ModalViewResult = (props) => {
                                          <span style={{ fontWeight: 'bolder'}}>{" "}{ sample_type}</span>
                                           <br/>
                                          Date sample verified : &nbsp;&nbsp;
-                                         <span style={{ fontWeight: 'bolder'}}>{" "}{ date_sample_verified + " " + time_sample_verified}</span>
+                                         <span style={{ fontWeight: 'bolder'}}>{" "}{ date_sample_verified }</span>
                                      </p>
 
                                    </Alert>
                                     </Col>
                                     <Col xs="12">
-                                        <h4>Results: </h4>
+                                        <h4>Sample Result: </h4>
                                         <hr/>
                                         {datasample.labTestName === "Viral Load" && collectResult.dateAssayed !== null?
                                         <>
                                               <Row >
                                                   <Col xs="4">
-                                                  <span style={{ fontWeight: 'bold'}}>Date Assayed </span>: {collectResult.dateAssayed + " " + collectResult.timeAssayed }
+                                                  <span style={{ fontWeight: 'bold'}}>Date Assayed </span>: {collectResult.dateAssayed}
                                                   <br/>
                                                   </Col>
                                                   <br/>
                                                   <Col xs="4">
-                                                      <span style={{ fontWeight: 'bold'}}>Date Reported </span>: {collectResult.dateResultReported + " " + collectResult.timeResultReported}
+                                                      <span style={{ fontWeight: 'bold'}}>Date Reported </span>: {collectResult.dateResultReported}
                                                       <br/>
                                                   </Col>
 
@@ -140,9 +140,15 @@ const ModalViewResult = (props) => {
                                                       {/*<span style={{ fontWeight: 'bold'}}> Result </span>:*/}
                                                       <Badge  color="info"> {ReactHtmlParser("Result Available")}</Badge>
                                                   </Col>
-                                                                 {/* <Col xs="6">
-                                                                      <span style={{ fontWeight: 'bold'}}> Unit Measurement </span>: {unit_measurement}
-                                                                  </Col> */}
+
+                                                   <Col xs="4">
+                                                      <br />
+                                                        <span style={{ fontWeight: 'bold'}}> Results </span>: {collectResult.resultReport}
+                                                    </Col>
+                                                    <Col xs="4">
+                                                    <br />
+                                                         <span style={{ fontWeight: 'bold'}}> Unit Measurement </span>: {}
+                                                    </Col>
 
                                                   <Col xs="12">
                                                   <br />
@@ -157,12 +163,12 @@ const ModalViewResult = (props) => {
                                              collectResult.dateAssayed !== null ?
                                               <Row >
                                                   <Col xs="4">
-                                                  <span style={{ fontWeight: 'bold'}}>Date Assayed </span>: {collectResult.dateAssayed + " " + collectResult.timeAssayed }
+                                                  <span style={{ fontWeight: 'bold'}}>Date Assayed </span>: {collectResult.dateAssayed }
                                                   <br/>
                                                   </Col>
                                                   <br/>
                                                   <Col xs="4">
-                                                      <span style={{ fontWeight: 'bold'}}>Date Reported </span>: {collectResult.dateResultReported + " " + collectResult.timeResultReported}
+                                                      <span style={{ fontWeight: 'bold'}}>Date Reported </span>: {collectResult.dateResultReported }
                                                       <br/>
                                                   </Col>
 
@@ -170,9 +176,15 @@ const ModalViewResult = (props) => {
                                                       {/*<span style={{ fontWeight: 'bold'}}> Result </span>:*/}
                                                       <Badge  color="info"> {ReactHtmlParser("Result Available")}</Badge>
                                                   </Col>
-                                                                 {/* <Col xs="6">
-                                                                      <span style={{ fontWeight: 'bold'}}> Unit Measurement </span>: {unit_measurement}
-                                                                  </Col> */}
+
+                                                  <Col xs="4">
+                                                    <br />
+                                                      <span style={{ fontWeight: 'bold'}}> Results </span>: {collectResult.resultReport}
+                                                  </Col>
+                                                  <Col xs="4">
+                                                  <br />
+                                                       <span style={{ fontWeight: 'bold'}}> Unit Measurement </span>: {}
+                                                  </Col>
 
                                                   <Col xs="12">
                                                   <br />

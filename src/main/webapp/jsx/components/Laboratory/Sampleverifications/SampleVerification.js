@@ -156,12 +156,19 @@ const ModalVerifySample = (props) => {
 
              if (validate()) {
                 setLoading(true);
+                otherFields.date_sample_verified = otherFields.date_sample_verified.replace('T', ' ')+":00"
 
-                console.log(otherFields)
+                let verifiedSamples = {
+                  commentSampleVerified: otherFields.comment_sample_verified,
+                  dateSampleVerified: otherFields.date_sample_verified,
+                  sampleAccepted: otherFields.verification_status,
+                  sampleVerifiedBy: otherFields.sample_verified_by
+                }
+                console.log(verifiedSamples)
 
-                await axios.post(`${url}laboratory/verified-samples/${lab_test_id}`, otherFields,
+                await axios.post(`${url}laboratory/verified-samples/${lab_test_id}`, verifiedSamples,
                 { headers: {"Authorization" : `Bearer ${token}`}}).then(resp => {
-                    console.log("sample verify", resp);
+                    console.log("sample verified", resp);
                     setLoading(!true);
                      toast.success("Sample verified successfully!!", {
                         position: toast.POSITION.TOP_RIGHT
@@ -208,7 +215,7 @@ const ModalVerifySample = (props) => {
                                                     &nbsp;&nbsp;&nbsp;&nbsp;Sample type:
                                                     <span style={{ fontWeight: 'bolder'}}>{" "}{sample_type}</span>
                                                             &nbsp;&nbsp;&nbsp;&nbsp; Date sample collected :
-                                                    <span style={{ fontWeight: 'bolder'}}>{" "}{date_sample_collected + " " + time_sample_collected}</span>
+                                                    <span style={{ fontWeight: 'bolder'}}>{" "}{date_sample_collected}</span>
                                                 </p>
 
                                               </Alert>
@@ -219,7 +226,7 @@ const ModalVerifySample = (props) => {
                                                 <Input
                                                  type="datetime-local"
                                                  className={classes.input}
-                                                 max={new Date().toISOString().substr(0, 16)}
+                                                 //max={new Date().toISOString().substr(0, 16)}
                                                  min={new Date(datasample.dateSampleCollected).toISOString().substr(0, 16)}
                                                  name="date_sample_verified"
                                                  id="date_sample_verified"

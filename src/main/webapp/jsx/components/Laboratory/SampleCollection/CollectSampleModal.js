@@ -88,6 +88,7 @@ const ModalSample = (props) => {
     const history = useHistory();
     const classes = useStyles()
     const datasample = props.datasample && props.datasample!==null ? props.datasample : {};
+    console.log("ghst", datasample);
     const order_priority = datasample.id && datasample.orderPriority ? datasample.orderPriorityName : null;
     const lab_test_group = datasample.id ? datasample.labTestGroupName : null ;
     const sample_ordered_by = datasample.data ? datasample.data.sample_ordered_by : null ;
@@ -124,6 +125,27 @@ const ModalSample = (props) => {
 
     const [errors, setErrors] = useState({});
 
+    const sampleTypes = async () => {
+        try {
+             const response = await axios.get(`${url}laboratory/labtestgroups`, { headers: {"Authorization" : `Bearer ${token}`} });
+             response.data.map((data) => {
+                if (data.groupName === lab_test_group) {
+                    data.labTests.map((x) => {
+                        if (x.labTestName === description) {
+                            let arr = []
+                            x.sampleType.map(({ sampleTypeName, id }) => {arr.push({ title: sampleTypeName, value: id })})
+                            setOptionsample(arr)
+                        }
+                    })
+                }
+
+             })
+        }
+        catch(error) {
+            console.log(`error with pulling sample type ${error}`)
+        }
+    }
+
     const loginUser = async () => {
         try {
              const response = await axios.get(`${url}users`, { headers: {"Authorization" : `Bearer ${token}`} });
@@ -136,6 +158,8 @@ const ModalSample = (props) => {
 
     useEffect(() => {
         loginUser();
+        sampleTypes();
+
         async function getCharacters() {
             try {
                 const response = await axios.get(`${url}application-codesets/v2/SAMPLE_TYPE`, { headers: {"Authorization" : `Bearer ${token}`} });
@@ -147,8 +171,9 @@ const ModalSample = (props) => {
             } catch (error) {
             }
         }
-        getCharacters();
+        //getCharacters();
     }, []);
+
 
     const handleOtherFieldInputChange = (e) => {
         setOtherFields({ ...otherfields, [e.target.name]: e.target.value });
@@ -189,28 +214,41 @@ const ModalSample = (props) => {
                     samples.sample_type.forEach(function (value, index, array) {
                         arr.push(value["value"]);
                     });
-                    console.log(arr.toString())
+                    //console.log(arr.toString())
                     sampletostring = arr.toString();
 
                 }
 
                 const stringArr = sampletostring.split(',')
 
+                let collectedData = []
+
                 for (let sampleType of stringArr) {
                    otherfields.sampleTypeId = sampleType;
 
-                   console.log("samples", otherfields)
-
-                   if (lab_number) {
-                        await axios.post(`${url}laboratory/samples/${lab_number}`, otherfields,
-                        { headers: {"Authorization" : `Bearer ${token}`}}).then(resp => {
-                            setLoading(!true);
-                             toast.success("Sample collection saved successfully!!", {
-                                position: toast.POSITION.TOP_RIGHT
-                            });
-                        });
-                   }
+                   collectedData.push( {
+                      commentSampleCollected: otherfields.sample_comment,
+                      sampleNumber: otherfields.sample_ID,
+                      dateSampleCollected: otherfields.date_sample_collected.replace('T', ' ')+":00",
+                      id: 0,
+                      sampleCollectedBy: otherfields.sample_collected_by,
+                      sampleCollectionMode: 0,
+                      sampleTypeId: otherfields.sampleTypeId,
+                      testId: datasample.id
+                    })
                 }
+
+                //console.log("samples", collectedData)
+
+               if (lab_number) {
+                    await axios.post(`${url}laboratory/samples/${lab_number}`, collectedData,
+                    { headers: {"Authorization" : `Bearer ${token}`}}).then(resp => {
+                        setLoading(!true);
+                         toast.success("Sample collection saved successfully!!", {
+                            position: toast.POSITION.TOP_RIGHT
+                        });
+                    });
+               }
                 props.togglestatus()
                 props.handDataReload()
             }
@@ -263,7 +301,7 @@ const ModalSample = (props) => {
                                                     <Input
                                                          type="datetime-local"
                                                          className={classes.input}
-                                                         max={new Date().toISOString().substr(0, 16)}
+                                                         //max={new Date().toISOString().substr(0, 16)}
                                                          min={new Date(datasample.dateEncounter).toISOString().substr(0, 16)}
                                                          name="date_sample_collected"
                                                          id="date_sample_collected"
@@ -301,7 +339,7 @@ const ModalSample = (props) => {
                                                         multiple="true"
                                                         id="sample_type"
                                                         size="small"
-                                                        options={optionsample}
+                                                        options={optionsample.length !== 0 ? optionsample : []}
                                                         getOptionLabel={(option) => option.title}
                                                         onChange={(e, i) => {
                                                             setSamples({ ...samples, sample_type: i });

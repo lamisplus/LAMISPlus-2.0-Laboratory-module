@@ -136,7 +136,7 @@ const PatientSearch = (props) => {
 
               Id: row.patientHospitalNumber,
               name: row.patientFirstName +  ' ' + row.patientLastName,
-              date: row.orderDate + ' ' + row.orderTime,
+              date: row.orderDate,
               sampleverified: row.verifiedSamples,
               samplecount: row.reportedResults,
               actions: row.verifiedSamples > 0 ? <Link to ={{

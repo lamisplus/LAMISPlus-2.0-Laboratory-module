@@ -87,6 +87,8 @@ const ModalSampleResult = (props) => {
     const history = useHistory();
     const classes = useStyles()
     const datasample = props.datasample ? props.datasample : {};
+    console.log("sds",datasample)
+    const patientId = props.patientId
     const sample_type = datasample.sampleTypeName;
     const [users, setUsers] = useState([])
 
@@ -108,7 +110,9 @@ const ModalSampleResult = (props) => {
             date_result_reported:"",
             resultReported:"",
             test_result:"",
-            result_reported_by: ""
+            result_reported_by: "",
+            dateSampleReceivedAtPcrLab: "",
+            pcrLabSampleNumber: ""
           }); 
     const [errors, setErrors] = useState({});
     const [inputFlip, setInputFlip] = useState(2)
@@ -148,11 +152,26 @@ const ModalSampleResult = (props) => {
         if(validate()){
               setLoading(true);
 
-              console.log("samples result", otherfields);
+              let resultSamples = {
+                dateAssayed: otherfields.date_asseyed.replace('T', ' ')+":00",
+                dateResultReported: otherfields.date_result_reported.replace('T', ' ')+":00",
+                dateSampleReceivedAtPcrLab: otherfields.dateSampleReceivedAtPcrLab.length !== 0 ? otherfields.dateSampleReceivedAtPcrLab.replace('T', ' ')+":00" : "",
+                facilityId: 0,
+                id: 0,
+                patientId: patientId,
+                patientUuid: "",
+                pcrLabSampleNumber: otherfields.pcrLabSampleNumber,
+                resultReported: otherfields.resultReported,
+                resultReportedBy: otherfields.result_reported_by,
+                testId: datasample.testId,
+                resultReport: otherfields.test_result
+              }
 
-              await axios.post(`${url}laboratory/results`, otherfields,
+              console.log("samples result", resultSamples);
+
+              await axios.post(`${url}laboratory/results`, resultSamples,
               { headers: {"Authorization" : `Bearer ${token}`}}).then(resp => {
-                  console.log("sample result", resp);
+                  console.log("sample result saving...", resp);
                   setLoading(!true);
                    toast.success("Sample result added successfully!!", {
                       position: toast.POSITION.TOP_RIGHT
@@ -195,7 +214,7 @@ const ModalSampleResult = (props) => {
                                               &nbsp;&nbsp;&nbsp;&nbsp;Sample type:&nbsp;
                                               <span style={{ fontWeight: 'bolder'}}>{" "}{sample_type}</span>
                                                       &nbsp;&nbsp;&nbsp;&nbsp; Date sample collected :
-                                              <span style={{ fontWeight: 'bolder'}}>{" "} &nbsp;{date_sample_collected + " " + time_sample_collected}</span>
+                                              <span style={{ fontWeight: 'bolder'}}>{" "} &nbsp;{date_sample_collected}</span>
                                           </p>
 
                                         </Alert>
@@ -208,7 +227,7 @@ const ModalSampleResult = (props) => {
                                              <Input
                                               type="datetime-local"
                                               className={classes.input}
-                                              max={new Date().toISOString().substr(0, 16)}
+                                              //max={new Date().toISOString().substr(0, 16)}
                                               min={new Date(datasample.dateSampleVerified).toISOString().substr(0, 16)}
                                               name="date_asseyed"
                                               id="date_asseyed"
@@ -226,7 +245,7 @@ const ModalSampleResult = (props) => {
                                              <Input
                                               type="datetime-local"
                                               className={classes.input}
-                                              max={new Date().toISOString().substr(0, 16)}
+                                              //max={new Date().toISOString().substr(0, 16)}
                                               min={new Date(datasample.dateSampleVerified).toISOString().substr(0, 16)}
                                               name="date_result_reported"
                                               id="date_result_reported"
@@ -333,6 +352,37 @@ const ModalSampleResult = (props) => {
                                               </FormGroup>
                                           </Col> : " "}
                                   </Row>
+                                  { /*
+                                  <Row>
+                                       <Col xs="6">
+                                           <FormGroup>
+                                             <Label for='dateSampleReceivedAtPcrLab' className={classes.label}>Date Sample PCR Lab</Label>
+                                             <Input
+                                              type="datetime-local"
+                                              className={classes.input}
+                                              //max={new Date().toISOString().substr(0, 16)}
+                                              min={new Date(datasample.dateSampleVerified).toISOString().substr(0, 16)}
+                                              name="dateSampleReceivedAtPcrLab"
+                                              id="dateSampleReceivedAtPcrLab"
+                                              value={otherfields.dateSampleReceivedAtPcrLab}
+                                              onChange={handleOtherFieldInputChange} />
+                                           </FormGroup>
+                                      </Col>
+                                      <Col md={6}>
+                                        <FormGroup>
+                                          <Label for='pcrLabSampleNumber' className={classes.label}>PCR Lab Sample Number</Label>
+
+                                           <Input
+                                               className={classes.input}
+                                              type="text"
+                                              name="pcrLabSampleNumber"
+                                              id="pcrLabSampleNumber"
+                                              onChange={handleOtherFieldInputChange}
+                                              value={otherfields.pcrLabSampleNumber}
+                                          />
+                                        </FormGroup>
+                                    </Col>
+                                  </Row>*/}
                                   <Row>             
                                      <Col md={12}>
                                        <FormGroup>

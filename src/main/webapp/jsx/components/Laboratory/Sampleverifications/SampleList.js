@@ -86,6 +86,7 @@ const useStyles = makeStyles(theme => ({
 
     const testOrders = [];
     const sampleCollections = props.patientObj ? props.patientObj : {};
+
     const Id = props.id;
 
     const encounterDate = null ;
@@ -321,7 +322,7 @@ return (
                                                              <th className={classes.td}>{row.labTestGroupName}</th>
                                                              <td className={classes.td}>{row.labTestName}</td>
                                                              <td className={classes.td}><Badge  color="primary">{sample.sampleTypeName}</Badge></td>
-                                                             <td className={classes.td}>{sample.dateSampleCollected + ' ' + sample.timeSampleCollected}</td>
+                                                             <td className={classes.td}>{sample.dateSampleCollected}</td>
                                                              <td className={classes.td}>{sampleStatus(1)}</td>
                                                              <td className={classes.td}>{sampleAction(1, sample)}</td>
                                                              <td className={classes.td}></td>

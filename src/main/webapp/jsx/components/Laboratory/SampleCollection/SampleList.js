@@ -360,7 +360,7 @@ return (
                                                    <tr key={row.id} style={{ borderBottomColor: '#fff' }}>
                                                     <th className={classes.td}>{row.labTestGroupName}</th>
                                                      <td className={classes.td}>{row.labTestName}</td>
-                                                     <td className={classes.td}>{fetchTestOrders.labOrder.orderDate+ ' ' + fetchTestOrders.labOrder.orderTime}</td>
+                                                     <td className={classes.td}>{fetchTestOrders.labOrder.orderDate}</td>
                                                      <td className={classes.td}>{sampleStatus(0)}</td>
                                                      <td className={classes.td}>{sampleAction(row, fetchTestOrders.labOrder.orderDate)}</td>
                                                      <td className={classes.td}></td>
