@@ -21,7 +21,6 @@ import moment from "moment";
 import MatButton from "@material-ui/core/Button";
 import { TiArrowBack } from 'react-icons/ti'
 
-
 const styles = theme => ({
     root: {
         width: '100%',
@@ -170,8 +169,13 @@ function PatientCard(props) {
                     </Col>*/}
                     </Row>
                     </Col>
-                    <div className="float-end" style={{floated:'right'}}>
-                        {" "}<Link to={"/"} >
+
+                </Row>
+                </ExpansionPanelSummary>
+
+                <ExpansionPanelActions expandIcon={<ExpandMoreIcon />}>
+                  <div className="float-end" style={{floated:'right'}}>
+                    <Link to={"/"} >
                         <Button
                             floated='right'
                             style={{padding:'0px'}}
@@ -188,59 +192,6 @@ function PatientCard(props) {
 
                     </Link>
                     </div>
-                </Row>
-                </ExpansionPanelSummary>
-
-                {/* <ExpansionPanelDetails className={classes.details}>
-                <div className={classes.column} >
-                    <Button
-                            color='red'
-                            content='BloodType'
-                            //icon='heart'
-                            label={{ basic: true, color: 'red', pointing: 'left', content: 'AB+' }}
-                            />
-                            
-                    </div>
-                <div className={classes.column}>
-                <Button
-                            basic
-                            color='blue'
-                            content='Height'
-                            icon='fork'
-                            label={{
-                                as: 'a',
-                                basic: true,
-                                color: 'blue',
-                                pointing: 'left',
-                                content: '74.5 in',
-                            }}
-                            />
-                </div>
-                <div className={classes.column}>
-                <Button
-                            basic
-                            color='blue'
-                            content='Weight'
-                            icon='fork'
-                            label={{
-                                as: 'a',
-                                basic: true,
-                                color: 'blue',
-                                pointing: 'left',
-                                content: '74.5 in',
-                            }}
-                            />
-                </div>
-                <div className={classNames(classes.column, classes.helper)}>
-                    <Typography variant="caption">
-                   
-                    </Typography>
-                </div>
-                </ExpansionPanelDetails>
-                <Divider />*/}
-
-                <ExpansionPanelActions expandIcon={<ExpandMoreIcon />}>
-                
                 </ExpansionPanelActions>
             </ExpansionPanel>
         

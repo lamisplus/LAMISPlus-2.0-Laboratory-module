@@ -342,11 +342,11 @@ return (
 
                                           Id: row.patientId,
                                           name: row.patientFirstName +  ' ' + row.patientLastName,
-                                          date: row.orderDate + ' ' + row.orderTime,
+                                          date: row.orderDate,
                                           samplecount: row.sampleTypeName,
-                                          count: row.DateSampleCollected === null ? "----" : row.DateSampleCollected + ' ' + row.TimeSampleCollected,
-                                          samples: row.dateSampleVerified === null ? "----": row.dateSampleVerified + ' ' + row.timeSampleVerified,
-                                          sampleverified: row.dateResultReported === null ? "----" : row.dateResultReported + ' ' + row.timeResultReported,
+                                          count: row.DateSampleCollected === null ? "----" : row.DateSampleCollected,
+                                          samples: row.dateSampleVerified === null ? "----": row.dateSampleVerified,
+                                          sampleverified: row.dateResultReported === null ? "----" : row.dateResultReported,
                                           results:  row.dateResultReported !== null ? "Available" : "Not Available"
                                           }))}
 
