@@ -3,23 +3,16 @@ package org.lamisplus.modules.Laboratory.domain.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Data
 public class SampleDTO {
     private int id;
+    private String SampleNumber;
     private int sampleTypeId;
-    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    //private LocalDate sampleOrderDate;
-    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
-    //private LocalTime sampleOrderTime;
     private int sampleCollectionMode;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDate dateSampleCollected;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
-    private LocalTime timeSampleCollected;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime dateSampleCollected;
     private String commentSampleCollected;
     private String sampleCollectedBy;
     public int testId;

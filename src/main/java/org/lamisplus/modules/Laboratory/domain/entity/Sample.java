@@ -5,8 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Entity
 @AllArgsConstructor
@@ -20,26 +19,20 @@ public class Sample {
     private int id;
     @Column(name = "uuid")
     private String uuid;
+    @Column(name = "sample_number")
+    private String SampleNumber;
     @Column(name = "sample_type_id")
     private int sampleTypeId;
-    @Column(name = "sample_order_date")
-    private LocalDate sampleOrderDate;
-    @Column(name = "sample_order_time")
-    private LocalTime sampleOrderTime;
     @Column(name = "sample_collection_mode")
     private int sampleCollectionMode;
     @Column(name = "date_sample_collected")
-    private LocalDate dateSampleCollected;
-    @Column(name = "time_sample_collected")
-    private LocalTime timeSampleCollected;
+    private LocalDateTime dateSampleCollected;
     @Column(name = "comment_sample_collected")
     private String commentSampleCollected;
     @Column(name = "sample_collected_by")
     private String sampleCollectedBy;
     @Column(name = "date_sample_verified")
-    private LocalDate dateSampleVerified;
-    @Column(name = "time_sample_verified")
-    private LocalTime timeSampleVerified;
+    private LocalDateTime dateSampleVerified;
     @Column(name = "comment_sample_verified")
     private String commentSampleVerified;
     @Column(name = "sample_verified_by")

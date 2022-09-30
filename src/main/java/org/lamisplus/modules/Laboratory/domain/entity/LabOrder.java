@@ -5,8 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -28,9 +27,7 @@ public class LabOrder {
     @Column(name = "userid")
     private String userId;
     @Column(name = "order_date")
-    private LocalDate orderDate;
-    @Column(name = "order_time")
-    private LocalTime orderTime;
+    private LocalDateTime orderDate;
     @Column(name = "patient_uuid")
     private String patientUuid;
     @Column(name = "facility_id")

@@ -9,7 +9,7 @@ import java.util.List;
 public interface PendingOrderRepository extends JpaRepository<PendingOrder, Integer> {
     @Query(value = "select * from\n" +
             "(\n" +
-            "select a.id as id, a.patient_id, a.id as order_id, a.order_date, a.order_time, sum(1) as test_orders\n" +
+            "select a.id as id, a.patient_id, a.id as order_id, a.order_date, sum(1) as test_orders\n" +
             ", sum(case when c.id is not null then 1 else 0 end) as collected_samples\n" +
             ", sum(case when c.date_sample_verified is not null then 1 else 0 end) as verified_samples\n" +
             ", sum(case when d.id is not null then 1 else 0 end) as reported_results\n" +
@@ -23,7 +23,7 @@ public interface PendingOrderRepository extends JpaRepository<PendingOrder, Inte
 
     @Query(value = "select * from\n" +
             "(\n" +
-            "select a.id as id, a.patient_id, a.id as order_id, a.order_date, a.order_time, sum(1) as test_orders\n" +
+            "select a.id as id, a.patient_id, a.id as order_id, a.order_date, sum(1) as test_orders\n" +
             ", sum(case when c.id is not null then 1 else 0 end) as collected_samples\n" +
             ", sum(case when c.date_sample_verified is not null then 1 else 0 end) as verified_samples\n" +
             ", sum(case when d.id is not null then 1 else 0 end) as reported_results\n" +
@@ -37,7 +37,7 @@ public interface PendingOrderRepository extends JpaRepository<PendingOrder, Inte
 
     @Query(value = "select * from\n" +
             "(\n" +
-            "select a.id as id, a.patient_id, a.id as order_id, a.order_date, a.order_time, sum(1) as test_orders\n" +
+            "select a.id as id, a.patient_id, a.id as order_id, a.order_date, sum(1) as test_orders\n" +
             ", sum(case when c.id is not null then 1 else 0 end) as collected_samples\n" +
             ", sum(case when c.date_sample_verified is not null then 1 else 0 end) as verified_samples\n" +
             ", sum(case when d.id is not null then 1 else 0 end) as reported_results\n" +

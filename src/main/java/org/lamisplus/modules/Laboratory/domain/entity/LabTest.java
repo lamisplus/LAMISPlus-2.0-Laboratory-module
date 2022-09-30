@@ -1,8 +1,11 @@
 package org.lamisplus.modules.Laboratory.domain.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 
 @Entity
@@ -25,4 +28,11 @@ public class LabTest {
     @ManyToOne
     @JoinColumn(name = "labtestgroup_id")
     private LabTestGroup labTestGroup;
+
+    @ManyToMany
+    @JoinTable(
+            name = "laboratory_sampletype_labtest_link",
+            joinColumns = @JoinColumn(name = "labtest_id"),
+            inverseJoinColumns = @JoinColumn(name = "sample_type_id"))
+    private List<SampleType> sampleType;
 }

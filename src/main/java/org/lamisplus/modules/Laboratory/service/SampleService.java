@@ -14,6 +14,7 @@ import org.lamisplus.modules.base.service.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -43,6 +44,14 @@ public class SampleService {
 
         SaveLabNumber(sample.getTestId(), labNumber, SAMPLE_COLLECTED);
         return labMapper.tosSampleDto(repository.save(sample));
+    }
+
+    public List<SampleDTO> SaveSamples(String labNumber, List<SampleDTO> sampleDTOs){
+        List<SampleDTO> saved_samples = new ArrayList<>();
+        for(SampleDTO dto:sampleDTOs){
+            saved_samples.add(Save(labNumber, dto));
+        }
+        return saved_samples;
     }
 
     private Long getCurrentUserOrganization() {

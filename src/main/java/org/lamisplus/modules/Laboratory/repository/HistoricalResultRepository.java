@@ -7,10 +7,10 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface HistoricalResultRepository extends JpaRepository<HistoricalResult, Integer> {
-    @Query(value = "select b.id, a.id as order_id, a.patient_id, e.lab_test_name, f.group_name, a.order_date, a.order_time\n" +
-            ", c.date_sample_collected, c.time_sample_collected\n" +
-            ", c.date_sample_verified, c.time_sample_verified\n" +
-            ", d.date_result_reported, d.time_result_reported, d.result_reported\n" +
+    @Query(value = "select b.id, a.id as order_id, a.patient_id, e.lab_test_name, f.group_name, a.order_date\n" +
+            ", c.date_sample_collected\n" +
+            ", c.date_sample_verified\n" +
+            ", d.date_result_reported, d.result_reported\n" +
             "from laboratory_order a\n" +
             "inner join laboratory_test b on a.id=b.lab_order_id\n" +
             "inner join laboratory_sample c on b.id=c.test_id\n" +

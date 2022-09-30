@@ -5,8 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Entity
 @AllArgsConstructor
@@ -26,21 +25,13 @@ public class HistoricalResult {
     @Column(name = "group_name")
     private String GroupName;
     @Column(name = "order_date")
-    private LocalDate OrderDate;
-    @Column(name = "order_time")
-    private LocalTime OrderTime;
+    private LocalDateTime OrderDate;
     @Column(name = "date_sample_collected")
-    private LocalDate DateSampleCollected;
-    @Column(name = "time_sample_collected")
-    private LocalTime TimeSampleCollected;
+    private LocalDateTime DateSampleCollected;
     @Column(name = "date_sample_verified")
-    private LocalDate DateSampleVerified;
-    @Column(name = "time_sample_verified")
-    private LocalTime TimeSampleVerified;
+    private LocalDateTime DateSampleVerified;
     @Column(name = "date_result_reported")
-    private LocalDate DateResultReported;
-    @Column(name = "time_result_reported")
-    private LocalTime TimeResultReported;
+    private LocalDateTime DateResultReported;
     @Column(name = "result_reported")
     private String ResultReported;
 }

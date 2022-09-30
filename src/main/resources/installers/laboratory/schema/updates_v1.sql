@@ -1,1 +1,0 @@
-alter table laboratory_sample add sample_accepted Character varying(10);

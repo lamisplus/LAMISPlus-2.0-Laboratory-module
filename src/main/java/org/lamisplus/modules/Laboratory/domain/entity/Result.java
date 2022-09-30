@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Entity
 @AllArgsConstructor
@@ -21,15 +21,13 @@ public class Result {
     @Column(name = "uuid")
     private String uuid;
     @Column(name = "date_assayed")
-    private LocalDate dateAssayed;
-    @Column(name = "time_assayed")
-    private LocalTime timeAssayed;
+    private LocalDateTime dateAssayed;
     @Column(name = "date_result_reported")
-    private LocalDate dateResultReported;
-    @Column(name = "time_result_reported")
-    private LocalTime timeResultReported;
+    private LocalDateTime dateResultReported;
     @Column(name = "result_reported")
     private String resultReported;
+    @Column(name = "result_report")
+    private String resultReport;
     @Column(name = "result_reported_by")
     private String resultReportedBy;
     @Column(name = "test_id")
