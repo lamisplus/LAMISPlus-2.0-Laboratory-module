@@ -56,7 +56,7 @@ const useStyles = makeStyles(theme => ({
         }
     },
     input: {
-        border:'2px solid #014d88',
+        border:'1px solid #014d88',
         borderRadius:'0px',
         fontSize:'16px',
         color:'#000'
@@ -86,6 +86,7 @@ const useStyles = makeStyles(theme => ({
 
     const testOrders = [];
     const sampleCollections = props.patientObj ? props.patientObj : {};
+
     const Id = props.id;
 
     const encounterDate = null ;
@@ -97,11 +98,11 @@ const useStyles = makeStyles(theme => ({
 
     const labTestType = [];
     if(testOrders !== null || testOrders ===""){
-            testOrders.forEach(function(value, index, array) {
-                if(value['data']!==null)
-                    labTestType.push(value['data'].lab_test_group);
-            });
-        }
+        testOrders.forEach(function(value, index, array) {
+            if(value['data']!==null)
+                labTestType.push(value['data'].lab_test_group);
+        });
+    }
 
     //Make the list contain unique list of Data
     const uniqueValues = [...new Set(labTestType)];
@@ -262,25 +263,8 @@ return (
                 </div>
                 <br/>
                 <Card className="mb-12">
-                    <CardHeader> <span style={{  textTransform: 'capitalize'}}>Test Order Details </span>
-                        <Link 
-                            to ={{ 
-                              pathname: "/laboratory",  
-                              state: 'verification'
-                            }} 
-                        >
-                                
-                            <MatButton
-                                type='submit'
-                                variant='contained'
-                                color='primary'
-                                //className={classes.button}                        
-                                className=" float-right mr-1"
-                            >
-                                <TiArrowBack/>{" "} Back
-                            </MatButton>
-                      
-                        </Link>
+                    <CardHeader> <span style={{  textTransform: 'capitalize'}}>Samples Collected Details </span>
+
                   </CardHeader>
                 <CardBody>
                     { /* <Alert color="primary">
@@ -338,7 +322,7 @@ return (
                                                              <th className={classes.td}>{row.labTestGroupName}</th>
                                                              <td className={classes.td}>{row.labTestName}</td>
                                                              <td className={classes.td}><Badge  color="primary">{sample.sampleTypeName}</Badge></td>
-                                                             <td className={classes.td}>{sample.dateSampleCollected + ' ' + sample.timeSampleCollected}</td>
+                                                             <td className={classes.td}>{sample.dateSampleCollected}</td>
                                                              <td className={classes.td}>{sampleStatus(1)}</td>
                                                              <td className={classes.td}>{sampleAction(1, sample)}</td>
                                                              <td className={classes.td}></td>

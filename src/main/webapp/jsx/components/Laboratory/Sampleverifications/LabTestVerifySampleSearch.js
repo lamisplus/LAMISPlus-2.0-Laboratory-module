@@ -138,7 +138,7 @@ const PatientSearch = (props) => {
                 data={collectedSamples.map((row) => ({
                 Id: row.patientHospitalNumber,
                 name: row.patientFirstName +  ' ' + row.patientLastName,
-                date: row.orderDate + ' ' + row.orderTime,
+                date: row.orderDate,
                 samples: row.collectedSamples,
                 samplecount: row.verifiedSamples,
                 sampleresults: row.reportedResults,

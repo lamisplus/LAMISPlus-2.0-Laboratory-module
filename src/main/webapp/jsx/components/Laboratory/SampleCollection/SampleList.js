@@ -55,7 +55,7 @@ const useStyles = makeStyles(theme => ({
         }
     },
     input: {
-        border:'2px solid #014d88',
+        border:'1px solid #014d88',
         borderRadius:'0px',
         fontSize:'16px',
         color:'#000'
@@ -86,7 +86,7 @@ const useStyles = makeStyles(theme => ({
     const testOrders = [];
     const sampleCollections = props.patientObj ? props.patientObj : {};
     const Id = props.id;
-    console.log("id", Id);
+    //console.log("id", Id);
 
     const laborderArray = sampleCollections.labOrder.tests;
 
@@ -272,29 +272,14 @@ return (
                 <br/>
                 <Card className="mb-12">
                     <CardHeader> <span style={{  textTransform: 'capitalize'}}>Test Order Details </span>
-                        <Link 
-                            to ={{ 
-                              pathname: "/",  
-                              state: 'collect-sample'
-                            }} 
-                        >
-                                
-                            <MatButton
-                                type='submit'
-                                variant='contained'
-                                color='primary'
-                                //className={classes.button}                        
-                                className=" float-right mr-1"
-                            >
-                                <TiArrowBack/>{" "} Back
-                            </MatButton>
-                      
-                        </Link>
+
                   </CardHeader>
                 <CardBody>
+                { labNumValue.length !== 0 ? " " :
                     <Alert color="primary">
                         Please make sure you enter Lab number before collecting sample 
                     </Alert>
+                }
                 <br />
                     <Row>
                        
@@ -327,7 +312,22 @@ return (
                                         {/* {labNum['lab_number']==="" ? */}
                                         <FormGroup>
                                             <Label for="occupation" className={classes.label}>Lab Number *</Label>
-                                        <Input
+
+                                         <Input
+                                              type="select"
+                                              name='lab_number'
+                                              id='lab_number'
+                                              onChange={getGroup}
+                                              className={classes.input}
+                                              value={labNumber!=="" ? labNumber : labNum.lab_number}
+                                              onChange={handleLabNumber}
+                                            >
+                                               <option value={""}> Select Lab Number </option>
+                                               <option value="100001"> 100001 </option>
+
+                                          </Input>
+
+                                        {/*<Input
                                             type='text'
                                             name='lab_number'
                                             id='lab_number'
@@ -335,7 +335,7 @@ return (
                                             value={labNumber!=="" ? labNumber : labNum.lab_number}
                                             onChange={handleLabNumber}
                                             disabled={labNumber && labNum.lab_number ? 'true' : ''}
-                                        />
+                                        />*/}
                                         </FormGroup>                            
                                     </Col>
                                     : " " }
@@ -360,7 +360,7 @@ return (
                                                    <tr key={row.id} style={{ borderBottomColor: '#fff' }}>
                                                     <th className={classes.td}>{row.labTestGroupName}</th>
                                                      <td className={classes.td}>{row.labTestName}</td>
-                                                     <td className={classes.td}>{fetchTestOrders.labOrder.orderDate+ ' ' + fetchTestOrders.labOrder.orderTime}</td>
+                                                     <td className={classes.td}>{fetchTestOrders.labOrder.orderDate}</td>
                                                      <td className={classes.td}>{sampleStatus(0)}</td>
                                                      <td className={classes.td}>{sampleAction(row, fetchTestOrders.labOrder.orderDate)}</td>
                                                      <td className={classes.td}></td>
