@@ -39,6 +39,7 @@ public class LabOrderService {
     private final PersonService personService;
     private  final UserService userService;
     private final PersonRepository personRepository;
+    private final SampleTypeRepository sampleTypeRepository;
     private final JsonNodeTransformer jsonNodeTransformer;
 
     public LabOrderResponseDTO Save(LabOrderDTO labOrderDTO){
@@ -148,7 +149,7 @@ public class LabOrderService {
                 List<SampleResponseDTO> sampleDTOList = labMapper.toSampleResponseDtoList(sampleRepository.findAllByTestId(testDTO.getId()));
 
                 for (SampleResponseDTO sampleResponseDTO : sampleDTOList) {
-                    sampleResponseDTO.setSampleTypeName(GetNameById(sampleResponseDTO.getSampleTypeId(), APPLICATION_CODE_SET));
+                    sampleResponseDTO.setSampleTypeName(GetNameById(sampleResponseDTO.getSampleTypeId(), SAMPLE_TYPE));
                     sampleResponseDTO.setLabNumber(testDTO.getLabNumber());
                 }
 
@@ -156,7 +157,6 @@ public class LabOrderService {
                 testDTO.setSamples(sampleDTOList);
                 testDTO.setResults(resultDTOList);
                 testDTO.setOrderDate(labOrderDTO.getOrderDate());
-                testDTO.setOrderTime(labOrderDTO.getOrderTime());
             }
             labOrderDTO.setTests(testDTOList);
             return labOrderDTO;
@@ -241,7 +241,10 @@ public class LabOrderService {
                 else {
                     return "";
                 }
-            } else {
+            } else if (Objects.equals(itemType, SAMPLE_TYPE)) {
+                return Objects.requireNonNull(sampleTypeRepository.findById(id).orElse(null)).getSampleTypeName();
+            }
+            else {
                 return "";
             }
         }
@@ -264,22 +267,18 @@ public class LabOrderService {
                 result.setOrderId(updated_order.getId());
                 result.setPatientId(patientId);
                 result.setOrderDate(updated_order.getOrderDate());
-                result.setOrderTime(updated_order.getOrderTime());
                 result.setLabTestName(test.getLabTestName());
                 result.setGroupName(test.getLabTestGroupName());
 
 
                 if((long) test.getSamples().size() > 0) {
                     result.setDateSampleCollected(test.getSamples().get(0).getDateSampleCollected());
-                    result.setTimeSampleCollected(test.getSamples().get(0).getTimeSampleCollected());
                     result.setDateSampleVerified(test.getSamples().get(0).getDateSampleVerified());
-                    result.setTimeSampleVerified(test.getSamples().get(0).getTimeSampleVerified());
                     result.setSampleTypeName(test.getSamples().get(0).getSampleTypeName());
                 }
                 if((long) test.getResults().size() > 0) {
                     result.setResultReported(test.getResults().get(0).getResultReported());
                     result.setDateResultReported(test.getResults().get(0).getDateResultReported());
-                    result.setTimeResultReported(test.getResults().get(0).getTimeResultReported());
                 }
 
                 PersonResponseDto personResponseDTO = personService.getPersonById((long) updated_order.getPatientId());

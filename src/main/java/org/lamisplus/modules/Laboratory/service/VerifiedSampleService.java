@@ -26,7 +26,7 @@ public class VerifiedSampleService {
     public VerifiedSampleDTO Save(VerifiedSampleDTO verifiedSampleDTO, Integer sampleId){
         Sample sample = repository.findById(sampleId).orElse(null);
         sample.setDateSampleVerified(verifiedSampleDTO.getDateSampleVerified());
-        sample.setTimeSampleVerified(verifiedSampleDTO.getTimeSampleVerified());
+        sample.setSampleAccepted(verifiedSampleDTO.getSampleAccepted());
         sample.setCommentSampleVerified(verifiedSampleDTO.getCommentSampleVerified());
         sample.setSampleVerifiedBy(SecurityUtils.getCurrentUserLogin().orElse(""));
 
@@ -40,7 +40,6 @@ public class VerifiedSampleService {
     public String Delete(Integer sampleId){
         Sample sample = repository.findById(sampleId).orElse(null);
         sample.setDateSampleVerified(null);
-        sample.setTimeSampleVerified(null);
         sample.setCommentSampleVerified(null);
 
         return "Sample verification deleted successfully";

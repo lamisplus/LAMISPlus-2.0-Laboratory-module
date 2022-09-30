@@ -3,10 +3,11 @@ package org.lamisplus.modules.Laboratory.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.lamisplus.modules.Laboratory.domain.dto.*;
+import org.lamisplus.modules.Laboratory.domain.entity.Sample;
+import org.lamisplus.modules.Laboratory.repository.SampleRepository;
 import org.lamisplus.modules.base.security.SecurityUtils;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -21,6 +22,7 @@ public class RDELabTestService {
     private final LabOrderService labOrderService;
     private final TestService testService;
     private final SampleService sampleService;
+    private final SampleRepository sampleRepository;
     private final ResultService resultService;
 
     //RDE
@@ -31,7 +33,6 @@ public class RDELabTestService {
 
         RDETestDTO rdeTestDTO = labDtoList.get(0);
         labOrderDTO.setOrderDate(rdeTestDTO.getSampleCollectionDate());
-        labOrderDTO.setOrderTime(LocalTime.parse("00:00:00"));
         labOrderDTO.setPatientId(rdeTestDTO.getPatientId());
         labOrderDTO.setVisitId(rdeTestDTO.getVisitId());
 
@@ -56,20 +57,25 @@ public class RDELabTestService {
             SampleDTO sample = new SampleDTO();
             assert dto != null;
             sample.setDateSampleCollected(dto.getSampleCollectionDate());
-            sample.setTimeSampleCollected(LocalTime.parse("00:00:00"));
             sample.setSampleCollectedBy(SecurityUtils.getCurrentUserLogin().orElse(""));
             sample.setTestId(test.getId());
             sample.setSampleTypeId(0);
-            sampleService.Save(dto.getLabNumber(), sample);
+            SampleDTO dto1 = sampleService.Save(dto.getLabNumber(), sample);
+
+            //Save verification info
+            Sample verifiedSample = sampleRepository.findById(dto1.getId()).orElse(null);
+            assert verifiedSample != null;
+            verifiedSample.setDateSampleVerified(dto.getSampleCollectionDate());
+            verifiedSample.setCommentSampleVerified("Sample verified");
+            verifiedSample.setSampleVerifiedBy(SecurityUtils.getCurrentUserLogin().orElse(""));
+            sampleRepository.save(verifiedSample);
 
             //save result
             ResultDTO result = new ResultDTO();
             result.setTestId(test.getId());
             result.setResultReported(dto.getResult());
             result.setDateResultReported(dto.getDateResultReceived());
-            result.setTimeResultReported(LocalTime.parse("00:00:00"));
             result.setDateAssayed(dto.getDateAssayed());
-            result.setTimeAssayed(LocalTime.parse("00:00:00"));
             resultService.Save(result);
         }
 
@@ -92,7 +98,6 @@ public class RDELabTestService {
 
         SampleDTO sample = sampleService.FindByTestId(test.getId());
         sample.setDateSampleCollected(rdeTestDTO.getSampleCollectionDate());
-        sample.setTimeSampleCollected(LocalTime.parse("00:00:00"));
         sample.setSampleCollectedBy(SecurityUtils.getCurrentUserLogin().orElse(""));
         sample.setTestId(test.getId());
         sample.setSampleTypeId(0);
@@ -103,9 +108,7 @@ public class RDELabTestService {
         result.setTestId(test.getId());
         result.setResultReported(rdeTestDTO.getResult());
         result.setDateResultReported(rdeTestDTO.getDateResultReceived());
-        result.setTimeResultReported(LocalTime.parse("00:00:00"));
         result.setDateAssayed(rdeTestDTO.getDateAssayed());
-        result.setTimeAssayed(LocalTime.parse("00:00:00"));
         resultService.Save(result);
 
         return rdeTestDTO;

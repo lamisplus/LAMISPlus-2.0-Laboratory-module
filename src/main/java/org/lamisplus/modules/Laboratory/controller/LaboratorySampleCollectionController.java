@@ -6,6 +6,8 @@ import org.lamisplus.modules.Laboratory.domain.dto.SampleDTO;
 import org.lamisplus.modules.Laboratory.service.SampleService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -14,8 +16,8 @@ public class LaboratorySampleCollectionController {
     private final SampleService sampleService;
 
     @PostMapping("/samples/{labNumber}")
-    public SampleDTO SaveSample(@PathVariable String labNumber, @RequestBody SampleDTO sample){
-        return sampleService.Save(labNumber, sample);
+    public List<SampleDTO> SaveSample(@PathVariable String labNumber, @RequestBody List<SampleDTO> samples){
+        return sampleService.SaveSamples(labNumber, samples);
     }
 
     @PutMapping("/samples/{id}/{labNumber}")

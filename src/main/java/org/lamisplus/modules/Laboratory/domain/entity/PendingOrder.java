@@ -5,8 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Entity
 @AllArgsConstructor
@@ -20,9 +19,7 @@ public class PendingOrder {
     @Column(name = "order_id")
     private int orderId;
     @Column(name = "order_date")
-    private LocalDate orderDate;
-    @Column(name = "order_time")
-    private LocalTime orderTime;
+    private LocalDateTime orderDate;
     @Column(name = "test_orders")
     private int testOrders;
     @Column(name = "collected_samples")

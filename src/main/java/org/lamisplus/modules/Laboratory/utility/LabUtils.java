@@ -18,6 +18,7 @@ public class LabUtils {
     public static final Integer LAB_TEST_UNITS = 3;
     public static final Integer LAB_TEST_GROUP = 4;
     public static final Integer LAB_ORDER_STATUS = 5;
+    public static final Integer SAMPLE_TYPE = 6;
 
     public static void LogInfo(String title, Object object) {
         try {
