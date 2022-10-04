@@ -68,7 +68,7 @@ const PatientSearch = (props) => {
             }
         }, []);
 
-        useEffect(() => {
+    useEffect(() => {
              setLoading('true');
              const onSuccess = () => {
                  setLoading(false)

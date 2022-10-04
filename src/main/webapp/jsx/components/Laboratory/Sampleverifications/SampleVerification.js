@@ -103,7 +103,7 @@ const ModalVerifySample = (props) => {
     const [optionsample, setOptionsample] = useState([]);
     const [saveButtonStatus, setSaveButtonStatus] = useState(false);
     const [otherFields, setotherFields] = useState({
-        date_sample_verified:"",
+        date_sample_verified:new Date().toISOString().substr(0, 16),
         sample_verified_by:"",
         verification_status:"",
         comment_sample_verified:""
@@ -226,8 +226,8 @@ const ModalVerifySample = (props) => {
                                                 <Input
                                                  type="datetime-local"
                                                  className={classes.input}
-                                                 //max={new Date().toISOString().substr(0, 16)}
-                                                 min={new Date(datasample.dateSampleCollected).toISOString().substr(0, 16)}
+                                                 min={datasample.dateSampleCollected}
+                                                 max={new Date().toISOString().substr(0, 16)}
                                                  name="date_sample_verified"
                                                  id="date_sample_verified"
                                                  value={otherFields.date_sample_verified}

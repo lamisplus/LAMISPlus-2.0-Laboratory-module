@@ -120,7 +120,7 @@ const ModalSample = (props) => {
         sampleTypeId: 0,
         sample_comment:"",
         sample_ID: "",
-        date_sample_collected: "",
+        date_sample_collected: new Date().toISOString().substr(0, 16),
     });
 
     const [errors, setErrors] = useState({});
@@ -301,7 +301,7 @@ const ModalSample = (props) => {
                                                     <Input
                                                          type="datetime-local"
                                                          className={classes.input}
-                                                         //max={new Date().toISOString().substr(0, 16)}
+                                                         max={new Date().toISOString().substr(0, 16)}
                                                          min={new Date(datasample.dateEncounter).toISOString().substr(0, 16)}
                                                          name="date_sample_collected"
                                                          id="date_sample_collected"

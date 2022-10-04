@@ -307,6 +307,7 @@ return (
                                                 <tr>
                                                     <th>Test Group</th>
                                                     <th>Test Type</th>
+                                                    <th>Sample Id</th>
                                                     <th>Sample Type</th>
                                                     <th>Date Collected</th>
                                                     <th >Status</th>
@@ -321,6 +322,7 @@ return (
                                                            <tr key={row.id} style={{ borderBottomColor: '#fff' }}>
                                                              <th className={classes.td}>{row.labTestGroupName}</th>
                                                              <td className={classes.td}>{row.labTestName}</td>
+                                                             <td className={classes.td}>{sample.sampleNumber}</td>
                                                              <td className={classes.td}><Badge  color="primary">{sample.sampleTypeName}</Badge></td>
                                                              <td className={classes.td}>{sample.dateSampleCollected}</td>
                                                              <td className={classes.td}>{sampleStatus(1)}</td>

@@ -214,8 +214,8 @@ const useStyles = makeStyles(theme => ({
         }
     }
 
-    const sampleAction = (id, row, labTestName) =>{
-    //console.log(row)
+    const sampleAction = (id, row, sample) =>{
+    console.log("samples",sample.results)
     if(id===3){
         return (
                 <Menu>
@@ -223,8 +223,8 @@ const useStyles = makeStyles(theme => ({
                     Action <span aria-hidden>▾</span>
                 </MenuButton>
                     <MenuList style={{hover:"#eee"}}>
-                        <MenuItem onSelect={() => viewresult(row, labTestName)}><FaRegEye size="15" style={{color: '#3F51B5'}}/>{" "}View Result</MenuItem>
-                        { labTestName !== "Viral Load" ?
+                        <MenuItem onSelect={() => viewresult(row, sample.labTestName)}><FaRegEye size="15" style={{color: '#3F51B5'}}/>{" "}View Result</MenuItem>
+                        { sample.results.length === 0 ?
                         <MenuItem onSelect={() => addResult(row)}><FaPlusSquare size="15" style={{color: '#3F51B5'}}/>{" "} Add Result</MenuItem>
                         : " "}
                     </MenuList>
@@ -415,6 +415,7 @@ return (
                                                     <tr>
                                                         <th>Test Group</th>
                                                         <th>Test Type</th>
+                                                        <th>Sample Id</th>
                                                          <th>Sample Type</th>
                                                         <th>Date Verified</th>
                                                         <th >Status</th>
@@ -429,10 +430,11 @@ return (
                                                                <tr key={row.id} style={{ borderBottomColor: '#fff' }}>
                                                                  <th className={classes.td}>{row.labTestGroupName}</th>
                                                                 <td className={classes.td}>{row.labTestName}</td>
+                                                                <td className={classes.td}>{sample.sampleNumber}</td>
                                                                  <td className={classes.td}><Badge  color="primary">{sample.sampleTypeName}</Badge></td>
                                                                  <td className={classes.td}>{sample.dateSampleVerified}</td>
                                                                  <td className={classes.td}>{sampleStatus(3)}</td>
-                                                                 <td className={classes.td}>{sampleAction(3, sample, row.labTestName)}</td>
+                                                                 <td className={classes.td}>{sampleAction(3, sample, row)}</td>
                                                                  <td className={classes.td}></td>
                                                                </tr>
                                                                :

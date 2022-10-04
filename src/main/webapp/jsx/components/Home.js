@@ -4,6 +4,7 @@ import { Row, Col, Card,  Tab, Tabs, } from "react-bootstrap";
 import LabTestOrderSearch from './Laboratory/Testorders/LabTestOrderSearch';
 import LabTestResultSearch from './Laboratory/TestResult/LabTestResultSearch';
 import LabTestVerifySampleSearch from './Laboratory/Sampleverifications/LabTestVerifySampleSearch';
+import Config from './Laboratory/Configuration/Config';
 import CheckInPatients from './CheckInPatients/Index';
 import {labObj} from './LabObj'
 
@@ -56,7 +57,9 @@ const Home = (props) => {
                     <Tab eventKey="result" title="Result Reporting">                   
                       <LabTestResultSearch />
                     </Tab>
-                    
+                    <Tab eventKey="config" title="Configurations">
+                      <Config />
+                    </Tab>
                     </Tabs>
               </div>
             </Card.Body>

@@ -61,7 +61,7 @@ const ModalViewResult = (props) => {
     const date_result_reported = datasample.id ? datasample.date_result_reported : null ;
     const test_result = datasample.id ? datasample.comment_sample_reported : null ;
     const result_detail = datasample.id && datasample.reported_result ?  datasample.reported_result : null
-    const sample_id = datasample.id ? datasample.id : 0 ;
+    const sample_id = datasample.sampleNumber ? datasample.sampleNumber : 0 ;
 
     const [sampleResults, setSampleResults] = useState({
          id: 1,
@@ -82,7 +82,7 @@ const ModalViewResult = (props) => {
     const getResults = useCallback(async () => {
         try {
             const response = await axios.get(`${url}laboratory/results/tests/${datasample.testId}`, { headers: {"Authorization" : `Bearer ${token}`}});
-            console.log("results ccxc", response);
+
             setCollectResult(response.data);
         } catch (e) {
            // toast.error("An error occurred while fetching sample results", {

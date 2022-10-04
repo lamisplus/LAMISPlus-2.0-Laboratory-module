@@ -87,7 +87,7 @@ const ModalSampleResult = (props) => {
     const history = useHistory();
     const classes = useStyles()
     const datasample = props.datasample ? props.datasample : {};
-    console.log("sds",datasample)
+
     const patientId = props.patientId
     const sample_type = datasample.sampleTypeName;
     const [users, setUsers] = useState([])
@@ -106,8 +106,8 @@ const ModalSampleResult = (props) => {
     const [samples, setSamples] = useState({}) 
     const [otherfields, setOtherFields] = 
             useState({
-            date_asseyed:"",
-            date_result_reported:"",
+            date_asseyed:new Date().toISOString().substr(0, 16),
+            date_result_reported:new Date().toISOString().substr(0, 16),
             resultReported:"",
             test_result:"",
             result_reported_by: "",
@@ -130,11 +130,11 @@ const ModalSampleResult = (props) => {
           loginUser()
       }, []);
 
-  const handleOtherFieldInputChange = e => {
-      setOtherFields ({ ...otherfields, [e.target.name]: e.target.value });
-  }
+      const handleOtherFieldInputChange = e => {
+          setOtherFields ({ ...otherfields, [e.target.name]: e.target.value });
+      }
 
-  const validate = () => {
+    const validate = () => {
       let temp = { ...errors }
       ///temp.time_result_enetered = otherfields.time_result_enetered ? "" : "Date is required"
       temp.date_result_reported = otherfields.date_result_reported ? "" : "Date  is required."
@@ -227,8 +227,8 @@ const ModalSampleResult = (props) => {
                                              <Input
                                               type="datetime-local"
                                               className={classes.input}
-                                              //max={new Date().toISOString().substr(0, 16)}
-                                              min={new Date(datasample.dateSampleVerified).toISOString().substr(0, 16)}
+                                              max={new Date().toISOString().substr(0, 16)}
+                                              min={datasample.dateSampleVerified}
                                               name="date_asseyed"
                                               id="date_asseyed"
                                               value={otherfields.date_asseyed}
@@ -245,8 +245,8 @@ const ModalSampleResult = (props) => {
                                              <Input
                                               type="datetime-local"
                                               className={classes.input}
-                                              //max={new Date().toISOString().substr(0, 16)}
-                                              min={new Date(datasample.dateSampleVerified).toISOString().substr(0, 16)}
+                                              max={new Date().toISOString().substr(0, 16)}
+                                              min={datasample.dateSampleVerified}
                                               name="date_result_reported"
                                               id="date_result_reported"
                                               value={otherfields.date_result_reported}
