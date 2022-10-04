@@ -2,298 +2,85 @@ package org.lamisplus.modules.Laboratory.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.audit4j.core.util.Log;
-import org.jetbrains.annotations.NotNull;
-import org.lamisplus.modules.Laboratory.domain.dto.*;
-import org.lamisplus.modules.Laboratory.domain.entity.LabOrder;
-import org.lamisplus.modules.Laboratory.domain.entity.Test;
+import org.lamisplus.modules.Laboratory.domain.dto.LabOrderDTO;
+import org.lamisplus.modules.Laboratory.domain.dto.TestDTO;
+import org.lamisplus.modules.Laboratory.domain.entity.*;
 import org.lamisplus.modules.Laboratory.domain.mapper.LabMapper;
-import org.lamisplus.modules.Laboratory.repository.*;
-import org.lamisplus.modules.Laboratory.utility.JsonNodeTransformer;
-import org.lamisplus.modules.base.domain.entities.User;
-import org.lamisplus.modules.base.security.SecurityUtils;
-import org.lamisplus.modules.base.service.UserService;
-import org.lamisplus.modules.patient.domain.dto.PersonResponseDto;
-import org.lamisplus.modules.patient.domain.entity.Person;
-import org.lamisplus.modules.patient.repository.PersonRepository;
-import org.lamisplus.modules.patient.service.PersonService;
+import org.lamisplus.modules.Laboratory.repository.LabOrderRepository;
+import org.lamisplus.modules.Laboratory.repository.ResultRepository;
+import org.lamisplus.modules.Laboratory.repository.SampleRepository;
 import org.springframework.stereotype.Service;
+import org.lamisplus.modules.Laboratory.domain.dto.PatientLabOrderDTO;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-
-import static org.lamisplus.modules.Laboratory.utility.LabUtils.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
+@Transactional
 @Slf4j
 @RequiredArgsConstructor
 public class LabOrderService {
     private final LabOrderRepository labOrderRepository;
     private final SampleRepository sampleRepository;
     private final ResultRepository resultRepository;
-    private final LabTestGroupService labTestGroupService;
-    private final LabTestService labTestService;
-    private final CodesetRepository codesetRepository;
-    private final PendingOrderRepository pendingOrderRepository;
 
     private final LabMapper labMapper;
-    private final PersonService personService;
-    private  final UserService userService;
-    private final PersonRepository personRepository;
-    private final SampleTypeRepository sampleTypeRepository;
-    private final JsonNodeTransformer jsonNodeTransformer;
 
-    public LabOrderResponseDTO Save(LabOrderDTO labOrderDTO){
-        try {
-            Person person = personRepository.findById((long) labOrderDTO.getPatientId()).orElse(null);
-
-            LabOrder labOrder = labMapper.toLabOrder(labOrderDTO);
-            labOrder.setUserId(SecurityUtils.getCurrentUserLogin().orElse(""));
-            labOrder.setUuid(UUID.randomUUID().toString());
-            assert person != null;
-            labOrder.setPatientUuid(person.getUuid());
-            labOrder.setFacilityId(getCurrentUserOrganization());
-
-            for (Test test : labOrder.getTests()) {
-                test.setUuid(UUID.randomUUID().toString());
-                test.setLabTestOrderStatus(PENDING_SAMPLE_COLLECTION);
-                test.setPatientId(labOrder.getPatientId());
-                test.setFacilityId(getCurrentUserOrganization());
-                test.setPatientUuid(person.getUuid());
-            }
-
-            LogInfo("LAB_ORDER", labOrderDTO);
-            return labMapper.toLabOrderResponseDto(labOrderRepository.save(labOrder));
-        }
-        catch(Exception e){
-            Log.error(e);
-            return null;
-        }
-    }
-
-    private Long getCurrentUserOrganization() {
-        Optional<User> userWithRoles = userService.getUserWithRoles ();
-        return userWithRoles.map (User::getCurrentOrganisationUnitId).orElse (null);
-    }
-
-    public LabOrderResponseDTO Update(int order_id, LabOrderDTO labOrderDTO){
+    public LabOrderDTO Save(LabOrderDTO labOrderDTO){
         LabOrder labOrder = labMapper.toLabOrder(labOrderDTO);
-        labOrder.setUserId(SecurityUtils.getCurrentUserLogin().orElse(""));
-        for (Test test:labOrder.getTests()){
-            test.setLabTestOrderStatus(PENDING_SAMPLE_COLLECTION);
-        }
-        return labMapper.toLabOrderResponseDto(labOrderRepository.save(labOrder));
+        labOrder.setUserId("Test User");
+        return labMapper.toLabOrderDto(labOrderRepository.save(labOrder));
+    }
+
+    public LabOrderDTO Update(int order_id, LabOrderDTO labOrderDTO){
+        LabOrder labOrder = labMapper.toLabOrder(labOrderDTO);
+        labOrder.setUserId("Test User");
+        return labMapper.toLabOrderDto(labOrderRepository.save(labOrder));
     }
 
     public String Delete(Integer id){
         LabOrder labOrder = labOrderRepository.findById(id).orElse(null);
         labOrderRepository.delete(labOrder);
-        return id + " deleted successfully";
-    }
-
-    public List<PatientLabOrderDTO> GetAllOrdersByPatientId(int patient_id){
-        return  AppendPatientDetails(labOrderRepository.findAllByPatientId(patient_id));
-    }
-
-    public PatientLabOrderDTO GetOrderById(int id){
-        List<LabOrder> orders =  new ArrayList<>();
-        orders.add(labOrderRepository.findById(id).orElse(null));
-        List<PatientLabOrderDTO> patientLabOrderDTOS = AppendPatientDetails(orders);
-        return patientLabOrderDTOS.get(0);
-    }
-
-    public List<PatientLabOrderDTO> GetAllOrdersByVisitId(int visit_id){
-        return AppendPatientDetails(labOrderRepository.findAllByVisitId(visit_id));
+        return id.toString() + " deleted successfully";
     }
 
     public List<PatientLabOrderDTO> GetAllLabOrders(){
         List<LabOrder> orders = labOrderRepository.findAll();
-        return AppendPatientDetails(orders);
+        return  AppendPatientDetails(orders);
     }
 
-    public List<PendingOrderDTO> GetOrdersPendingSampleCollection(){
-        List<PendingOrderDTO> pendingOrderList = labMapper.toPendingOrderDtoList(pendingOrderRepository.findAllPendingSampleCollection());
-        return getPendingOrderDTOS(pendingOrderList);
+    public List<PatientLabOrderDTO> GetAllOrdersByPatientId(int patientId){
+        List<LabOrder> orders = labOrderRepository.findAllByPatientId(patientId);
+        return  AppendPatientDetails(orders);
     }
 
-    public List<PendingOrderDTO> GetOrdersPendingSampleVerification(){
-        List<PendingOrderDTO> pendingOrderList = labMapper.toPendingOrderDtoList(pendingOrderRepository.findAllPendingSampleVerification());
-        return getPendingOrderDTOS(pendingOrderList);
-    }
-
-    @NotNull
-    private List<PendingOrderDTO> getPendingOrderDTOS(List<PendingOrderDTO> pendingOrderList) {
-        for (PendingOrderDTO dto: pendingOrderList) {
-            PersonResponseDto personResponseDTO = personService.getPersonById((long) dto.getPatientId());
-            dto.setPatientAddress(jsonNodeTransformer.getNodeValue(personResponseDTO.getAddress(), "address", "city", true));
-            dto.setPatientDob(personResponseDTO.getDateOfBirth());
-            dto.setPatientGender(jsonNodeTransformer.getNodeValue(personResponseDTO.getGender(), null, "display", false));
-            dto.setPatientFirstName(personResponseDTO.getFirstName());
-            dto.setPatientId(dto.getPatientId());
-            dto.setPatientHospitalNumber(jsonNodeTransformer.getNodeValue(personResponseDTO.getIdentifier(), "identifier", "value", true));
-            dto.setPatientLastName(personResponseDTO.getSurname());
-            dto.setPatientPhoneNumber(jsonNodeTransformer.getNodeValue(personResponseDTO.getContactPoint(),"contactPoint", "value", true));
-        }
-
-        return pendingOrderList;
-    }
-
-    public List<PendingOrderDTO> GetOrdersPendingResults(){
-        List<PendingOrderDTO> pendingOrderList = labMapper.toPendingOrderDtoList(pendingOrderRepository.findAllPendingResults());
-        return getPendingOrderDTOS(pendingOrderList);
-    }
-
-    public LabOrderResponseDTO AppendAdditionalTestDetails(LabOrderResponseDTO labOrderDTO){
-        try {
-            List<TestResponseDTO> testDTOList = UpdateTestResponses(labOrderDTO.getTests());
-            for (TestResponseDTO testDTO : testDTOList) {
-                List<SampleResponseDTO> sampleDTOList = labMapper.toSampleResponseDtoList(sampleRepository.findAllByTestId(testDTO.getId()));
-
-                for (SampleResponseDTO sampleResponseDTO : sampleDTOList) {
-                    sampleResponseDTO.setSampleTypeName(GetNameById(sampleResponseDTO.getSampleTypeId(), SAMPLE_TYPE));
-                    sampleResponseDTO.setLabNumber(testDTO.getLabNumber());
-                }
-
-                List<ResultDTO> resultDTOList = labMapper.toResultDtoList(resultRepository.findAllByTestId(testDTO.getId()));
-                testDTO.setSamples(sampleDTOList);
-                testDTO.setResults(resultDTOList);
-                testDTO.setOrderDate(labOrderDTO.getOrderDate());
-            }
-            labOrderDTO.setTests(testDTOList);
-            return labOrderDTO;
-        }catch(Exception ex) {
-            Log.info(ex);
-            return labOrderDTO;
-        }
-    }
-
-    private List<PatientLabOrderDTO> AppendPatientDetails(List<LabOrder> orders){
+    public List<PatientLabOrderDTO> AppendPatientDetails(List<LabOrder> orders){
         List<PatientLabOrderDTO> patientLabOrderDTOS = new ArrayList<>();
-
         for (LabOrder order: orders) {
-            PersonResponseDto personResponseDTO = personService.getPersonById((long) order.getPatientId());
-            Log.info("PERSON: "+personResponseDTO);
+            LabOrderDTO labOrderDTO = labMapper.toLabOrderDto(order);
+
+            for(TestDTO testDTO: labOrderDTO.getTests()){
+                List<Sample> samples = sampleRepository.findAllByTestId(testDTO.getId());
+                List<Result> results = resultRepository.findAllByTestId(testDTO.getId());
+                testDTO.setSamples(labMapper.tosSampleDtoList(samples));
+                testDTO.setResults(labMapper.toResultDtoList(results));
+            }
+
             PatientLabOrderDTO dto = new PatientLabOrderDTO();
-            dto.setPatientAddress(jsonNodeTransformer.getNodeValue(personResponseDTO.getAddress(), "address", "city", true));
-            dto.setPatientDob(personResponseDTO.getDateOfBirth());
-            dto.setPatientGender(jsonNodeTransformer.getNodeValue(personResponseDTO.getGender(), null, "display", false));
-            dto.setPatientSex(personResponseDTO.getSex());
-            dto.setPatientFirstName(personResponseDTO.getFirstName());
+            dto.setPatientAddress("Sample Address");
+            dto.setPatientDob(null);
+            dto.setPatientGender("Male");
+            dto.setPatientFirstName("John");
             dto.setPatientId(order.getPatientId());
-            dto.setPatientHospitalNumber(jsonNodeTransformer.getNodeValue(personResponseDTO.getIdentifier(), "identifier", "value", true));
-            dto.setPatientLastName(personResponseDTO.getSurname());
-            dto.setPatientPhoneNumber(jsonNodeTransformer.getNodeValue(personResponseDTO.getContactPoint(),"contactPoint", "value", true));
-            Log.info("HERE 1: "+personResponseDTO);
-            dto.setLabOrder(AppendAdditionalTestDetails(labMapper.toLabOrderResponseDto(order)));
+            dto.setPatientHospitalNumber("12345XYZ");
+            dto.setPatientLastName("Doe");
+            dto.setPatientPhoneNumber("+234567890");
+            dto.setLabOrder(labOrderDTO);
 
             patientLabOrderDTOS.add(dto);
         }
 
-        Log.info("ORDER: "+patientLabOrderDTOS);
         return patientLabOrderDTOS;
-    }
-
-    private List<TestResponseDTO> UpdateTestResponses(List<TestResponseDTO> testResponseDTOList) {
-        for(TestResponseDTO testResponseDTO:testResponseDTOList){
-            testResponseDTO.setLabTestName(GetNameById(testResponseDTO.getLabTestId(), LAB_TEST));
-            testResponseDTO.setLabTestGroupName(GetNameById(testResponseDTO.getLabTestGroupId(), LAB_TEST_GROUP));
-            testResponseDTO.setUnitMeasurement(GetNameById(testResponseDTO.getLabTestId(), LAB_TEST_UNITS));
-            testResponseDTO.setOrderPriorityName(GetNameById(testResponseDTO.getOrderPriority(), APPLICATION_CODE_SET));
-            testResponseDTO.setLabTestOrderStatusName(GetNameById(testResponseDTO.getLabTestOrderStatus(), LAB_ORDER_STATUS));
-            testResponseDTO.setViralLoadIndicationName(GetNameById(testResponseDTO.getViralLoadIndication(), APPLICATION_CODE_SET));
-        }
-
-        return testResponseDTOList;
-    }
-
-    public String GetNameById(Integer id, Integer itemType){
-        try {
-            if (Objects.equals(itemType, APPLICATION_CODE_SET)) {
-                if (id > 0) {
-                    return Objects.requireNonNull(codesetRepository.findById(id).orElse(null)).getDisplay();
-                } else {
-                    return "";
-                }
-            } else if (Objects.equals(itemType, LAB_TEST)) {
-                return labTestService.FindLabTestNameById(id);
-            } else if (Objects.equals(itemType, LAB_TEST_UNITS)) {
-                return labTestService.FindLabTestMeasurementById(id);
-            } else if (Objects.equals(itemType, LAB_TEST_GROUP)) {
-                return labTestGroupService.FindLabTestGroupNameById(id);
-            } else if (Objects.equals(itemType, LAB_ORDER_STATUS)) {
-                if (Objects.equals(id, PENDING_SAMPLE_COLLECTION)) {
-                    return "Pending Sample Collection";
-                }
-                else if (Objects.equals(id, SAMPLE_COLLECTED)) {
-                    return "Sample collected";
-                }
-                else if (Objects.equals(id, SAMPLE_TRANSFERRED)) {
-                    return "Sample Transferred";
-                }
-                else if (Objects.equals(id, SAMPLE_VERIFIED)) {
-                    return "Sample Verified";
-                }
-                else if (Objects.equals(id, SAMPLE_REJECTED)) {
-                    return "Sample Rejected";
-                }
-                else if (Objects.equals(id, RESULT_REPORTED)) {
-                    return "Result Reported";
-                }
-                else {
-                    return "";
-                }
-            } else if (Objects.equals(itemType, SAMPLE_TYPE)) {
-                return Objects.requireNonNull(sampleTypeRepository.findById(id).orElse(null)).getSampleTypeName();
-            }
-            else {
-                return "";
-            }
-        }
-        catch (Exception exception){
-            return "";
-        }
-    }
-
-    public List<HistoricalResultResponseDTO> GetHistoricalResultsByPatientId(Integer patientId){
-        List<LabOrderResponseDTO> orders =  labMapper.toLabOrderResponseDtoList(labOrderRepository.findAllByPatientId(patientId));
-        List<HistoricalResultResponseDTO> historicalResults = new ArrayList<>();
-
-        for(LabOrderResponseDTO order: orders){
-            LabOrderResponseDTO updated_order = AppendAdditionalTestDetails(order);
-
-            for(TestResponseDTO test: updated_order.getTests()){
-                HistoricalResultResponseDTO result = new HistoricalResultResponseDTO();
-
-                result.setId(test.getId());
-                result.setOrderId(updated_order.getId());
-                result.setPatientId(patientId);
-                result.setOrderDate(updated_order.getOrderDate());
-                result.setLabTestName(test.getLabTestName());
-                result.setGroupName(test.getLabTestGroupName());
-
-
-                if((long) test.getSamples().size() > 0) {
-                    result.setDateSampleCollected(test.getSamples().get(0).getDateSampleCollected());
-                    result.setDateSampleVerified(test.getSamples().get(0).getDateSampleVerified());
-                    result.setSampleTypeName(test.getSamples().get(0).getSampleTypeName());
-                }
-                if((long) test.getResults().size() > 0) {
-                    result.setResultReported(test.getResults().get(0).getResultReported());
-                    result.setDateResultReported(test.getResults().get(0).getDateResultReported());
-                }
-
-                PersonResponseDto personResponseDTO = personService.getPersonById((long) updated_order.getPatientId());
-                result.setPatientAddress(jsonNodeTransformer.getNodeValue(personResponseDTO.getAddress(), "address", "city", true));
-                result.setPatientDob(personResponseDTO.getDateOfBirth());
-                result.setPatientGender(jsonNodeTransformer.getNodeValue(personResponseDTO.getGender(), null, "display", false));
-                result.setPatientFirstName(personResponseDTO.getFirstName());
-                result.setPatientHospitalNumber(jsonNodeTransformer.getNodeValue(personResponseDTO.getIdentifier(), "identifier", "value", true));
-                result.setPatientLastName(personResponseDTO.getSurname());
-                result.setPatientPhoneNumber(jsonNodeTransformer.getNodeValue(personResponseDTO.getContactPoint(),"contactPoint", "value", true));
-
-                historicalResults.add(result);
-            }
-        }
-
-        return historicalResults;
     }
 }
