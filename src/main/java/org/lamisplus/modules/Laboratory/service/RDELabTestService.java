@@ -32,7 +32,7 @@ public class RDELabTestService {
         List<TestDTO> tests = new ArrayList<>();
 
         RDETestDTO rdeTestDTO = labDtoList.get(0);
-        labOrderDTO.setOrderDate(rdeTestDTO.getSampleCollectionDate());
+        labOrderDTO.setOrderDate(rdeTestDTO.getSampleCollectionDate().atStartOfDay());
         labOrderDTO.setPatientId(rdeTestDTO.getPatientId());
         labOrderDTO.setVisitId(rdeTestDTO.getVisitId());
 
@@ -56,7 +56,7 @@ public class RDELabTestService {
             //save sample
             SampleDTO sample = new SampleDTO();
             assert dto != null;
-            sample.setDateSampleCollected(dto.getSampleCollectionDate());
+            sample.setDateSampleCollected(dto.getSampleCollectionDate().atStartOfDay());
             sample.setSampleCollectedBy(SecurityUtils.getCurrentUserLogin().orElse(""));
             sample.setTestId(test.getId());
             sample.setSampleTypeId(0);
@@ -65,7 +65,7 @@ public class RDELabTestService {
             //Save verification info
             Sample verifiedSample = sampleRepository.findById(dto1.getId()).orElse(null);
             assert verifiedSample != null;
-            verifiedSample.setDateSampleVerified(dto.getSampleCollectionDate());
+            verifiedSample.setDateSampleVerified(dto.getSampleCollectionDate().atStartOfDay());
             verifiedSample.setCommentSampleVerified("Sample verified");
             verifiedSample.setSampleVerifiedBy(SecurityUtils.getCurrentUserLogin().orElse(""));
             sampleRepository.save(verifiedSample);
@@ -74,8 +74,8 @@ public class RDELabTestService {
             ResultDTO result = new ResultDTO();
             result.setTestId(test.getId());
             result.setResultReported(dto.getResult());
-            result.setDateResultReported(dto.getDateResultReceived());
-            result.setDateAssayed(dto.getDateAssayed());
+            result.setDateResultReported(dto.getDateResultReceived().atStartOfDay());
+            result.setDateAssayed(dto.getDateAssayed().atStartOfDay());
             resultService.Save(result);
         }
 
@@ -97,7 +97,7 @@ public class RDELabTestService {
         testService.Update(orderId, test);
 
         SampleDTO sample = sampleService.FindByTestId(test.getId());
-        sample.setDateSampleCollected(rdeTestDTO.getSampleCollectionDate());
+        sample.setDateSampleCollected(rdeTestDTO.getSampleCollectionDate().atStartOfDay());
         sample.setSampleCollectedBy(SecurityUtils.getCurrentUserLogin().orElse(""));
         sample.setTestId(test.getId());
         sample.setSampleTypeId(0);
@@ -107,8 +107,8 @@ public class RDELabTestService {
         ResultDTO result = resultService.GetResultsByTestId(test.getId());
         result.setTestId(test.getId());
         result.setResultReported(rdeTestDTO.getResult());
-        result.setDateResultReported(rdeTestDTO.getDateResultReceived());
-        result.setDateAssayed(rdeTestDTO.getDateAssayed());
+        result.setDateResultReported(rdeTestDTO.getDateResultReceived().atStartOfDay());
+        result.setDateAssayed(rdeTestDTO.getDateAssayed().atStartOfDay());
         resultService.Save(result);
 
         return rdeTestDTO;
@@ -144,13 +144,13 @@ public class RDELabTestService {
             testDTO.setViralLoadIndicationName(labOrderService.GetNameById(dto.getViralLoadIndication(), APPLICATION_CODE_SET));
 
             if(dto.getSamples().size()>0) {
-                testDTO.setSampleCollectionDate(dto.getSamples().get(0).getDateSampleCollected());
+                testDTO.setSampleCollectionDate(dto.getSamples().get(0).getDateSampleCollected().toLocalDate());
             }
 
             if(dto.getResults().size()>0) {
-                testDTO.setDateAssayed(dto.getResults().get(0).getDateAssayed());
+                testDTO.setDateAssayed(dto.getResults().get(0).getDateAssayed().toLocalDate());
                 testDTO.setResult(dto.getResults().get(0).getResultReported());
-                testDTO.setDateResultReceived(dto.getResults().get(0).getDateResultReported());
+                testDTO.setDateResultReceived(dto.getResults().get(0).getDateResultReported().toLocalDate());
             }
 
             testDTOList.add(testDTO);
