@@ -31,10 +31,9 @@ public class LaboratoryModule extends AcrossModule
 {
     public final static String NAME = "LaboratoryModule";
 
-//    public static void main(String[] args) {
-//
-//        SpringApplication.run (LaboratoryModule.class, args);
-//    }
+    public static void main(String[] args) {
+        SpringApplication.run (LaboratoryModule.class, args);
+    }
 
     public LaboratoryModule(){
         super();
@@ -43,10 +42,12 @@ public class LaboratoryModule extends AcrossModule
                 getClass().getPackage().getName() +".service",
                 getClass().getPackage().getName() +".config",
                 getClass().getPackage().getName() +".domain",
-                getClass().getPackage().getName() +".extensions",
-                getClass().getPackage().getName() +".installers",
+                getClass().getPackage().getName() +".domain.mapper",
                 getClass().getPackage().getName() +".utility",
-                getClass().getPackage().getName() +".repository"));
+                getClass().getPackage().getName() +".component",
+                getClass().getPackage().getName() +".repository",
+                "org.lamisplus.modules.patient.service",
+                "org.lamisplus.modules.base.service"));
     }
     @Override
     public String getName() {
