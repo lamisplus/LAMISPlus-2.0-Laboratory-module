@@ -1,11 +1,12 @@
 package org.lamisplus.modules.Laboratory.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Entity
 @AllArgsConstructor
@@ -17,18 +18,28 @@ public class Result {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private int id;
+    @Column(name = "uuid")
+    private String uuid;
     @Column(name = "date_assayed")
-    private LocalDate dateAssayed;
-    @Column(name = "time_assayed")
-    private LocalTime timeAssayed;
+    private LocalDateTime dateAssayed;
     @Column(name = "date_result_reported")
-    private LocalDate dateResultReported;
-    @Column(name = "time_result_reported")
-    private LocalTime timeResultReported;
+    private LocalDateTime dateResultReported;
     @Column(name = "result_reported")
     private String resultReported;
+    @Column(name = "result_report")
+    private String resultReport;
     @Column(name = "result_reported_by")
     private String resultReportedBy;
     @Column(name = "test_id")
     private int testId;
+    @Column(name = "patient_uuid")
+    private String patientUuid;
+    @Column(name = "facility_id")
+    private Long facilityId;
+    @Column(name = "patient_id")
+    private int PatientId;
+    @Column(name = "pcr_lab_sample_number")
+    private String pcrLabSampleNumber;
+    @Column(name = "date_sample_received_at_pcr_lab")
+    private LocalDate dateSampleReceivedAtPcrLab;
 }

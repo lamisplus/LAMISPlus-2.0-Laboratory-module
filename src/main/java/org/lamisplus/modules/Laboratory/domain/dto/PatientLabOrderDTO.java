@@ -2,7 +2,6 @@ package org.lamisplus.modules.Laboratory.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import org.lamisplus.modules.Laboratory.domain.entity.LabOrder;
 
 import java.time.LocalDate;
 
@@ -17,5 +16,6 @@ public class PatientLabOrderDTO {
     private String patientAddress;
     private String patientPhoneNumber;
     private String patientGender;
-    private LabOrderDTO labOrder;
+    private String patientSex;
+    private LabOrderResponseDTO labOrder;
 }

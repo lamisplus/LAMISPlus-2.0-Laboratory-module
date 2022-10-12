@@ -1,29 +1,12 @@
 package org.lamisplus.modules.Laboratory.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.vladmihalcea.hibernate.type.array.IntArrayType;
-import com.vladmihalcea.hibernate.type.array.StringArrayType;
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
-import com.vladmihalcea.hibernate.type.json.JsonNodeBinaryType;
-import com.vladmihalcea.hibernate.type.json.JsonNodeStringType;
-import com.vladmihalcea.hibernate.type.json.JsonStringType;
-import lombok.*;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
-@TypeDefs({
-        @TypeDef(name = "string-array", typeClass = StringArrayType.class),
-        @TypeDef(name = "int-array", typeClass = IntArrayType.class),
-        @TypeDef(name = "json", typeClass = JsonStringType.class),
-        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class),
-        @TypeDef(name = "jsonb-node", typeClass = JsonNodeBinaryType.class),
-        @TypeDef(name = "json-node", typeClass = JsonNodeStringType.class),
-})
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -34,42 +17,34 @@ public class Sample {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private int id;
-
-    @Type(type = "jsonb")
-    @Basic(fetch = FetchType.LAZY)
-    @Column(name = "sample_type", columnDefinition = "jsonb")
-    private Object sampleType;
-
-    @Column(name = "sample_order_date")
-    private LocalDate sampleOrderDate;
-    @Column(name = "sample_order_time")
-    private LocalTime sampleOrderTime;
-
-    @Type(type = "jsonb")
-    @Basic(fetch = FetchType.LAZY)
-    @Column(name = "sample_collection_mode", columnDefinition = "jsonb")
-    private Object sampleCollectionMode;
-
+    @Column(name = "uuid")
+    private String uuid;
+    @Column(name = "sample_number")
+    private String SampleNumber;
+    @Column(name = "sample_type_id")
+    private int sampleTypeId;
+    @Column(name = "sample_collection_mode")
+    private int sampleCollectionMode;
     @Column(name = "date_sample_collected")
-    private LocalDate dateSampleCollected;
-    @Column(name = "time_sample_collected")
-    private LocalTime timeSampleCollected;
+    private LocalDateTime dateSampleCollected;
     @Column(name = "comment_sample_collected")
     private String commentSampleCollected;
     @Column(name = "sample_collected_by")
     private String sampleCollectedBy;
-
     @Column(name = "date_sample_verified")
-    private LocalDate dateSampleVerified;
-    @Column(name = "time_sample_verified")
-    private LocalTime timeSampleVerified;
-    @Column(name = "sample_confirm")
-    private Integer sampleConfirm;
+    private LocalDateTime dateSampleVerified;
     @Column(name = "comment_sample_verified")
     private String commentSampleVerified;
     @Column(name = "sample_verified_by")
     private String sampleVerifiedBy;
-
+    @Column(name = "sample_accepted")
+    private String sampleAccepted;
     @Column(name = "test_id")
     private int testId;
+    @Column(name = "patient_uuid")
+    private String patientUuid;
+    @Column(name = "facility_id")
+    private Long facilityId;
+    @Column(name = "patient_id")
+    private int PatientId;
 }

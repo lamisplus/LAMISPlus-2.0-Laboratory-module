@@ -1,11 +1,11 @@
 package org.lamisplus.modules.Laboratory.domain.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -27,11 +27,12 @@ public class LabOrder {
     @Column(name = "userid")
     private String userId;
     @Column(name = "order_date")
-    private LocalDate orderDate;
-    @Column(name = "order_time")
-    private LocalTime orderTime;
-
-    @JoinColumn(name = "labOrderId")
+    private LocalDateTime orderDate;
+    @Column(name = "patient_uuid")
+    private String patientUuid;
+    @Column(name = "facility_id")
+    private Long facilityId;
+    @JoinColumn(name = "lab_order_id")
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Test> tests;
 }

@@ -14,6 +14,8 @@ public class Test {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private int id;
+    @Column(name = "uuid")
+    private String uuid;
     @Column(name = "patient_id")
     private int patientId;
     @Column(name = "lab_test_id")
@@ -32,4 +34,10 @@ public class Test {
     private int labTestOrderStatus;
     @Column(name = "viral_load_indication")
     private int viralLoadIndication;
+    @Column(name = "lab_order_id")
+    private int labOrderId;
+    @Column(name = "patient_uuid")
+    private String patientUuid;
+    @Column(name = "facility_id")
+    private Long facilityId;
 }
